@@ -46,3 +46,5 @@ try {
     error_log("Connection failed: " . $e->getMessage());
     die("Eroare la conectarea la baza de date. Vă rugăm încercați mai târziu.");
 }
+
+?>

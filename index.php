@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="<?= htmlspecialchars($lang) ?>">
 <head>
     <meta charset="UTF-8">
-    <meta name="author" content="Tintiuc Catalin">
+    <meta name="author" content="Tintiuc Cătălin">
     <meta name="description" content="Magazin online Maison Lure">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars(lang('site_title')) ?></title>

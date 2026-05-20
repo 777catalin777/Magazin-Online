@@ -2,7 +2,6 @@
 require_once 'config.php';
 require_once 'language_switcher.php';
 
-// Verificări de securitate
 if (!isset($_SESSION['email'])) {
     header("Location: login.php");
     exit();

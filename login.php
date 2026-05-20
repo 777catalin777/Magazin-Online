@@ -8,7 +8,6 @@ $errors = [
 ];
 $activeForm = $_SESSION['active_form'] ?? 'login';
 
-// Ștergem doar erorile, nu toată sesiunea
 unset($_SESSION['login_error'], $_SESSION['register_error'], $_SESSION['active_form']);
 
 function showError($error) {

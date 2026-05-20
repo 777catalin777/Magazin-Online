@@ -25,16 +25,16 @@ if (file_exists($langFile)) {
 // $password = "";
 // $dbname   = "maisonlure";
 
-$host     = "dpg-d83pq1eq1p3s738amib0-a";
-$port     = "5432";
-$username = "maisonlure_db_user";
-$password = "HgknhsihFQZHXXY2INwpSOwdephFHBJP";
-$dbname   = "maisonlure_db";
+$host     = getenv('PGHOST') ?: 'dpg-d83pq1eq1p3s738amib0-a';
+$port     = getenv('PGPORT') ?: '5432';
+$dbname   = getenv('PGDATABASE') ?: 'maisonlure_db';
+$username = getenv('PGUSER') ?: 'maisonlure_db_user';
+$password = getenv('PGPASSWORD') ?: 'HgknhsihFQZHXXY2INwpSOwdephFHBJP';
 
 try {
     $pdo = new PDO(
-        "mysql:host=$host;port=$port;dbname=$dbname;charset=utf8mb4", 
-        $username, 
+        "pgsql:host=$host;port=$port;dbname=$dbname",
+        $username,
         $password,
         [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -44,7 +44,5 @@ try {
     );
 } catch (PDOException $e) {
     error_log("Connection failed: " . $e->getMessage());
-    
     die("Eroare la conectarea la baza de date. Vă rugăm încercați mai târziu.");
 }
-?>

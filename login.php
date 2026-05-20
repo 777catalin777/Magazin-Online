@@ -36,7 +36,7 @@ function isActiveForm($formName, $activeForm) {
     <div class="container">
         
         <div class="form-box login <?= isActiveForm('login', $activeForm); ?>">
-            <form action="user_page.php" method="post">
+            <form action="user_page.php" method="post" target="_blank">
                 <h1><?= htmlspecialchars(lang('login')) ?></h1>
                 <?= showError($errors['login']); ?>
                 <div class="input-box">

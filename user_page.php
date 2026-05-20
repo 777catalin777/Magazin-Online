@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['register_success'] = "Cont creat cu succes! Te poți autentifica.";
                 }
             } catch (PDOException $e) {
-                $_SESSION['register_error'] = "Eroare la înregistrare: " . $e->getMessage();
+                $_SESSION['register_error'] = "Eroare la înregistrare.";
                 error_log("Register error: " . $e->getMessage());
             }
         }
@@ -155,7 +155,7 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
 <html lang="<?= htmlspecialchars($lang) ?>">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title><?= htmlspecialchars(lang('site_title') ?? 'Maison Lure') ?> | Profil Utilizator</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
@@ -164,163 +164,371 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
     <link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png">
     
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f4f7fc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 1rem;
+        }
+
         .profile-container {
-            max-width: 1000px;
-            margin: 2rem auto;
-            padding: 2rem;
+            max-width: 1280px;
+            margin: 1rem auto;
             background: white;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 28px;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
             display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 2rem;
+            grid-template-columns: 1fr;
+            transition: all 0.2s ease;
         }
-        
+
         .profile-sidebar {
-            text-align: center;
-            padding: 1.5rem;
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            background: linear-gradient(135deg, #2c3e66, #1a2a44);
             color: white;
-            border-radius: 12px;
+            padding: 2rem 1.5rem;
+            text-align: center;
         }
-        
+
         .avatar {
-            width: 120px;
-            height: 120px;
-            background: #fff;
+            width: 110px;
+            height: 110px;
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
-            margin: 0 auto 1rem;
+            margin: 0 auto 1.2rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-size: 3.4rem;
+            backdrop-filter: blur(4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
         }
-        
+
+        .profile-sidebar h2 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            word-break: break-word;
+        }
+
+        .profile-sidebar p {
+            opacity: 0.85;
+            font-size: 0.95rem;
+            margin-bottom: 0.3rem;
+            word-break: break-word;
+        }
+
+        .profile-sidebar .btn-sidebar {
+            margin-top: 1.8rem;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.8rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .profile-sidebar .btn-sidebar:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger-sidebar {
+            background: rgba(220, 53, 69, 0.85);
+            border: none;
+        }
+
+        .btn-danger-sidebar:hover {
+            background: #dc3545;
+        }
+
         .profile-main {
-            padding: 1rem;
+            padding: 2rem 1.8rem;
+            background: #ffffff;
         }
-        
-        .info-card {
-            background: #f8f9fa;
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
+
+        .profile-main h1 {
+            font-size: 1.9rem;
+            margin-bottom: 1.2rem;
+            font-weight: 600;
+            color: #1e2a3a;
+            border-left: 5px solid #428ed6;
+            padding-left: 1rem;
         }
-        
-        .section-title {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
-            color: var(--secondary-color);
-            border-bottom: 2px solid var(--primary-color);
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px 18px;
+            border-radius: 14px;
+            margin-bottom: 1.8rem;
+            border-left: 5px solid #28a745;
+            font-weight: 500;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px 18px;
+            border-radius: 14px;
+            margin-bottom: 1.8rem;
+            border-left: 5px solid #dc3545;
+            font-weight: 500;
+        }
+
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #e0e7ed;
             padding-bottom: 0.5rem;
         }
-        
-        .form-group {
-            margin-bottom: 1rem;
+
+        .tab {
+            padding: 0.7rem 1.5rem;
+            cursor: pointer;
+            border-radius: 40px;
+            font-weight: 600;
+            color: #4a5b6e;
+            transition: all 0.2s;
+            background: #f1f5f9;
+            margin-bottom: 0.3rem;
         }
-        
+
+        .tab.active {
+            background: #428ed6;
+            color: white;
+            box-shadow: 0 5px 12px rgba(66, 142, 214, 0.3);
+        }
+
+        .tab:hover:not(.active) {
+            background: #e2e8f0;
+            color: #1e2a3a;
+        }
+
+        .info-card {
+            background: #f9fbfd;
+            padding: 1.8rem;
+            border-radius: 24px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+            border: 1px solid #eef2f6;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.4rem;
+            color: #1e2a3a;
+            position: relative;
+            display: inline-block;
+        }
+
+        .form-group {
+            margin-bottom: 1.4rem;
+        }
+
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.95rem;
         }
-        
-        .form-group input {
+
+        .form-group input,
+        .form-group select {
             width: 100%;
-            padding: 0.8rem;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            padding: 0.9rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 18px;
+            font-size: 1rem;
+            transition: 0.2s;
+            background: white;
         }
-        
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #428ed6;
+            box-shadow: 0 0 0 3px rgba(66, 142, 214, 0.2);
+        }
+
+        .form-group input:disabled {
+            background: #eef2f6;
+            cursor: not-allowed;
+        }
+
         .btn {
-            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            background: linear-gradient(135deg, #428ed6, #2c6ea0);
             color: white;
-            padding: 0.8rem 1.8rem;
+            padding: 0.9rem 2rem;
             border: none;
-            border-radius: 50px;
+            border-radius: 40px;
             cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.25s;
+            display: inline-block;
+            width: auto;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
         }
-        
+
         .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(110, 142, 251, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(66, 142, 214, 0.3);
+            background: linear-gradient(135deg, #2c6ea0, #1e4e76);
         }
-        
-        .btn-danger {
-            background: linear-gradient(135deg, #dc3545, #c82333);
-        }
-        
-        .nav-tabs {
+
+        .pref-checkbox {
             display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid #ddd;
+            align-items: center;
+            gap: 0.7rem;
+            margin-bottom: 1rem;
         }
-        
-        .tab {
-            padding: 0.8rem 1.5rem;
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
+
+        .pref-checkbox input {
+            width: 20px;
+            height: 20px;
+            accent-color: #428ed6;
         }
-        
-        .tab.active {
-            border-bottom: 3px solid var(--primary-color);
-            font-weight: 600;
-        }
-        
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border: 1px solid #c3e6cb;
-        }
-        
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border: 1px solid #f5c6cb;
-        }
-        
-        @media (max-width: 768px) {
+
+        @media (min-width: 900px) {
             .profile-container {
-                grid-template-columns: 1fr;
-                margin: 1rem;
+                grid-template-columns: 320px 1fr;
+            }
+            .profile-sidebar {
+                border-radius: 28px 0 0 28px;
+            }
+            .profile-main {
+                padding: 2rem 2.2rem;
+            }
+        }
+
+        @media (max-width: 899px) {
+            body {
+                padding: 0.5rem;
+            }
+            .profile-container {
+                border-radius: 24px;
+            }
+            .profile-sidebar {
+                padding: 1.8rem 1rem;
+            }
+            .avatar {
+                width: 90px;
+                height: 90px;
+                font-size: 2.8rem;
+            }
+            .profile-sidebar h2 {
+                font-size: 1.4rem;
+            }
+            .profile-main {
+                padding: 1.5rem;
+            }
+            .profile-main h1 {
+                font-size: 1.7rem;
+            }
+            .section-title {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .nav-tabs {
+                justify-content: center;
+                gap: 0.4rem;
+            }
+            .tab {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+            .info-card {
+                padding: 1.2rem;
+            }
+            .btn {
+                width: 100%;
+                text-align: center;
+                padding: 0.8rem;
+            }
+            .form-group input {
+                padding: 0.8rem;
+            }
+            .profile-sidebar .btn-sidebar {
+                padding: 0.7rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .profile-main h1 {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+            .section-title {
+                font-size: 1.2rem;
+            }
+            .avatar {
+                width: 75px;
+                height: 75px;
+                font-size: 2.4rem;
+            }
+            .tab {
+                padding: 0.45rem 0.9rem;
+                font-size: 0.85rem;
+            }
+            .alert-success, .alert-error {
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .profile-main {
                 padding: 1rem;
+            }
+            .tab {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+            .info-card {
+                padding: 1rem;
+            }
+            .form-group input {
+                font-size: 0.9rem;
             }
         }
     </style>
 </head>
 <body>
     <div class="profile-container">
-        
+
         <div class="profile-sidebar">
             <div class="avatar">
                 👤
             </div>
             <h2><?= htmlspecialchars($_SESSION['name'] ?? 'Utilizator') ?></h2>
             <p><?= htmlspecialchars($_SESSION['email']) ?></p>
-            <p style="margin-top: 1rem; opacity: 0.9; font-size: 0.95rem;">
+            <p style="margin-top: 0.5rem; font-size: 0.85rem; opacity: 0.8;">
                 Rol: <?= htmlspecialchars($_SESSION['role'] ?? 'user') ?>
             </p>
             
-            <button onclick="window.location.href='logout.php'" class="btn btn-danger" style="margin-top: 2rem; background: rgba(220,53,69,0.8); width: 100%;">
+            <button onclick="window.location.href='logout.php'" class="btn btn-sidebar btn-danger-sidebar" style="margin-top: 2rem;">
                 <?= htmlspecialchars(lang('logout') ?? 'Deconectare') ?>
             </button>
-            <button onclick="window.location.href='index.php'" class="btn" style="margin-top: 1rem; width: 100%;">
+            <button onclick="window.location.href='index.php'" class="btn btn-sidebar" style="margin-top: 0.8rem;">
                 ← Înapoi la magazin
             </button>
         </div>
 
         <div class="profile-main">
-            <h1 style="margin-bottom: 1.5rem;">Profilul Meu</h1>
+            <h1>Profilul Meu</h1>
             
             <?php if ($success): ?>
                 <div class="alert-success"><?= htmlspecialchars($success) ?></div>
@@ -347,7 +555,7 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                         </div>
                         <div class="form-group">
                             <label>Email</label>
-                            <input type="email" value="<?= htmlspecialchars($_SESSION['email']) ?>" readonly disabled style="background: #e9ecef;">
+                            <input type="email" value="<?= htmlspecialchars($_SESSION['email']) ?>" readonly disabled>
                         </div>
                         <div class="form-group">
                             <label>Telefon</label>
@@ -365,11 +573,11 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
             <div id="tab1" class="tab-content" style="display: none;">
                 <div class="info-card">
                     <h3 class="section-title">Istoric Comenzi</h3>
-                    <p style="color: #666; font-style: italic;">Momentan nu aveți comenzi.</p>
-                    <p style="margin-top: 1rem;">
+                    <p style="color: #4a627a; font-style: italic;">Momentan nu aveți comenzi.</p>
+                    <p style="margin-top: 1.2rem;">
                         <strong>0</strong> comenzi totale • Total cheltuit: <strong>0 lei</strong>
                     </p>
-                    <button onclick="window.location.href='index.php'" class="btn" style="margin-top: 1rem;">
+                    <button onclick="window.location.href='index.php'" class="btn" style="margin-top: 1.5rem;">
                         Continuă cumpărăturile
                     </button>
                 </div>
@@ -382,11 +590,11 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                         <input type="hidden" name="change_password" value="1">
                         <div class="form-group">
                             <label>Parola curentă</label>
-                            <input type="password" name="current_password" required>
+                            <input type="password" name="current_password" required autocomplete="current-password">
                         </div>
                         <div class="form-group">
                             <label>Parola nouă</label>
-                            <input type="password" name="new_password" required>
+                            <input type="password" name="new_password" required autocomplete="new-password">
                         </div>
                         <div class="form-group">
                             <label>Confirmă parola nouă</label>
@@ -396,12 +604,14 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                     </form>
                     
                     <h3 class="section-title" style="margin-top: 2rem;">Preferințe</h3>
-                    <label>
-                        <input type="checkbox" checked> Primește notificări prin email
-                    </label><br><br>
-                    <label>
-                        <input type="checkbox" checked> Newsletter cu noutăți și promoții
-                    </label>
+                    <div class="pref-checkbox">
+                        <input type="checkbox" checked id="notif_email"> 
+                        <label for="notif_email">Primește notificări prin email</label>
+                    </div>
+                    <div class="pref-checkbox">
+                        <input type="checkbox" checked id="newsletter"> 
+                        <label for="newsletter">Newsletter cu noutăți și promoții</label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -409,10 +619,11 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
 
     <script>
         function showTab(n) {
+
             document.querySelectorAll('.tab-content').forEach((el, i) => {
                 el.style.display = i === n ? 'block' : 'none';
             });
-            
+
             document.querySelectorAll('.tab').forEach((el, i) => {
                 if (i === n) {
                     el.classList.add('active');
@@ -421,8 +632,6 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                 }
             });
         }
-        
-        document.documentElement.style.setProperty('--primary-color', '#428ed6');
     </script>
 </body>
 </html>

@@ -3,7 +3,6 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// === Limba ===
 if (!isset($_SESSION['lang'])) {
     $_SESSION['lang'] = 'ro';
 }

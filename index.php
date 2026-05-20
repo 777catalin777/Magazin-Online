@@ -2,7 +2,6 @@
 require_once 'config.php'; 
 require_once 'language_switcher.php'; 
 
-// Procesare login/register
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // LOGIN
     if (isset($_POST['login'])) {
@@ -42,7 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
     
-    // REGISTER
     if (isset($_POST['register'])) {
         $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');

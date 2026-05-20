@@ -2,7 +2,6 @@
 require_once 'config.php';
 require_once 'language_switcher.php';
 
-// Procesare login/register (mutat din index.php)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // LOGIN
     if (isset($_POST['login'])) {
@@ -42,7 +41,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
     
-    // REGISTER
     if (isset($_POST['register'])) {
         $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');
@@ -81,7 +79,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
     
-    // Actualizare profil (codul existent)
     if (isset($_POST['update_profile'])) {
         $name = trim($_POST['name'] ?? '');
         $phone = trim($_POST['phone'] ?? '');
@@ -106,7 +103,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
     
-    // Schimbare parolă
     if (isset($_POST['change_password'])) {
         $current_password = $_POST['current_password'] ?? '';
         $new_password = $_POST['new_password'] ?? '';
@@ -140,13 +136,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// Verificare autentificare
 if (!isset($_SESSION['email'])) {
     header("Location: login.php");
     exit();
 }
 
-// Verificare rol
 if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
     header("Location: admin_page.php");
     exit();
@@ -342,7 +336,6 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                 <div class="tab" onclick="showTab(2)">Setări Cont</div>
             </div>
 
-            <!-- Tab 0: Informații Personale -->
             <div id="tab0" class="tab-content">
                 <div class="info-card">
                     <h3 class="section-title">Date Personale</h3>
@@ -369,7 +362,6 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                 </div>
             </div>
 
-            <!-- Tab 1: Comenzi -->
             <div id="tab1" class="tab-content" style="display: none;">
                 <div class="info-card">
                     <h3 class="section-title">Istoric Comenzi</h3>
@@ -383,7 +375,6 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                 </div>
             </div>
 
-            <!-- Tab 2: Setări Cont -->
             <div id="tab2" class="tab-content" style="display: none;">
                 <div class="info-card">
                     <h3 class="section-title">Schimbă Parola</h3>

@@ -19,11 +19,17 @@ if (file_exists($langFile)) {
     $translations = json_decode(file_get_contents($langFile), true);
 }
 
-$host     = "localhost";
-$port     = "3306";
-$username = "root";
-$password = "";
-$dbname   = "maisonlure";
+// $host     = "localhost";
+// $port     = "3306";
+// $username = "root";
+// $password = "";
+// $dbname   = "maisonlure";
+
+$host     = "dpg-d83pq1eq1p3s738amib0-a";
+$port     = "5432";
+$username = "maisonlure_db_user";
+$password = "HgknhsihFQZHXXY2INwpSOwdephFHBJP";
+$dbname   = "maisonlure_db";
 
 try {
     $pdo = new PDO(

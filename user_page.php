@@ -1,13 +1,30 @@
+<?php 
+require_once 'config.php';
+require_once 'language_switcher.php';
+
+// Verificări de securitate
+if (!isset($_SESSION['email'])) {
+    header("Location: login.php");
+    exit();
+}
+
+if ($_SESSION['role'] !== 'user') {
+    header("Location: admin_page.php");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="<?= $lang ?>">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= lang('site_title') ?> | Profil Utilizator</title>
+    <title><?= lang('site_title') ?? 'Maison Lure' ?> | Profil Utilizator</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png">
+    
     <style>
         .profile-container {
             max-width: 1000px;
@@ -114,20 +131,6 @@
     </style>
 </head>
 <body>
-    <?php 
-    require_once 'config.php';
-    require_once 'language_switcher.php';
-    
-    if (!isset($_SESSION['email'])) {
-        header("Location: login.php");
-        exit();
-    }
-    if ($_SESSION['role'] !== 'user') {
-        header("Location: admin_page.php");
-        exit();
-    }
-    ?>
-
     <div class="profile-container">
         
         <div class="profile-sidebar">
@@ -141,7 +144,7 @@
             </p>
             
             <button onclick="window.location.href='logout.php'" class="btn" style="margin-top: 2rem; background: rgba(255,255,255,0.2); width: 100%;">
-                <?= lang('logout') ?>
+                <?= lang('logout') ?? 'Deconectare' ?>
             </button>
         </div>
 

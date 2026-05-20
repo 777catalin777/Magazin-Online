@@ -16,19 +16,23 @@ if (isset($_GET['lang']) && in_array($_GET['lang'], ['ro', 'en', 'ru'])) {
 $lang = $_SESSION['lang'];
 $translations = json_decode(file_get_contents(__DIR__ . "/languages/{$lang}.json"), true);
 
-$dsn = "postgres://maisonlure_db_user:HgknhsihFQZHXXY2INwpSOwdephFHBJP@dpg-d83pq1eq1p3s738amib0-a/maisonlure_db";
+$dsn = $_ENV['DATABASE_URL'] ?? $_SERVER['DATABASE_URL'] ?? null;
+
+if (!$dsn) {
+    die("Eroare: Variabila DATABASE_URL nu este setată pe Render.");
+}
 
 try {
-    $pdo = new PDO("pgsql:" . substr($dsn, 11), null, null, [
+    $pdo = new PDO($dsn, null, null, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false,
     ]);
     
-    $pdo->exec("SET NAMES 'utf8'");
+    $pdo->exec("SET NAMES 'utf8mb4'");
     
 } catch(PDOException $e) {
     error_log("Eroare conexiune BD: " . $e->getMessage());
-    $pdo = null;
-    die("Eroare: Conexiunea la baza de date nu a fost stabilită. <br>" . htmlspecialchars($e->getMessage()));
+    die("Eroare: Conexiunea la baza de date nu a fost stabilită.<br>" . htmlspecialchars($e->getMessage()));
 }
 ?>

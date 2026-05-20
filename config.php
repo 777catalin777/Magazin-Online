@@ -16,12 +16,24 @@ if (isset($_GET['lang']) && in_array($_GET['lang'], ['ro', 'en', 'ru'])) {
 $lang = $_SESSION['lang'];
 $translations = json_decode(file_get_contents(__DIR__ . "/languages/{$lang}.json"), true);
 
+echo "<h2>Debug Environment Variables</h2>";
+echo "<pre>";
+print_r([
+    '$_ENV["DATABASE_URL"]'     => $_ENV['DATABASE_URL'] ?? 'NU EXISTĂ',
+    '$_SERVER["DATABASE_URL"]'  => $_SERVER['DATABASE_URL'] ?? 'NU EXISTĂ',
+    'getenv("DATABASE_URL")'    => getenv('DATABASE_URL') ?? 'NU EXISTĂ',
+    'apache_getenv'             => function_exists('apache_getenv') ? apache_getenv('DATABASE_URL') : 'N/A',
+]);
+echo "</pre>";
+
 $database_url = $_ENV['DATABASE_URL'] 
              ?? $_SERVER['DATABASE_URL'] 
-             ?? getenv('DATABASE_URL');
+             ?? getenv('DATABASE_URL')
+             ?? apache_getenv('DATABASE_URL') 
+             ?? null;
 
 if (empty($database_url)) {
-    die("Eroare: Variabila DATABASE_URL nu este setată!");
+    die("❌ Variabila DATABASE_URL nu este setată pe Render. Verifică Environment Variables!");
 }
 
 try {
@@ -34,10 +46,9 @@ try {
     $pdo->exec("SET NAMES 'utf8mb4';");
     $pdo->exec("SET search_path TO public;");
 
-} catch (PDOException $e) {
-    error_log("EROARE CONEXIUNE BD: " . $e->getMessage());
-    die("Eroare la conectarea la baza de date:<br>" . 
-        htmlspecialchars($e->getMessage()));
-}
+    echo "<p style='color:green;'>Conexiune la baza de date reușită!</p>";
 
+} catch (PDOException $e) {
+    die("Eroare conexiune BD: " . htmlspecialchars($e->getMessage()));
+}
 ?>

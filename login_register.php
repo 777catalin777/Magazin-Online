@@ -11,12 +11,12 @@ $success = "";
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
     
-    $username = trim($_POST['username'] ?? '');
+    $name = trim($_POST['name'] ?? '');
     $email    = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
     $confirm  = $_POST['confirm_password'] ?? '';
 
-    if (empty($username) || empty($email) || empty($password)) {
+    if (empty($name) || empty($email) || empty($password)) {
         $errors[] = "Toate câmpurile sunt obligatorii!";
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors[] = "Adresa de email nu este validă!";
@@ -37,8 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['register'])) {
             } else {
                 $hashed_password = password_hash($password, PASSWORD_DEFAULT);
                 
-                $stmt = $pdo->prepare("INSERT INTO users (username, email, password) VALUES (?, ?, ?)");
-                $stmt->execute([$username, $email, $hashed_password]);
+                $stmt = $pdo->prepare("INSERT INTO users (name, email, password) VALUES (?, ?, ?)");
+                $stmt->execute([$name, $email, $hashed_password]);
                 
                 $success = "Contul a fost creat cu succes! Te poți autentifica acum.";
             }
@@ -57,14 +57,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
         $errors[] = "Email și parola sunt obligatorii!";
     } else {
         try {
-            $stmt = $pdo->prepare("SELECT id, username, password FROM users WHERE email = ?");
+            $stmt = $pdo->prepare("SELECT id, name, password FROM users WHERE email = ?");
             $stmt->execute([$email]);
             $user = $stmt->fetch();
 
             if ($user && password_verify($password, $user['password'])) {
                 session_start();
                 $_SESSION['user_id'] = $user['id'];
-                $_SESSION['username'] = $user['username'];
+                $_SESSION['name'] = $user['name'];
                 
                 header("Location: index.php");
                 exit;
@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Autentificare - <?= $site_name ?></title>
+    <title>Autentificare - <?= $site_name ?? 'Magazin' ?></title>
     <style>
         body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
         .container { max-width: 400px; margin: 50px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login'])) {
 
     <h3>Creare cont nou</h3>
     <form method="POST">
-        <input type="text" name="username" placeholder="Nume utilizator" required>
+        <input type="text" name="name" placeholder="Nume complet" required>
         <input type="email" name="email" placeholder="Email" required>
         <input type="password" name="password" placeholder="Parolă" required>
         <input type="password" name="confirm_password" placeholder="Confirmă parola" required>

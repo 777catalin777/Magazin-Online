@@ -3,7 +3,7 @@ require_once 'config.php';
 require_once 'language_switcher.php'; 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // LOGIN
+
     if (isset($_POST['login'])) {
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
@@ -12,13 +12,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['login_error'] = "Email și parola sunt obligatorii!";
         } else {
             try {
-                $stmt = $pdo->prepare("SELECT id, username, email, password, role FROM users WHERE email = ?");
+                $stmt = $pdo->prepare("SELECT id, name, email, password, role FROM users WHERE email = ?");
                 $stmt->execute([$email]);
                 $user = $stmt->fetch();
                 
                 if ($user && password_verify($password, $user['password'])) {
                     $_SESSION['user_id'] = $user['id'];
-                    $_SESSION['name'] = $user['username'];
+                    $_SESSION['name'] = $user['name'];
                     $_SESSION['email'] = $user['email'];
                     $_SESSION['role'] = $user['role'];
                     
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['register_error'] = "Există deja un cont cu acest email!";
                 } else {
                     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-                    $stmt = $pdo->prepare("INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, 'user')");
+                    $stmt = $pdo->prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, 'user')");
                     $stmt->execute([$name, $email, $hashed_password]);
                     
                     $_SESSION['register_success'] = "Cont creat cu succes! Te poți autentifica.";

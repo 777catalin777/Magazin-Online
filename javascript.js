@@ -45,11 +45,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function getProductName(key) {
-        
         if (window.productNames && window.productNames[key]) {
             return window.productNames[key];
         }
-        
         const button = document.querySelector(`.buy-button[data-key="${key}"]`);
         if (button) {
             const product = button.closest(".product");
@@ -60,7 +58,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
         }
-        
         const fallbackNames = {
             "name_product_1": "Tricou Nike Premium",
             "name_product_2": "Tricou Polo",
@@ -75,22 +72,18 @@ document.addEventListener("DOMContentLoaded", function () {
             "name_product_11": "Nike V2K Run",
             "name_product_12": "Adidas Samba"
         };
-        
         return fallbackNames[key] || "Produs";
     }
 
     function showNotification(message) {
-
         const existingNotification = document.querySelector(".notification");
         if (existingNotification) {
             existingNotification.remove();
         }
-        
         const notification = document.createElement("div");
         notification.className = "notification";
         notification.textContent = message;
         document.body.appendChild(notification);
-        
         setTimeout(() => notification.classList.add("show"), 10);
         setTimeout(() => {
             notification.classList.remove("show");

@@ -171,168 +171,301 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
         }
 
         body {
-            background: #f4f7fc;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 1rem;
+            background: linear-gradient(135deg, #f5f7fc 0%, #e9eef5 100%);
+            font-family: 'Segoe UI', 'Poppins', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 0;
+            min-height: 100vh;
         }
 
-        .profile-container {
-            max-width: 1280px;
-            margin: 1rem auto;
+        /* Modern navbar */
+        .profile-navbar {
+            background: linear-gradient(135deg, #2c3e66, #1a2a44);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-area h2 {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .logo-area h2 i {
+            margin-right: 8px;
+            color: #ffd966;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 40px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(5px);
+        }
+
+        .nav-btn:hover {
+            background: #6e8efb;
+            transform: translateY(-2px);
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        /* Profile grid */
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 2rem;
+        }
+
+        /* Sidebar card */
+        .profile-sidebar-card {
             background: white;
-            border-radius: 28px;
+            border-radius: 32px;
             box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.15);
             overflow: hidden;
-            display: grid;
-            grid-template-columns: 1fr;
-            transition: all 0.2s ease;
+            transition: transform 0.3s ease;
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
         }
 
-        .profile-sidebar {
-            background: linear-gradient(135deg, #2c3e66, #1a2a44);
-            color: white;
+        .profile-sidebar-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .sidebar-header {
+            background: linear-gradient(135deg, #428ed6, #2c6ea0);
             padding: 2rem 1.5rem;
             text-align: center;
+            color: white;
         }
 
-        .avatar {
+        .avatar-circle {
             width: 110px;
             height: 110px;
             background: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
-            margin: 0 auto 1.2rem;
+            margin: 0 auto 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3.4rem;
+            font-size: 3.5rem;
             backdrop-filter: blur(4px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-            transition: transform 0.2s;
+            border: 3px solid rgba(255, 255, 255, 0.5);
         }
 
-        .profile-sidebar h2 {
-            font-size: 1.6rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            word-break: break-word;
+        .sidebar-header h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.25rem;
         }
 
-        .profile-sidebar p {
-            opacity: 0.85;
-            font-size: 0.95rem;
-            margin-bottom: 0.3rem;
-            word-break: break-word;
+        .sidebar-header p {
+            opacity: 0.9;
+            font-size: 0.85rem;
         }
 
-        .profile-sidebar .btn-sidebar {
-            margin-top: 1.8rem;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 0.8rem;
-            font-weight: 600;
-            transition: all 0.2s;
+        .sidebar-body {
+            padding: 1.5rem;
         }
 
-        .profile-sidebar .btn-sidebar:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .btn-danger-sidebar {
-            background: rgba(220, 53, 69, 0.85);
-            border: none;
-        }
-
-        .btn-danger-sidebar:hover {
-            background: #dc3545;
-        }
-
-        .profile-main {
-            padding: 2rem 1.8rem;
-            background: #ffffff;
-        }
-
-        .profile-main h1 {
-            font-size: 1.9rem;
-            margin-bottom: 1.2rem;
-            font-weight: 600;
-            color: #1e2a3a;
-            border-left: 5px solid #428ed6;
-            padding-left: 1rem;
-        }
-
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            padding: 12px 18px;
-            border-radius: 14px;
-            margin-bottom: 1.8rem;
-            border-left: 5px solid #28a745;
-            font-weight: 500;
-        }
-
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            padding: 12px 18px;
-            border-radius: 14px;
-            margin-bottom: 1.8rem;
-            border-left: 5px solid #dc3545;
-            font-weight: 500;
-        }
-
-        .nav-tabs {
+        .info-row {
             display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid #e0e7ed;
-            padding-bottom: 0.5rem;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 0;
+            border-bottom: 1px solid #eef2f6;
         }
 
-        .tab {
-            padding: 0.7rem 1.5rem;
-            cursor: pointer;
-            border-radius: 40px;
+        .info-row i {
+            width: 28px;
+            font-size: 1.3rem;
+            color: #428ed6;
+        }
+
+        .info-row .info-label {
             font-weight: 600;
             color: #4a5b6e;
-            transition: all 0.2s;
-            background: #f1f5f9;
-            margin-bottom: 0.3rem;
+            width: 80px;
         }
 
-        .tab.active {
-            background: #428ed6;
-            color: white;
-            box-shadow: 0 5px 12px rgba(66, 142, 214, 0.3);
-        }
-
-        .tab:hover:not(.active) {
-            background: #e2e8f0;
+        .info-row .info-value {
             color: #1e2a3a;
+            word-break: break-word;
+            flex: 1;
         }
 
-        .info-card {
+        .sidebar-actions {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-sidebar-action {
+            background: #f1f5f9;
+            border: none;
+            padding: 12px;
+            border-radius: 28px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: #2c3e66;
+            text-decoration: none;
+        }
+
+        .btn-sidebar-action:hover {
+            background: #e2e8f0;
+            transform: translateX(5px);
+        }
+
+        .btn-logout {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .btn-logout:hover {
+            background: #fecaca;
+        }
+
+        /* Main content */
+        .profile-content {
+            background: white;
+            border-radius: 32px;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .content-header {
+            padding: 1.8rem 2rem;
+            background: #fafcff;
+            border-bottom: 1px solid #eef2f6;
+        }
+
+        .content-header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #2c3e66, #428ed6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.25rem;
+        }
+
+        .content-header p {
+            color: #6c7a8e;
+        }
+
+        /* Tabs */
+        .profile-tabs {
+            display: flex;
+            gap: 0.5rem;
+            padding: 0 2rem;
+            border-bottom: 1px solid #eef2f6;
+            background: white;
+        }
+
+        .tab-btn {
+            padding: 1rem 1.8rem;
+            background: none;
+            border: none;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #6c7a8e;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn i {
+            font-size: 1.2rem;
+        }
+
+        .tab-btn.active {
+            color: #428ed6;
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #428ed6, #6e8efb);
+            border-radius: 3px 3px 0 0;
+        }
+
+        .tab-btn:hover:not(.active) {
+            color: #2c3e66;
+            background: #f8fafd;
+        }
+
+        .tab-pane {
+            display: none;
+            padding: 2rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-pane.active-pane {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Form styling */
+        .form-card {
             background: #f9fbfd;
-            padding: 1.8rem;
             border-radius: 24px;
+            padding: 1.8rem;
             margin-bottom: 2rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
             border: 1px solid #eef2f6;
         }
 
-        .section-title {
-            font-size: 1.5rem;
+        .form-title {
+            font-size: 1.3rem;
             font-weight: 600;
-            margin-bottom: 1.4rem;
+            margin-bottom: 1.5rem;
             color: #1e2a3a;
-            position: relative;
-            display: inline-block;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .form-group {
-            margin-bottom: 1.4rem;
+            margin-bottom: 1.5rem;
         }
 
         .form-group label {
@@ -340,11 +473,10 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
             margin-bottom: 0.5rem;
             font-weight: 600;
             color: #2c3e50;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
         }
 
-        .form-group input,
-        .form-group select {
+        .form-group input {
             width: 100%;
             padding: 0.9rem 1rem;
             border: 1px solid #cbd5e1;
@@ -365,7 +497,7 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
             cursor: not-allowed;
         }
 
-        .btn {
+        .btn-primary {
             background: linear-gradient(135deg, #428ed6, #2c6ea0);
             color: white;
             padding: 0.9rem 2rem;
@@ -375,22 +507,62 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
             font-weight: 700;
             font-size: 1rem;
             transition: all 0.25s;
-            display: inline-block;
-            width: auto;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .btn:hover {
+        .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(66, 142, 214, 0.3);
-            background: linear-gradient(135deg, #2c6ea0, #1e4e76);
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            padding: 14px 20px;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            border-left: 5px solid #28a745;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 14px 20px;
+            border-radius: 20px;
+            margin-bottom: 1.5rem;
+            border-left: 5px solid #dc3545;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .empty-orders {
+            text-align: center;
+            padding: 3rem;
+            background: #f9fbfd;
+            border-radius: 24px;
+            color: #6c7a8e;
+        }
+
+        .empty-orders i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
         }
 
         .pref-checkbox {
             display: flex;
             align-items: center;
-            gap: 0.7rem;
+            gap: 12px;
             margin-bottom: 1rem;
+            padding: 10px 0;
         }
 
         .pref-checkbox input {
@@ -399,154 +571,129 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
             accent-color: #428ed6;
         }
 
-        @media (min-width: 900px) {
-            .profile-container {
-                grid-template-columns: 320px 1fr;
+        @media (max-width: 900px) {
+            .profile-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
             }
-            .profile-sidebar {
-                border-radius: 28px 0 0 28px;
+            .profile-sidebar-card {
+                position: static;
             }
-            .profile-main {
-                padding: 2rem 2.2rem;
+            .profile-tabs {
+                overflow-x: auto;
+                padding: 0 1rem;
             }
-        }
-
-        @media (max-width: 899px) {
-            body {
-                padding: 0.5rem;
+            .tab-btn {
+                padding: 0.8rem 1.2rem;
+                white-space: nowrap;
             }
-            .profile-container {
-                border-radius: 24px;
-            }
-            .profile-sidebar {
-                padding: 1.8rem 1rem;
-            }
-            .avatar {
-                width: 90px;
-                height: 90px;
-                font-size: 2.8rem;
-            }
-            .profile-sidebar h2 {
-                font-size: 1.4rem;
-            }
-            .profile-main {
+            .tab-pane {
                 padding: 1.5rem;
-            }
-            .profile-main h1 {
-                font-size: 1.7rem;
-            }
-            .section-title {
-                font-size: 1.3rem;
             }
         }
 
         @media (max-width: 640px) {
-            .nav-tabs {
-                justify-content: center;
-                gap: 0.4rem;
+            .profile-navbar {
+                flex-direction: column;
+                text-align: center;
+                padding: 1rem;
             }
-            .tab {
-                padding: 0.5rem 1rem;
-                font-size: 0.9rem;
+            .main-container {
+                padding: 0 1rem;
+                margin: 1rem auto;
             }
-            .info-card {
+            .form-card {
                 padding: 1.2rem;
             }
-            .btn {
+            .btn-primary {
                 width: 100%;
-                text-align: center;
-                padding: 0.8rem;
-            }
-            .form-group input {
-                padding: 0.8rem;
-            }
-            .profile-sidebar .btn-sidebar {
-                padding: 0.7rem;
-                font-size: 0.9rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .profile-main h1 {
-                font-size: 1.5rem;
-                margin-bottom: 1rem;
-            }
-            .section-title {
-                font-size: 1.2rem;
-            }
-            .avatar {
-                width: 75px;
-                height: 75px;
-                font-size: 2.4rem;
-            }
-            .tab {
-                padding: 0.45rem 0.9rem;
-                font-size: 0.85rem;
-            }
-            .alert-success, .alert-error {
-                padding: 10px 12px;
-                font-size: 0.9rem;
-            }
-        }
-
-        @media (max-width: 380px) {
-            .profile-main {
-                padding: 1rem;
-            }
-            .tab {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.8rem;
-            }
-            .info-card {
-                padding: 1rem;
-            }
-            .form-group input {
-                font-size: 0.9rem;
+                justify-content: center;
             }
         }
     </style>
 </head>
 <body>
-    <div class="profile-container">
 
-        <div class="profile-sidebar">
-            <div class="avatar">
-                👤
+<div class="profile-navbar">
+    <div class="logo-area">
+        <h2><i class='bx bxs-store'></i> Maison Lure</h2>
+    </div>
+    <div class="nav-links">
+        <a href="index.php" class="nav-btn"><i class='bx bx-shopping-bag'></i> Magazin</a>
+        <a href="logout.php" class="nav-btn" style="background: rgba(220,53,69,0.8);"><i class='bx bx-log-out'></i> Deconectare</a>
+    </div>
+</div>
+
+<div class="main-container">
+    <div class="profile-grid">
+        <aside class="profile-sidebar-card">
+            <div class="sidebar-header">
+                <div class="avatar-circle">
+                    <i class='bx bxs-user-circle'></i>
+                </div>
+                <h3><?= htmlspecialchars($_SESSION['name'] ?? 'Utilizator') ?></h3>
+                <p><?= htmlspecialchars($_SESSION['email']) ?></p>
+                <span style="display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; margin-top: 8px;">
+                    <?= htmlspecialchars($_SESSION['role'] ?? 'user') ?>
+                </span>
             </div>
-            <h2><?= htmlspecialchars($_SESSION['name'] ?? 'Utilizator') ?></h2>
-            <p><?= htmlspecialchars($_SESSION['email']) ?></p>
-            <p style="margin-top: 0.5rem; font-size: 0.85rem; opacity: 0.8;">
-                Rol: <?= htmlspecialchars($_SESSION['role'] ?? 'user') ?>
-            </p>
-            
-            <button onclick="window.location.href='logout.php'" class="btn btn-sidebar btn-danger-sidebar" style="margin-top: 2rem;">
-                <?= htmlspecialchars(lang('logout') ?? 'Deconectare') ?>
-            </button>
-            <button onclick="window.location.href='index.php'" class="btn btn-sidebar" style="margin-top: 0.8rem;">
-                ← Înapoi la magazin
-            </button>
-        </div>
+            <div class="sidebar-body">
+                <div class="info-row">
+                    <i class='bx bx-phone'></i>
+                    <span class="info-label">Telefon:</span>
+                    <span class="info-value"><?= htmlspecialchars($_SESSION['phone'] ?? 'Neintrodus') ?></span>
+                </div>
+                <div class="info-row">
+                    <i class='bx bx-map'></i>
+                    <span class="info-label">Adresă:</span>
+                    <span class="info-value"><?= htmlspecialchars($_SESSION['address'] ?? 'Neintrodusă') ?></span>
+                </div>
+                <div class="sidebar-actions">
+                    <button onclick="document.querySelector('.tab-btn:nth-child(1)').click();" class="btn-sidebar-action">
+                        <i class='bx bx-edit-alt'></i> Editează profil
+                    </button>
+                    <button onclick="document.querySelector('.tab-btn:nth-child(2)').click();" class="btn-sidebar-action">
+                        <i class='bx bx-package'></i> Istoric comenzi
+                    </button>
+                    <button onclick="document.querySelector('.tab-btn:nth-child(3)').click();" class="btn-sidebar-action">
+                        <i class='bx bx-lock-alt'></i> Setări cont
+                    </button>
+                    <a href="logout.php" class="btn-sidebar-action btn-logout">
+                        <i class='bx bx-log-out-circle'></i> Deconectare
+                    </a>
+                </div>
+            </div>
+        </aside>
 
-        <div class="profile-main">
-            <h1>Profilul Meu</h1>
-            
+        <div class="profile-content">
+            <div class="content-header">
+                <h1><i class='bx bx-user'></i> Contul meu</h1>
+                <p>Gestionează-ți datele personale, parole și preferințe</p>
+            </div>
+
             <?php if ($success): ?>
-                <div class="alert-success"><?= htmlspecialchars($success) ?></div>
+                <div class="alert-success" style="margin: 1rem 2rem 0 2rem;">
+                    <i class='bx bx-check-circle'></i> <?= htmlspecialchars($success) ?>
+                </div>
             <?php endif; ?>
             
             <?php if ($error): ?>
-                <div class="alert-error"><?= htmlspecialchars($error) ?></div>
+                <div class="alert-error" style="margin: 1rem 2rem 0 2rem;">
+                    <i class='bx bx-error-circle'></i> <?= htmlspecialchars($error) ?>
+                </div>
             <?php endif; ?>
 
-            <div class="nav-tabs">
-                <div class="tab active" onclick="showTab(0)">Informații Personale</div>
-                <div class="tab" onclick="showTab(1)">Comenzi</div>
-                <div class="tab" onclick="showTab(2)">Setări Cont</div>
+            <div class="profile-tabs">
+                <button class="tab-btn active" data-tab="tab1"><i class='bx bx-user'></i> Informații personale</button>
+                <button class="tab-btn" data-tab="tab2"><i class='bx bx-receipt'></i> Comenzile mele</button>
+                <button class="tab-btn" data-tab="tab3"><i class='bx bx-shield-quarter'></i> Securitate & Preferințe</button>
             </div>
 
-            <div id="tab0" class="tab-content">
-                <div class="info-card">
-                    <h3 class="section-title">Date Personale</h3>
+            <div id="tab1" class="tab-pane active-pane">
+                <div class="form-card">
+                    <div class="form-title">
+                        <i class='bx bx-id-card'></i> Date personale
+                    </div>
                     <form method="POST">
                         <input type="hidden" name="update_profile" value="1">
                         <div class="form-group">
@@ -554,38 +701,39 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                             <input type="text" name="name" value="<?= htmlspecialchars($_SESSION['name'] ?? '') ?>" required>
                         </div>
                         <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" value="<?= htmlspecialchars($_SESSION['email']) ?>" readonly disabled>
+                            <label>Adresă email</label>
+                            <input type="email" value="<?= htmlspecialchars($_SESSION['email']) ?>" disabled>
+                            <small style="color:#6c7a8e;">Emailul nu poate fi modificat</small>
                         </div>
                         <div class="form-group">
-                            <label>Telefon</label>
-                            <input type="tel" name="phone" placeholder="Introduceți numărul de telefon" value="<?= htmlspecialchars($_SESSION['phone'] ?? '') ?>">
+                            <label>Număr de telefon</label>
+                            <input type="tel" name="phone" placeholder="+373 6X XXX XXX" value="<?= htmlspecialchars($_SESSION['phone'] ?? '') ?>">
                         </div>
                         <div class="form-group">
-                            <label>Adresă</label>
-                            <input type="text" name="address" placeholder="Strada, număr, bloc..." value="<?= htmlspecialchars($_SESSION['address'] ?? '') ?>">
+                            <label>Adresă de livrare</label>
+                            <input type="text" name="address" placeholder="Strada, numărul, orașul" value="<?= htmlspecialchars($_SESSION['address'] ?? '') ?>">
                         </div>
-                        <button type="submit" class="btn">Salvează Modificările</button>
+                        <button type="submit" class="btn-primary"><i class='bx bx-save'></i> Salvează modificările</button>
                     </form>
                 </div>
             </div>
 
-            <div id="tab1" class="tab-content" style="display: none;">
-                <div class="info-card">
-                    <h3 class="section-title">Istoric Comenzi</h3>
-                    <p style="color: #4a627a; font-style: italic;">Momentan nu aveți comenzi.</p>
-                    <p style="margin-top: 1.2rem;">
-                        <strong>0</strong> comenzi totale • Total cheltuit: <strong>0 lei</strong>
-                    </p>
-                    <button onclick="window.location.href='index.php'" class="btn" style="margin-top: 1.5rem;">
-                        Continuă cumpărăturile
-                    </button>
+            <div id="tab2" class="tab-pane">
+                <div class="empty-orders">
+                    <i class='bx bx-package'></i>
+                    <h3>Nu ai plasat nicio comandă încă</h3>
+                    <p>Descoperă produsele noastre și bucură-te de shopping!</p>
+                    <a href="index.php" class="btn-primary" style="display: inline-flex; margin-top: 1rem; text-decoration: none;">
+                        <i class='bx bx-cart-add'></i> Începe cumpărăturile
+                    </a>
                 </div>
             </div>
 
-            <div id="tab2" class="tab-content" style="display: none;">
-                <div class="info-card">
-                    <h3 class="section-title">Schimbă Parola</h3>
+            <div id="tab3" class="tab-pane">
+                <div class="form-card">
+                    <div class="form-title">
+                        <i class='bx bx-key'></i> Schimbă parola
+                    </div>
                     <form method="POST">
                         <input type="hidden" name="change_password" value="1">
                         <div class="form-group">
@@ -595,43 +743,48 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                         <div class="form-group">
                             <label>Parola nouă</label>
                             <input type="password" name="new_password" required autocomplete="new-password">
+                            <small>Minim 6 caractere</small>
                         </div>
                         <div class="form-group">
                             <label>Confirmă parola nouă</label>
                             <input type="password" name="confirm_password" required>
                         </div>
-                        <button type="submit" class="btn">Schimbă Parola</button>
+                        <button type="submit" class="btn-primary"><i class='bx bx-lock-open'></i> Actualizează parola</button>
                     </form>
-                    
-                    <h3 class="section-title" style="margin-top: 2rem;">Preferințe</h3>
+                </div>
+
+                <div class="form-card">
+                    <div class="form-title">
+                        <i class='bx bx-bell'></i> Preferințe notificări
+                    </div>
                     <div class="pref-checkbox">
                         <input type="checkbox" checked id="notif_email"> 
-                        <label for="notif_email">Primește notificări prin email</label>
+                        <label for="notif_email"><strong>Notificări prin email</strong> - Oferte și actualizări comenzi</label>
                     </div>
                     <div class="pref-checkbox">
                         <input type="checkbox" checked id="newsletter"> 
-                        <label for="newsletter">Newsletter cu noutăți și promoții</label>
+                        <label for="newsletter"><strong>Newsletter săptămânal</strong> - Noutăți și promoții exclusive</label>
                     </div>
+                    <button class="btn-primary" onclick="alert('Preferințele au fost salvate (demo)');"><i class='bx bx-check-double'></i> Salvează preferințele</button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
-        function showTab(n) {
+<script>
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const tabId = this.getAttribute('data-tab');
+            
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active-pane'));
+            document.getElementById(tabId).classList.add('active-pane');
+        });
+    });
+</script>
 
-            document.querySelectorAll('.tab-content').forEach((el, i) => {
-                el.style.display = i === n ? 'block' : 'none';
-            });
-
-            document.querySelectorAll('.tab').forEach((el, i) => {
-                if (i === n) {
-                    el.classList.add('active');
-                } else {
-                    el.classList.remove('active');
-                }
-            });
-        }
-    </script>
 </body>
 </html>

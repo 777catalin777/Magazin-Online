@@ -112,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <i class="bx bxs-user"></i> <?= htmlspecialchars($_SESSION['name']) ?>
                 </a>
             <?php else: ?>
-                <a href="login.php" class="login-button"><i class="bx bxs-user"></i> <?= htmlspecialchars(lang('login')) ?></a>
+                <a href="login.php" target="_blank" class="login-button"><i class="bx bxs-user"></i> <?= htmlspecialchars(lang('login')) ?></a>
             <?php endif; ?>
 
             <div class="cart-container">

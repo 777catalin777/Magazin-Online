@@ -411,6 +411,8 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
         }
 
         .orders-empty i {
+            display: flex;
+            justify-content: center;
             font-size: 3rem;
             color: #cbd5e0;
             margin-bottom: 1rem;

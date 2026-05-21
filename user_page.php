@@ -237,8 +237,9 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
 
         .dashboard-grid {
             display: grid;
-            grid-template-columns: 1fr 1.5fr;
+            grid-template-columns: repeat(3, 1fr);
             gap: 2rem;
+            margin-bottom: 2rem;
         }
 
         .card {
@@ -247,6 +248,8 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
             padding: 2rem;
             box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
         }
 
         .card:hover {
@@ -270,7 +273,6 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
             color: #667eea;
         }
 
-        /* Profile info */
         .profile-avatar {
             display: flex;
             justify-content: center;
@@ -400,7 +402,12 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
             padding: 2rem;
             background: #f7fafc;
             border-radius: 1rem;
-            margin-top: 2rem;
+            margin-top: 1rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         .orders-empty i {
@@ -415,6 +422,10 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
             margin-bottom: 0.5rem;
         }
 
+        .orders-empty p {
+            color: #718096;
+        }
+
         .btn-link {
             display: inline-block;
             margin-top: 1rem;
@@ -424,16 +435,25 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
         }
 
         .full-width {
-            grid-column: span 2;
+            grid-column: span 3;
         }
 
-        @media (max-width: 968px) {
+        @media (max-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+            }
+            .full-width {
+                grid-column: span 2;
+            }
+        }
+
+        @media (max-width: 768px) {
             body {
                 padding: 1rem;
             }
             .dashboard-grid {
                 grid-template-columns: 1fr;
-                gap: 1.5rem;
             }
             .full-width {
                 grid-column: span 1;
@@ -451,7 +471,7 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
     <div class="dashboard-header">
         <div class="logo">
             <i class='bx bxs-store-alt'></i>
-            <span>MAISON LURE</span>
+            <span>Maison Lure</span>
         </div>
         <div class="header-actions">
             <a href="index.php" class="btn-outline-light"><i class='bx bx-shopping-bag'></i> Magazin</a>
@@ -471,6 +491,7 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
     <?php endif; ?>
 
     <div class="dashboard-grid">
+
         <div class="card">
             <div class="card-title">
                 <i class='bx bx-user-circle'></i>
@@ -497,10 +518,6 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                 <div class="info-label">Adresă</div>
                 <div class="info-value"><?= htmlspecialchars($_SESSION['address'] ?? 'Nesetată') ?></div>
             </div>
-            <div class="info-row">
-                <div class="info-label">Rol</div>
-                <div class="info-value"><span class="role-badge"><?= htmlspecialchars($_SESSION['role'] ?? 'user') ?></span></div>
-            </div>
         </div>
 
         <div class="card">
@@ -508,7 +525,7 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                 <i class='bx bx-edit-alt'></i>
                 <span>Actualizează datele</span>
             </div>
-            <form method="POST">
+            <form method="POST" style="flex: 1; display: flex; flex-direction: column;">
                 <input type="hidden" name="update_profile" value="1">
                 <div class="input-box">
                     <i class='bx bx-user'></i>
@@ -526,30 +543,7 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
             </form>
         </div>
 
-        <div class="card full-width">
-            <div class="card-title">
-                <i class='bx bx-lock-alt'></i>
-                <span>Schimbă parola</span>
-            </div>
-            <form method="POST">
-                <input type="hidden" name="change_password" value="1">
-                <div class="input-box">
-                    <i class='bx bx-key'></i>
-                    <input type="password" name="current_password" placeholder="Parola curentă" required>
-                </div>
-                <div class="input-box">
-                    <i class='bx bx-lock'></i>
-                    <input type="password" name="new_password" placeholder="Parola nouă" required>
-                </div>
-                <div class="input-box">
-                    <i class='bx bx-check-shield'></i>
-                    <input type="password" name="confirm_password" placeholder="Confirmă parola nouă" required>
-                </div>
-                <button type="submit" class="btn-primary"><i class='bx bx-refresh'></i> Resetează parola</button>
-            </form>
-        </div>
-
-        <div class="card full-width">
+        <div class="card">
             <div class="card-title">
                 <i class='bx bx-purchase-tag'></i>
                 <span>Comenzile mele</span>
@@ -561,6 +555,29 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                 <a href="index.php" class="btn-link"><i class='bx bx-cart'></i> Explorează magazinul</a>
             </div>
         </div>
+    </div>
+
+    <div class="card full-width">
+        <div class="card-title">
+            <i class='bx bx-lock-alt'></i>
+            <span>Schimbă parola</span>
+        </div>
+        <form method="POST">
+            <input type="hidden" name="change_password" value="1">
+            <div class="input-box">
+                <i class='bx bx-key'></i>
+                <input type="password" name="current_password" placeholder="Parola curentă" required>
+            </div>
+            <div class="input-box">
+                <i class='bx bx-lock'></i>
+                <input type="password" name="new_password" placeholder="Parola nouă" required>
+            </div>
+            <div class="input-box">
+                <i class='bx bx-check-shield'></i>
+                <input type="password" name="confirm_password" placeholder="Confirmă parola nouă" required>
+            </div>
+            <button type="submit" class="btn-primary"><i class='bx bx-refresh'></i> Resetează parola</button>
+        </form>
     </div>
 </div>
 </body>

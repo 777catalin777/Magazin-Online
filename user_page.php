@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['login_error'] = "Email și parola sunt obligatorii!";
         } else {
             try {
-                $stmt = $pdo->prepare("SELECT id, name, email, password, role FROM users WHERE email = ?");
+                $stmt = $pdo->prepare("SELECT id, name, email, password, role, phone, address FROM users WHERE email = ?");
                 $stmt->execute([$email]);
                 $user = $stmt->fetch();
                 
@@ -21,6 +21,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['name'] = $user['name'];
                     $_SESSION['email'] = $user['email'];
                     $_SESSION['role'] = $user['role'];
+                    $_SESSION['phone'] = $user['phone'] ?? '';
+                    $_SESSION['address'] = $user['address'] ?? '';
                     
                     if ($user['role'] === 'admin') {
                         header("Location: admin_page.php");

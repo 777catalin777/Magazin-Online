@@ -305,3 +305,23 @@ body {
         text-align: center;
     }
 }
+
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.status-pending { background: #ffc107; color: #856404; }
+.status-processing { background: #17a2b8; color: white; }
+.status-shipped { background: #007bff; color: white; }
+.status-delivered { background: #28a745; color: white; }
+.status-cancelled { background: #dc3545; color: white; }
+
+.order-details .loading {
+    text-align: center;
+    color: #718096;
+    padding: 0.5rem;
+}

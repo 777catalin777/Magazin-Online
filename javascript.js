@@ -13,32 +13,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function t(key) {
         const translations = {
-            ro: { 
-                cart: "Coș de cumpărături", 
-                empty_cart: "Coșul tău este gol. Adaugă produse pentru a începe!", 
-                products: "Produse", 
-                total: "Total", 
-                clear_cart: "Golește Coșul", 
-                added_to_cart: "Produsul a fost adăugat în coș!", 
-                quantity: "Cantitate" 
+            ro: {
+                cart: "Coș de cumpărături",
+                empty_cart: "Coșul tău este gol. Adaugă produse pentru a începe!",
+                products: "Produse",
+                total: "Total",
+                clear_cart: "Golește Coșul",
+                added_to_cart: "Produsul a fost adăugat în coș!",
+                quantity: "Cantitate"
             },
-            en: { 
-                cart: "Shopping Cart", 
-                empty_cart: "Your cart is empty. Add products to get started!", 
-                products: "Products", 
-                total: "Total", 
-                clear_cart: "Clear Cart", 
-                added_to_cart: "Product added to cart!", 
-                quantity: "Quantity" 
+            en: {
+                cart: "Shopping Cart",
+                empty_cart: "Your cart is empty. Add products to get started!",
+                products: "Products",
+                total: "Total",
+                clear_cart: "Clear Cart",
+                added_to_cart: "Product added to cart!",
+                quantity: "Quantity"
             },
-            ru: { 
-                cart: "Корзина", 
-                empty_cart: "Ваша корзина пуста. Добавьте товары!", 
-                products: "Товары", 
-                total: "Итого", 
-                clear_cart: "Очистить корзину", 
-                added_to_cart: "Товар добавлен в корзину!", 
-                quantity: "Количество" 
+            ru: {
+                cart: "Корзина",
+                empty_cart: "Ваша корзина пуста. Добавьте товары!",
+                products: "Товары",
+                total: "Итого",
+                clear_cart: "Очистить корзину",
+                added_to_cart: "Товар добавлен в корзину!",
+                quantity: "Количество"
             }
         };
         return translations[window.currentLang]?.[key] || key;
@@ -179,24 +179,24 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     if (cartButton) {
-        cartButton.addEventListener("click", e => { 
-            e.stopPropagation(); 
-            if (cartContent) cartContent.classList.toggle("active"); 
+        cartButton.addEventListener("click", e => {
+            e.stopPropagation();
+            if (cartContent) cartContent.classList.toggle("active");
         });
     }
-    
+
     document.addEventListener("click", () => {
         if (cartContent) cartContent.classList.remove("active");
     });
-    
+
     if (cartContent) {
         cartContent.addEventListener("click", e => e.stopPropagation());
     }
 
     if (clearCartButton) {
-        clearCartButton.addEventListener("click", () => { 
-            cart = []; 
-            updateCart(); 
+        clearCartButton.addEventListener("click", () => {
+            cart = [];
+            updateCart();
             showNotification("Coșul a fost golit");
         });
     }
@@ -207,14 +207,14 @@ document.addEventListener("DOMContentLoaded", function () {
             const term = searchInput.value.toLowerCase().trim();
             const products = document.querySelectorAll('.product');
             let hasResults = false;
-            
+
             products.forEach(p => {
                 const name = p.querySelector('h1')?.textContent.toLowerCase() || '';
                 const isVisible = term === '' || name.includes(term);
                 p.style.display = isVisible ? 'flex' : 'none';
                 if (isVisible) hasResults = true;
             });
-            
+
             let noResultsMsg = document.querySelector('.no-results');
             if (!noResultsMsg && products.length > 0) {
                 noResultsMsg = document.createElement('div');

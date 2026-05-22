@@ -18,15 +18,9 @@ if (file_exists($langFile)) {
     $translations = json_decode(file_get_contents($langFile), true);
 }
 
-// $host     = "localhost";
-// $port     = "3306";
-// $username = "root";
-// $password = "";
-// $dbname   = "maisonlure";
-
-$host     = getenv('PGHOST') ?: 'dpg-d83pq1eq1p3s738amib0-a';
-$port     = getenv('PGPORT') ?: '5432';
-$dbname   = getenv('PGDATABASE') ?: 'maisonlure_db';
+$host = getenv('PGHOST') ?: 'dpg-d83pq1eq1p3s738amib0-a';
+$port = getenv('PGPORT') ?: '5432';
+$dbname = getenv('PGDATABASE') ?: 'maisonlure_db';
 $username = getenv('PGUSER') ?: 'maisonlure_db_user';
 $password = getenv('PGPASSWORD') ?: 'HgknhsihFQZHXXY2INwpSOwdephFHBJP';
 

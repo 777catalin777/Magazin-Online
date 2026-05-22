@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
     <titlu>Maison Lure Magazin de Îmbrăcăminte</titlu>
-    
+
     <header>
         <meniu>
             <element>Login</element>
@@ -9,7 +9,7 @@
         </meniu>
         <cautare>Caută produse...</cautare>
     </header>
-    
+
     <continut>
         <sectiune>
             <titlu>Produse Disponibile</titlu>
@@ -65,11 +65,12 @@
             </produs>
         </sectiune>
     </continut>
-    
+
     <footer>
         <sectiune>
             <titlu>Despre Maison Lure</titlu>
-            <paragraf>Mobile and Maison Lure apps, Gift vouchers, Black Friday, Maison Lure x Thrift+</paragraf>
+            <paragraf>Mobile and Maison Lure apps, Gift vouchers, Black Friday, Maison Lure x
+                Thrift+</paragraf>
         </sectiune>
         <sectiune>
             <titlu>Shopping from</titlu>

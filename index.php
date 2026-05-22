@@ -1,13 +1,13 @@
-<?php 
-require_once 'config.php'; 
-require_once 'language_switcher.php'; 
+<?php
+require_once 'config.php';
+require_once 'language_switcher.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (isset($_POST['login'])) {
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
-        
+
         if (empty($email) || empty($password)) {
             $_SESSION['login_error'] = "Email și parola sunt obligatorii!";
         } else {
@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $pdo->prepare("SELECT id, name, email, password, role, phone, address FROM users WHERE email = ?");
                 $stmt->execute([$email]);
                 $user = $stmt->fetch();
-                
+
                 if ($user && password_verify($password, $user['password'])) {
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['name'] = $user['name'];
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['role'] = $user['role'];
                     $_SESSION['phone'] = $user['phone'] ?? '';
                     $_SESSION['address'] = $user['address'] ?? '';
-                    
+
                     if ($user['role'] === 'admin') {
                         header("Location: admin_page.php");
                     } else {
@@ -42,13 +42,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: login.php");
         exit();
     }
-    
+
     if (isset($_POST['register'])) {
         $name = trim($_POST['name'] ?? '');
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
         $confirm = $_POST['confirm_password'] ?? '';
-        
+
         if (empty($name) || empty($email) || empty($password)) {
             $_SESSION['register_error'] = "Toate câmpurile sunt obligatorii!";
         } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -61,14 +61,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             try {
                 $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
                 $stmt->execute([$email]);
-                
+
                 if ($stmt->rowCount() > 0) {
                     $_SESSION['register_error'] = "Există deja un cont cu acest email!";
                 } else {
                     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
                     $stmt = $pdo->prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, 'user')");
                     $stmt->execute([$name, $email, $hashed_password]);
-                    
+
                     $_SESSION['register_success'] = "Cont creat cu succes! Te poți autentifica.";
                 }
             } catch (PDOException $e) {
@@ -84,6 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 ?>
 <!DOCTYPE html>
 <html lang="<?= htmlspecialchars($lang) ?>">
+
 <head>
     <meta charset="UTF-8">
     <meta name="author" content="Tintiuc Cătălin">
@@ -114,11 +115,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <i class="bx bxs-user"></i> <?= htmlspecialchars($_SESSION['name']) ?>
                 </a>
             <?php else: ?>
-                <a href="login.php" target="_blank" class="login-button"><i class="bx bxs-user"></i> <?= htmlspecialchars(lang('login')) ?></a>
+                <a href="login.php" target="_blank" class="login-button"><i class="bx bxs-user"></i>
+                    <?= htmlspecialchars(lang('login')) ?></a>
             <?php endif; ?>
 
             <div class="cart-container">
-                <button class="cart-button"><i class="bx bxs-cart"></i><span id="cart-count" class="hidden">0</span></button>
+                <button class="cart-button"><i class="bx bxs-cart"></i><span id="cart-count"
+                        class="hidden">0</span></button>
                 <div class="cart-content">
                     <h3><?= htmlspecialchars(lang('cart')) ?></h3>
                     <div id="cart-empty" class="cart-empty">
@@ -134,9 +137,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
             <div class="language-switcher">
-                <a href="?lang=ro" class="<?= $lang=='ro'?'active':'' ?>">RO</a>
-                <a href="?lang=en" class="<?= $lang=='en'?'active':'' ?>">EN</a>
-                <a href="?lang=ru" class="<?= $lang=='ru'?'active':'' ?>">RU</a>
+                <a href="?lang=ro" class="<?= $lang == 'ro' ? 'active' : '' ?>">RO</a>
+                <a href="?lang=en" class="<?= $lang == 'en' ? 'active' : '' ?>">EN</a>
+                <a href="?lang=ru" class="<?= $lang == 'ru' ? 'active' : '' ?>">RU</a>
             </div>
         </div>
     </header>
@@ -252,20 +255,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <script>
-    window.productNames = {
-        "name_product_1":  "<?= addslashes(lang('name_product_1')) ?>",
-        "name_product_2":  "<?= addslashes(lang('name_product_2')) ?>",
-        "name_product_3":  "<?= addslashes(lang('name_product_3')) ?>",
-        "name_product_4":  "<?= addslashes(lang('name_product_4')) ?>",
-        "name_product_5":  "<?= addslashes(lang('name_product_5')) ?>",
-        "name_product_6":  "<?= addslashes(lang('name_product_6')) ?>",
-        "name_product_7":  "<?= addslashes(lang('name_product_7')) ?>",
-        "name_product_8":  "<?= addslashes(lang('name_product_8')) ?>",
-        "name_product_9":  "<?= addslashes(lang('name_product_9')) ?>",
-        "name_product_10": "<?= addslashes(lang('name_product_10')) ?>",
-        "name_product_11": "<?= addslashes(lang('name_product_11')) ?>",
-        "name_product_12": "<?= addslashes(lang('name_product_12')) ?>"
-    };
+        window.productNames = {
+            "name_product_1": "<?= addslashes(lang('name_product_1')) ?>",
+            "name_product_2": "<?= addslashes(lang('name_product_2')) ?>",
+            "name_product_3": "<?= addslashes(lang('name_product_3')) ?>",
+            "name_product_4": "<?= addslashes(lang('name_product_4')) ?>",
+            "name_product_5": "<?= addslashes(lang('name_product_5')) ?>",
+            "name_product_6": "<?= addslashes(lang('name_product_6')) ?>",
+            "name_product_7": "<?= addslashes(lang('name_product_7')) ?>",
+            "name_product_8": "<?= addslashes(lang('name_product_8')) ?>",
+            "name_product_9": "<?= addslashes(lang('name_product_9')) ?>",
+            "name_product_10": "<?= addslashes(lang('name_product_10')) ?>",
+            "name_product_11": "<?= addslashes(lang('name_product_11')) ?>",
+            "name_product_12": "<?= addslashes(lang('name_product_12')) ?>"
+        };
     </script>
 
     <div id="chrome-footer">
@@ -273,16 +276,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="yoIGaVj">
                 <div class="zXWf5qx">
                     <ul class="SJ0iPNG" data-testid="social-links-bar">
-                        <li class="st34raq J8Sftp9"><a class="cYGKXSQ" href="#" target="_blank" rel="noopener noreferrer" data-testid="social-link"><span class="HURX2dz AQi6YMD"></span></a></li>
-                        <li class="st34raq mbXMayF"><a class="cYGKXSQ" href="#" target="_blank" rel="noopener noreferrer" data-testid="social-link"><span class="HURX2dz AQi6YMD"></span></a></li>
-                        <li class="st34raq CDRgBJC"><a class="cYGKXSQ" href="#" target="_blank" rel="noopener noreferrer" data-testid="social-link"><span class="HURX2dz AQi6YMD"></span></a></li>
+                        <li class="st34raq J8Sftp9"><a class="cYGKXSQ" href="#" target="_blank"
+                                rel="noopener noreferrer" data-testid="social-link"><span
+                                    class="HURX2dz AQi6YMD"></span></a></li>
+                        <li class="st34raq mbXMayF"><a class="cYGKXSQ" href="#" target="_blank"
+                                rel="noopener noreferrer" data-testid="social-link"><span
+                                    class="HURX2dz AQi6YMD"></span></a></li>
+                        <li class="st34raq CDRgBJC"><a class="cYGKXSQ" href="#" target="_blank"
+                                rel="noopener noreferrer" data-testid="social-link"><span
+                                    class="HURX2dz AQi6YMD"></span></a></li>
                     </ul>
                     <ul class="jvbvX2Y">
-                        <li class="CDnbQF2"><img src="https://images.asos-media.com/navigation/visa-png" alt="VISA"></li>
-                        <li class="CDnbQF2"><img src="https://images.asos-media.com/navigation/mastercard-png" alt="Mastercard"></li>
-                        <li class="CDnbQF2"><img src="https://images.asos-media.com/navigation/pay-pal-png" alt="PayPal"></li>
-                        <li class="CDnbQF2"><img src="https://images.asos-media.com/navigation/american-express-png" alt="American Express"></li>
-                        <li class="CDnbQF2"><img src="https://images.asos-media.com/navigation/visa-electron-png" alt="VISA Electron"></li>
+                        <li class="CDnbQF2"><img src="https://images.asos-media.com/navigation/visa-png" alt="VISA">
+                        </li>
+                        <li class="CDnbQF2"><img src="https://images.asos-media.com/navigation/mastercard-png"
+                                alt="Mastercard"></li>
+                        <li class="CDnbQF2"><img src="https://images.asos-media.com/navigation/pay-pal-png"
+                                alt="PayPal"></li>
+                        <li class="CDnbQF2"><img src="https://images.asos-media.com/navigation/american-express-png"
+                                alt="American Express"></li>
+                        <li class="CDnbQF2"><img src="https://images.asos-media.com/navigation/visa-electron-png"
+                                alt="VISA Electron"></li>
                     </ul>
                 </div>
                 <div class="pdPlC2x"></div>
@@ -301,8 +315,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <h3 class="eGtGJSX fVdHxMU">About Maison Lure</h3>
                             <ul>
                                 <li><a class="XWRSfDm fVdHxMU TYb4J9A" href="#">About us</a></li>
-                                <li><a class="XWRSfDm fVdHxMU TYb4J9A" href="#" target="_blank">Careers at Maison Lure</a></li>
-                                <li><a class="XWRSfDm fVdHxMU TYb4J9A" href="#" target="_blank">Corporate responsibility</a></li>
+                                <li><a class="XWRSfDm fVdHxMU TYb4J9A" href="#" target="_blank">Careers at Maison
+                                        Lure</a></li>
+                                <li><a class="XWRSfDm fVdHxMU TYb4J9A" href="#" target="_blank">Corporate
+                                        responsibility</a></li>
                                 <li><a class="XWRSfDm fVdHxMU TYb4J9A" href="#" target="_blank">Investors' site</a></li>
                             </ul>
                         </section>
@@ -312,31 +328,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <li><a class="XWRSfDm fVdHxMU TYb4J9A" href="#">Mobile and Maison Lure apps</a></li>
                                 <li><a class="XWRSfDm fVdHxMU TYb4J9A" href="#">Gift vouchers</a></li>
                                 <li><a class="XWRSfDm fVdHxMU TYb4J9A" href="#">Black Friday</a></li>
-                                <li><a class="XWRSfDm fVdHxMU TYb4J9A" href="#" target="_blank">Maison Lure x Thrift+</a></li>
+                                <li><a class="XWRSfDm fVdHxMU TYb4J9A" href="#" target="_blank">Maison Lure x
+                                        Thrift+</a></li>
                             </ul>
                         </section>
                         <div class="eLMg6Nh">
                             <h3 class="qljN_kD TNLlZ7K london3">Shopping from:</h3>
                             <div class="RxHz4Yh EGfsISy" data-testid="country-selector">
-                                <button class="breiRmE TYb4J9A" data-testid="country-selector-btn" type="button" aria-label="You're in Moldova, Republic of Change">
+                                <button class="breiRmE TYb4J9A" data-testid="country-selector-btn" type="button"
+                                    aria-label="You're in Moldova, Republic of Change">
                                     <span class="z6TXMJ2 fVdHxMU">You're in</span>
-                                    <img src="https://assets.asosservices.com/storesa/images/flags/md.png" alt="Moldova, Republic of" class="Oqkee2R">
-                                    <div class="DOXKUAb jFyrDfG"><span class="XKJ5IQs" aria-hidden="true"></span><span>Change</span></div>
+                                    <img src="https://assets.asosservices.com/storesa/images/flags/md.png"
+                                        alt="Moldova, Republic of" class="Oqkee2R">
+                                    <div class="DOXKUAb jFyrDfG"><span class="XKJ5IQs"
+                                            aria-hidden="true"></span><span>Change</span></div>
                                 </button>
                             </div>
                             <div class="KqOvkLQ">
                                 <h4 id="chrome-international-sites">Some of our international sites:</h4>
                                 <ul aria-labelledby="chrome-international-sites">
-                                    <li><a href="#"><img src="https://assets.asosservices.com/storesa/images/flags/es.png" alt="Spain" class="Oqkee2R"></a></li>
-                                    <li><a href="#"><img src="https://assets.asosservices.com/storesa/images/flags/de.png" alt="Germany" class="Oqkee2R"></a></li>
-                                    <li><a href="#"><img src="https://assets.asosservices.com/storesa/images/flags/au.png" alt="Australia" class="Oqkee2R"></a></li>
-                                    <li><a href="#"><img src="https://assets.asosservices.com/storesa/images/flags/fr.png" alt="France" class="Oqkee2R"></a></li>
-                                    <li><a href="#"><img src="https://assets.asosservices.com/storesa/images/flags/us.png" alt="United States" class="Oqkee2R"></a></li>
-                                    <li><a href="#"><img src="https://assets.asosservices.com/storesa/images/flags/dk.png" alt="Denmark" class="Oqkee2R"></a></li>
-                                    <li><a href="#"><img src="https://assets.asosservices.com/storesa/images/flags/it.png" alt="Italy" class="Oqkee2R"></a></li>
-                                    <li><a href="#"><img src="https://assets.asosservices.com/storesa/images/flags/nl.png" alt="Netherlands" class="Oqkee2R"></a></li>
-                                    <li><a href="#"><img src="https://assets.asosservices.com/storesa/images/flags/pl.png" alt="Poland" class="Oqkee2R"></a></li>
-                                    <li><a href="#"><img src="https://assets.asosservices.com/storesa/images/flags/se.png" alt="Sweden" class="Oqkee2R"></a></li>
+                                    <li><a href="#"><img
+                                                src="https://assets.asosservices.com/storesa/images/flags/es.png"
+                                                alt="Spain" class="Oqkee2R"></a></li>
+                                    <li><a href="#"><img
+                                                src="https://assets.asosservices.com/storesa/images/flags/de.png"
+                                                alt="Germany" class="Oqkee2R"></a></li>
+                                    <li><a href="#"><img
+                                                src="https://assets.asosservices.com/storesa/images/flags/au.png"
+                                                alt="Australia" class="Oqkee2R"></a></li>
+                                    <li><a href="#"><img
+                                                src="https://assets.asosservices.com/storesa/images/flags/fr.png"
+                                                alt="France" class="Oqkee2R"></a></li>
+                                    <li><a href="#"><img
+                                                src="https://assets.asosservices.com/storesa/images/flags/us.png"
+                                                alt="United States" class="Oqkee2R"></a></li>
+                                    <li><a href="#"><img
+                                                src="https://assets.asosservices.com/storesa/images/flags/dk.png"
+                                                alt="Denmark" class="Oqkee2R"></a></li>
+                                    <li><a href="#"><img
+                                                src="https://assets.asosservices.com/storesa/images/flags/it.png"
+                                                alt="Italy" class="Oqkee2R"></a></li>
+                                    <li><a href="#"><img
+                                                src="https://assets.asosservices.com/storesa/images/flags/nl.png"
+                                                alt="Netherlands" class="Oqkee2R"></a></li>
+                                    <li><a href="#"><img
+                                                src="https://assets.asosservices.com/storesa/images/flags/pl.png"
+                                                alt="Poland" class="Oqkee2R"></a></li>
+                                    <li><a href="#"><img
+                                                src="https://assets.asosservices.com/storesa/images/flags/se.png"
+                                                alt="Sweden" class="Oqkee2R"></a></li>
                                 </ul>
                             </div>
                         </div>

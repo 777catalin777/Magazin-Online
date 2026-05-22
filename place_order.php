@@ -43,17 +43,16 @@ try {
     $orderId = $pdo->lastInsertId();
 
     $stmtItem = $pdo->prepare("
-        INSERT INTO order_items (order_id, product_id, product_name, quantity, price)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO order_items (order_id, quantity, price, product_name)
+        VALUES (?, ?, ?, ?)
     ");
 
     foreach ($cart as $item) {
-        $productId = 0;
         $productName = $item['name'] ?? 'Produs';
         $quantity = intval($item['quantity'] ?? 1);
         $price = floatval($item['price'] ?? 0);
 
-        $stmtItem->execute([$orderId, $productId, $productName, $quantity, $price]);
+        $stmtItem->execute([$orderId, $quantity, $price, $productName]);
     }
 
     $pdo->commit();

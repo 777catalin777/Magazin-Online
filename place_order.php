@@ -30,11 +30,17 @@ foreach ($cart as $item) {
     $total += $price * $qty;
 }
 
+$customerName = $_SESSION['name'] ?? 'Client';
+$shippingAddress = $_SESSION['address'] ?? 'Adresă nespecificată';
+
 try {
     $pdo->beginTransaction();
 
-    $stmt = $pdo->prepare("INSERT INTO orders (user_id, total, status, created_at) VALUES (?, ?, 'pending', NOW())");
-    $stmt->execute([$userId, $total]);
+    $stmt = $pdo->prepare("
+        INSERT INTO orders (user_id, total, status, name, shipping_address, created_at) 
+        VALUES (?, ?, 'pending', ?, ?, NOW())
+    ");
+    $stmt->execute([$userId, $total, $customerName, $shippingAddress]);
     $orderId = $pdo->lastInsertId();
 
     $stmtItem = $pdo->prepare("

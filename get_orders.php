@@ -10,7 +10,6 @@ if (!isset($_SESSION['user_id'])) {
 $userId = $_SESSION['user_id'];
 
 try {
-    
     $stmt = $pdo->prepare("
         SELECT id, created_at as order_date, total as total_amount, status 
         FROM orders 
@@ -21,9 +20,8 @@ try {
     $orders = $stmt->fetchAll();
 
     foreach ($orders as &$order) {
-
         $stmtItems = $pdo->prepare("
-            SELECT name as product_name, quantity, price as product_price 
+            SELECT product_name, quantity, price as product_price 
             FROM order_items 
             WHERE order_id = ?
         ");

@@ -43,7 +43,7 @@ try {
     $orderId = $pdo->lastInsertId();
 
     $stmtItem = $pdo->prepare("
-        INSERT INTO order_items (order_id, product_id, name, quantity, price)
+        INSERT INTO order_items (order_id, product_id, product_name, quantity, price)
         VALUES (?, ?, ?, ?, ?)
     ");
 

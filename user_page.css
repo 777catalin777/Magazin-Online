@@ -305,3 +305,161 @@ body {
         text-align: center;
     }
 }
+
+.order-card {
+    background: #ffffff;
+    border-radius: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 1.25rem;
+    transition: all 0.2s ease;
+    border: 1px solid #edf2f7;
+}
+
+.order-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.order-id-date {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.order-id-date strong {
+    font-size: 1rem;
+    color: #2d3748;
+}
+
+.order-date {
+    font-size: 0.85rem;
+    color: #718096;
+}
+
+.order-status {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 2rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.status-processing {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+.status-shipped {
+    background: #e0e7ff;
+    color: #3730a3;
+}
+
+.status-delivered {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.product-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.product-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0;
+    border-bottom: 1px dashed #f1f5f9;
+    font-size: 0.9rem;
+}
+
+.product-item:last-child {
+    border-bottom: none;
+}
+
+.product-name {
+    flex: 2;
+    font-weight: 500;
+    color: #1e293b;
+}
+
+.product-qty {
+    flex: 0.5;
+    text-align: center;
+    color: #475569;
+}
+
+.product-price {
+    flex: 0.8;
+    text-align: right;
+    font-weight: 600;
+    color: #0f172a;
+}
+
+.order-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.total-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #475569;
+}
+
+.total-amount {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2d3748;
+}
+
+@media (max-width: 640px) {
+    .order-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .product-item {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .product-name {
+        flex-basis: 100%;
+    }
+
+    .product-qty,
+    .product-price {
+        flex: 1;
+        text-align: left;
+    }
+
+    .order-footer {
+        justify-content: space-between;
+    }
+}

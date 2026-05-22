@@ -415,23 +415,32 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ cart: cart })
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert(data.message);
-                        cart = [];
-                        localStorage.setItem("cart", JSON.stringify(cart));
-                        displayCart();
-                        loadOrders();
-                    } else {
-                        alert("Eroare: " + data.message);
-                    }
-                })
-                .catch(err => {
-                    console.error(err);
-                    alert("A apărut o eroare la plasarea comenzii.");
-                });
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);
+                            cart = [];
+                            localStorage.setItem("cart", JSON.stringify(cart));
+                            displayCart();
+                            loadOrders();
+                        } else {
+                            alert("Eroare: " + data.message);
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert("A apărut o eroare la plasarea comenzii.");
+                    });
             });
+
+            function escapeHtml(str) {
+                return str.replace(/[&<>]/g, function (m) {
+                    if (m === '&') return '&amp;';
+                    if (m === '<') return '&lt;';
+                    if (m === '>') return '&gt;';
+                    return m;
+                });
+            }
 
             function loadOrders() {
                 fetch("get_orders.php")
@@ -441,23 +450,63 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                         if (!ordersContainer) return;
 
                         if (data.orders && data.orders.length > 0) {
-                            let html = `<div style="max-height: 400px; overflow-y: auto;">`;
+                            let html = `<div style="display: flex; flex-direction: column; gap: 1.25rem;">`;
                             data.orders.forEach(order => {
+
+                                let statusClass = '';
+                                let statusText = '';
+                                switch (order.status) {
+                                    case 'pending':
+                                        statusClass = 'status-pending';
+                                        statusText = 'În așteptare';
+                                        break;
+                                    case 'processing':
+                                        statusClass = 'status-processing';
+                                        statusText = 'În procesare';
+                                        break;
+                                    case 'shipped':
+                                        statusClass = 'status-shipped';
+                                        statusText = 'Expediată';
+                                        break;
+                                    case 'delivered':
+                                        statusClass = 'status-delivered';
+                                        statusText = 'Livrată';
+                                        break;
+                                    default:
+                                        statusClass = 'status-pending';
+                                        statusText = order.status || 'În așteptare';
+                                }
+
                                 html += `
-                                    <div style="border-bottom: 1px solid #e2e8f0; padding: 12px 0; margin-bottom: 10px;">
-                                        <div style="display: flex; justify-content: space-between;">
-                                            <strong>Comanda #${order.id}</strong>
-                                            <span>${order.order_date}</span>
+                                    <div class="order-card">
+                                        <div class="order-header">
+                                            <div class="order-id-date">
+                                                <strong>Comanda #${order.id}</strong>
+                                                <span class="order-date">${order.order_date}</span>
+                                            </div>
+                                            <div class="order-status ${statusClass}">${statusText}</div>
                                         </div>
-                                        <div>Total: ${order.total_amount} MDL</div>
-                                        <div style="font-size: 0.85rem; margin-top: 5px;">
-                                            Produse:
-                                            <ul style="margin-left: 20px;">
+                                        <div class="order-products">
+                                            <ul class="product-list">
                                 `;
                                 order.items.forEach(item => {
-                                    html += `<li>${item.product_name} × ${item.quantity} – ${item.product_price} MDL</li>`;
+                                    html += `
+                                        <li class="product-item">
+                                            <span class="product-name">${escapeHtml(item.product_name)}</span>
+                                            <span class="product-qty">× ${item.quantity}</span>
+                                            <span class="product-price">${item.product_price} MDL</span>
+                                        </li>
+                                    `;
                                 });
-                                html += `</ul></div></div>`;
+                                html += `
+                                            </ul>
+                                        </div>
+                                        <div class="order-footer">
+                                            <span class="total-label">Total:</span>
+                                            <span class="total-amount">${order.total_amount} MDL</span>
+                                        </div>
+                                    </div>
+                                `;
                             });
                             html += `</div>`;
                             ordersContainer.innerHTML = html;

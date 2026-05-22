@@ -134,9 +134,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <p><?= htmlspecialchars(lang('total')) ?>: <span id="cart-total">0</span> MDL</p>
                     </div>
                     <button class="clear-cart"><?= htmlspecialchars(lang('clear_cart')) ?></button>
-                    <button id="checkout-btn" class="checkout-btn" style="background: #28a745; margin-top: 10px;">
-                        <i class='bx bx-check-circle'></i> Plasează comanda
-                    </button>
                 </div>
             </div>
             <div class="language-switcher">

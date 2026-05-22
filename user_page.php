@@ -151,6 +151,16 @@ if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin') {
 $success = $_SESSION['profile_success'] ?? '';
 $error = $_SESSION['profile_error'] ?? '';
 unset($_SESSION['profile_success'], $_SESSION['profile_error']);
+
+$user_id = $_SESSION['user_id'];
+$orders = [];
+try {
+    $stmt = $pdo->prepare("SELECT * FROM orders WHERE user_id = ? ORDER BY created_at DESC");
+    $stmt->execute([$user_id]);
+    $orders = $stmt->fetchAll();
+} catch (PDOException $e) {
+    error_log("Failed to fetch orders: " . $e->getMessage());
+}
 ?>
 <!DOCTYPE html>
 <html lang="<?= htmlspecialchars($lang) ?>">
@@ -256,7 +266,6 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                     <span>Coșul meu curent</span>
                 </div>
                 <div id="cart-items-list" style="max-height: 300px; overflow-y: auto; margin-bottom: 1rem;">
-
                     <div class="cart-empty-placeholder" style="text-align: center; padding: 1rem; color: #718096;">
                         <i class='bx bx-cart-alt' style="font-size: 2rem;"></i>
                         <p>Coșul este gol. Adaugă produse din magazin.</p>
@@ -277,12 +286,42 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                     <i class='bx bx-purchase-tag'></i>
                     <span>Comenzile mele</span>
                 </div>
-                <div class="orders-empty">
-                    <i class='bx bx-package'></i>
-                    <h3>Nu ai nicio comandă încă</h3>
-                    <p>Descoperă colecția noastră și completează-ți primul buchet de vise.</p>
-                    <a href="index.php" class="btn-link"><i class='bx bx-cart'></i> Explorează magazinul</a>
-                </div>
+                <?php if (empty($orders)): ?>
+                    <div class="orders-empty">
+                        <i class='bx bx-package'></i>
+                        <h3>Nu ai nicio comandă încă</h3>
+                        <p>Descoperă colecția noastră și completează-ți primul buchet de vise.</p>
+                        <a href="index.php" class="btn-link"><i class='bx bx-cart'></i> Explorează magazinul</a>
+                    </div>
+                <?php else: ?>
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        <?php foreach ($orders as $order): ?>
+                            <div class="order-item" style="border-bottom: 1px solid #e2e8f0; padding: 1rem 0;">
+                                <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+                                    <div>
+                                        <strong>Comanda #<?= htmlspecialchars($order['order_number']) ?></strong><br>
+                                        <small>Data: <?= date('d.m.Y H:i', strtotime($order['created_at'])) ?></small>
+                                    </div>
+                                    <div>
+                                        <span class="status-badge status-<?= $order['status'] ?>">
+                                            <?= ucfirst($order['status']) ?>
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <strong><?= number_format($order['total_amount'], 2) ?> MDL</strong>
+                                    </div>
+                                    <button class="view-order-details" data-order-id="<?= $order['id'] ?>"
+                                            style="background: none; border: none; color: #667eea; cursor: pointer;">
+                                        Vezi detalii <i class='bx bx-chevron-right'></i>
+                                    </button>
+                                </div>
+                                <div id="order-details-<?= $order['id'] ?>" class="order-details" style="display: none; margin-top: 1rem; background: #f8f9fa; padding: 1rem; border-radius: 0.75rem;">
+                                    <div class="loading">Se încarcă...</div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -312,7 +351,6 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-
             let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
             function displayCart() {
@@ -405,6 +443,44 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
 
             displayCart();
         });
+
+        document.querySelectorAll('.view-order-details').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const orderId = this.dataset.orderId;
+                const detailsDiv = document.getElementById(`order-details-${orderId}`);
+                if (detailsDiv.style.display === 'none') {
+                    try {
+                        const response = await fetch(`get_order_items.php?order_id=${orderId}`);
+                        const items = await response.json();
+                        let html = '<ul style="list-style: none; margin: 0; padding: 0;">';
+                        items.forEach(item => {
+                            html += `<li style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #dee2e6;">
+                                        <span>${escapeHtml(item.product_name)} x ${item.quantity}</span>
+                                        <span>${(item.price * item.quantity).toFixed(2)} MDL</span>
+                                    </li>`;
+                        });
+                        html += '</ul>';
+                        detailsDiv.innerHTML = html;
+                        detailsDiv.style.display = 'block';
+                        this.innerHTML = 'Ascunde detalii <i class="bx bx-chevron-up"></i>';
+                    } catch (err) {
+                        detailsDiv.innerHTML = '<p class="error">Eroare la încărcare.</p>';
+                    }
+                } else {
+                    detailsDiv.style.display = 'none';
+                    this.innerHTML = 'Vezi detalii <i class="bx bx-chevron-right"></i>';
+                }
+            });
+        });
+
+        function escapeHtml(str) {
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
     </script>
 </body>
 

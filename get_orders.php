@@ -10,12 +10,23 @@ if (!isset($_SESSION['user_id'])) {
 $userId = $_SESSION['user_id'];
 
 try {
-    $stmt = $pdo->prepare("SELECT id, order_date, total_amount, status FROM orders WHERE user_id = ? ORDER BY order_date DESC");
+    
+    $stmt = $pdo->prepare("
+        SELECT id, created_at as order_date, total as total_amount, status 
+        FROM orders 
+        WHERE user_id = ? 
+        ORDER BY created_at DESC
+    ");
     $stmt->execute([$userId]);
     $orders = $stmt->fetchAll();
 
     foreach ($orders as &$order) {
-        $stmtItems = $pdo->prepare("SELECT product_name, quantity, product_price FROM order_items WHERE order_id = ?");
+
+        $stmtItems = $pdo->prepare("
+            SELECT name as product_name, quantity, price as product_price 
+            FROM order_items 
+            WHERE order_id = ?
+        ");
         $stmtItems->execute([$order['id']]);
         $order['items'] = $stmtItems->fetchAll();
     }
@@ -25,3 +36,4 @@ try {
     error_log("Get orders error: " . $e->getMessage());
     echo json_encode(['orders' => []]);
 }
+?>

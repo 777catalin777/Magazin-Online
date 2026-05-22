@@ -33,23 +33,22 @@ foreach ($cart as $item) {
 try {
     $pdo->beginTransaction();
 
-    $stmt = $pdo->prepare("INSERT INTO orders (user_id, total_amount, status) VALUES (?, ?, 'pending')");
+    $stmt = $pdo->prepare("INSERT INTO orders (user_id, total, status, created_at) VALUES (?, ?, 'pending', NOW())");
     $stmt->execute([$userId, $total]);
     $orderId = $pdo->lastInsertId();
 
     $stmtItem = $pdo->prepare("
-        INSERT INTO order_items (order_id, product_key, product_name, product_price, quantity, image_url)
-        VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO order_items (order_id, product_id, name, quantity, price)
+        VALUES (?, ?, ?, ?, ?)
     ");
 
     foreach ($cart as $item) {
-        $productKey = $item['key'] ?? '';
+        $productId = 0;
         $productName = $item['name'] ?? 'Produs';
-        $productPrice = floatval($item['price'] ?? 0);
         $quantity = intval($item['quantity'] ?? 1);
-        $imageUrl = $item['image'] ?? '';
+        $price = floatval($item['price'] ?? 0);
 
-        $stmtItem->execute([$orderId, $productKey, $productName, $productPrice, $quantity, $imageUrl]);
+        $stmtItem->execute([$orderId, $productId, $productName, $quantity, $price]);
     }
 
     $pdo->commit();
@@ -57,5 +56,6 @@ try {
 } catch (PDOException $e) {
     $pdo->rollBack();
     error_log("Order placement error: " . $e->getMessage());
-    echo json_encode(['success' => false, 'message' => 'Eroare internă. Încearcă din nou mai târziu.']);
+    echo json_encode(['success' => false, 'message' => 'Eroare internă: ' . $e->getMessage()]);
 }
+?>

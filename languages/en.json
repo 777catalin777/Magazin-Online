@@ -32,5 +32,10 @@
   "name_product_9": "Hoodie Adidas",
   "name_product_10": "New Balance 9060",
   "name_product_11": "Nike V2K Run",
-  "name_product_12": "Adidas Samba"
+  "name_product_12": "Adidas Samba",
+  "place_order": "Place order",
+  "order_placed_success": "Order placed successfully!",
+  "my_orders": "My orders",
+  "no_orders": "You have no orders yet",
+  "order_total": "Total"
 }

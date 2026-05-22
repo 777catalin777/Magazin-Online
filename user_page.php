@@ -256,7 +256,6 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                     <span>Coșul meu curent</span>
                 </div>
                 <div id="cart-items-list" style="max-height: 300px; overflow-y: auto; margin-bottom: 1rem;">
-
                     <div class="cart-empty-placeholder" style="text-align: center; padding: 1rem; color: #718096;">
                         <i class='bx bx-cart-alt' style="font-size: 2rem;"></i>
                         <p>Coșul este gol. Adaugă produse din magazin.</p>
@@ -270,6 +269,9 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                 <button id="clear-cart-btn" class="btn-primary" style="background: #dc3545; margin-top: 0.5rem;">
                     <i class='bx bx-trash'></i> Golește coșul
                 </button>
+                <button id="place-order-btn" class="btn-primary" style="background: #28a745; margin-top: 0.5rem;">
+                    <i class='bx bx-check-circle'></i> Plasează comanda
+                </button>
             </div>
 
             <div class="card">
@@ -277,11 +279,11 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                     <i class='bx bx-purchase-tag'></i>
                     <span>Comenzile mele</span>
                 </div>
-                <div class="orders-empty">
-                    <i class='bx bx-package'></i>
-                    <h3>Nu ai nicio comandă încă</h3>
-                    <p>Descoperă colecția noastră și completează-ți primul buchet de vise.</p>
-                    <a href="index.php" class="btn-link"><i class='bx bx-cart'></i> Explorează magazinul</a>
+                <div id="orders-list">
+                    <div class="orders-empty">
+                        <i class='bx bx-package'></i>
+                        <h3>Se încarcă...</h3>
+                    </div>
                 </div>
             </div>
         </div>
@@ -312,7 +314,6 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-
             let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
             function displayCart() {
@@ -403,7 +404,85 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                 saveAndRefresh();
             });
 
+            document.getElementById("place-order-btn")?.addEventListener("click", function () {
+                if (cart.length === 0) {
+                    alert("Coșul este gol. Adaugă produse înainte de a plasa o comandă.");
+                    return;
+                }
+
+                fetch("place_order.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ cart: cart })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        cart = [];
+                        localStorage.setItem("cart", JSON.stringify(cart));
+                        displayCart();
+                        loadOrders();
+                    } else {
+                        alert("Eroare: " + data.message);
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert("A apărut o eroare la plasarea comenzii.");
+                });
+            });
+
+            function loadOrders() {
+                fetch("get_orders.php")
+                    .then(response => response.json())
+                    .then(data => {
+                        const ordersContainer = document.getElementById("orders-list");
+                        if (!ordersContainer) return;
+
+                        if (data.orders && data.orders.length > 0) {
+                            let html = `<div style="max-height: 400px; overflow-y: auto;">`;
+                            data.orders.forEach(order => {
+                                html += `
+                                    <div style="border-bottom: 1px solid #e2e8f0; padding: 12px 0; margin-bottom: 10px;">
+                                        <div style="display: flex; justify-content: space-between;">
+                                            <strong>Comanda #${order.id}</strong>
+                                            <span>${order.order_date}</span>
+                                        </div>
+                                        <div>Total: ${order.total_amount} MDL</div>
+                                        <div style="font-size: 0.85rem; margin-top: 5px;">
+                                            Produse:
+                                            <ul style="margin-left: 20px;">
+                                `;
+                                order.items.forEach(item => {
+                                    html += `<li>${item.product_name} × ${item.quantity} – ${item.product_price} MDL</li>`;
+                                });
+                                html += `</ul></div></div>`;
+                            });
+                            html += `</div>`;
+                            ordersContainer.innerHTML = html;
+                        } else {
+                            ordersContainer.innerHTML = `
+                                <div class="orders-empty">
+                                    <i class='bx bx-package'></i>
+                                    <h3>Nu ai nicio comandă încă</h3>
+                                    <p>Descoperă colecția noastră și plasează prima ta comandă.</p>
+                                    <a href="index.php" class="btn-link"><i class='bx bx-cart'></i> Explorează magazinul</a>
+                                </div>
+                            `;
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Eroare la încărcarea comenzilor:", err);
+                        const ordersContainer = document.getElementById("orders-list");
+                        if (ordersContainer) {
+                            ordersContainer.innerHTML = `<div class="orders-empty"><i class='bx bx-error-circle'></i><h3>Eroare la încărcarea comenzilor</h3></div>`;
+                        }
+                    });
+            }
+
             displayCart();
+            loadOrders();
         });
     </script>
 </body>

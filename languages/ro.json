@@ -34,5 +34,10 @@
   "name_product_9": "Hanorac Adidas",
   "name_product_10": "New Balance 9060",
   "name_product_11": "Nike V2K Run",
-  "name_product_12": "Adidas Samba"
+  "name_product_12": "Adidas Samba",
+  "place_order": "Plasează comanda",
+  "order_placed_success": "Comanda a fost plasată cu succes!",
+  "my_orders": "Comenzile mele",
+  "no_orders": "Nu ai nicio comandă încă",
+  "order_total": "Total"
 }

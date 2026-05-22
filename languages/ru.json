@@ -32,5 +32,10 @@
   "name_product_9": "Толстовка Adidas",
   "name_product_10": "New Balance 9060",
   "name_product_11": "Nike V2K Run",
-  "name_product_12": "Adidas Samba"
+  "name_product_12": "Adidas Samba",
+  "place_order": "Оформить заказ",
+  "order_placed_success": "Заказ успешно оформлен!",
+  "my_orders": "Мои заказы",
+  "no_orders": "У вас пока нет заказов",
+  "order_total": "Итого"
 }

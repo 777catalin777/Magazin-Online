@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         cart.forEach(item => {
-            const currentName = getProductName(item.key);
+            const currentName = item.name || getProductName(item.key);
             total += (item.price || 0) * (item.quantity || 0);
 
             const li = document.createElement("li");
@@ -143,12 +143,13 @@ document.addEventListener("DOMContentLoaded", function () {
             const price = parseFloat(this.getAttribute("data-price")) || 0;
             const productCard = this.closest(".product");
             const image = productCard ? productCard.querySelector("img")?.src || "" : "";
+            const name = productCard ? productCard.querySelector("h1")?.textContent.trim() || "" : "";
 
             const existing = cart.findIndex(item => item.key === key);
             if (existing !== -1) {
                 cart[existing].quantity = (cart[existing].quantity || 0) + 1;
             } else {
-                cart.push({ key, price, image, quantity: 1 });
+                cart.push({ key, price, image, name, quantity: 1 });
             }
 
             updateCart();

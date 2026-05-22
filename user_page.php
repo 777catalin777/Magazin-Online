@@ -547,6 +547,27 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
             </form>
         </div>
 
+        <div class="card" id="current-cart-card">
+            <div class="card-title">
+                <i class='bx bx-cart'></i>
+                <span>Coșul meu curent</span>
+            </div>
+            <div id="cart-items-list" style="max-height: 300px; overflow-y: auto; margin-bottom: 1rem;">
+
+                <div class="cart-empty-placeholder" style="text-align: center; padding: 1rem; color: #718096;">
+                    <i class='bx bx-cart-alt' style="font-size: 2rem;"></i>
+                    <p>Coșul este gol. Adaugă produse din magazin.</p>
+                </div>
+            </div>
+            <div class="cart-summary" style="background: #f8f9fa; border-radius: 0.75rem; padding: 0.75rem; margin: 0.5rem 0;">
+                <span>Total produse: <strong id="cart-total-qty">0</strong></span>
+                <span>Total: <strong id="cart-total-price">0</strong> MDL</span>
+            </div>
+            <button id="clear-cart-btn" class="btn-primary" style="background: #dc3545; margin-top: 0.5rem;">
+                <i class='bx bx-trash'></i> Golește coșul
+            </button>
+        </div>
+
         <div class="card">
             <div class="card-title">
                 <i class='bx bx-purchase-tag'></i>
@@ -584,5 +605,102 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
         </form>
     </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    function displayCart() {
+        const container = document.getElementById("cart-items-list");
+        const totalQtySpan = document.getElementById("cart-total-qty");
+        const totalPriceSpan = document.getElementById("cart-total-price");
+
+        if (!container) return;
+
+        if (cart.length === 0) {
+            container.innerHTML = `<div class="cart-empty-placeholder" style="text-align: center; padding: 1rem; color: #718096;">
+                                        <i class='bx bx-cart-alt' style="font-size: 2rem;"></i>
+                                        <p>Coșul este gol. Adaugă produse din magazin.</p>
+                                    </div>`;
+            totalQtySpan.textContent = "0";
+            totalPriceSpan.textContent = "0";
+            return;
+        }
+
+        let totalQty = 0;
+        let totalPrice = 0;
+        let html = '<ul style="list-style: none; padding: 0; margin: 0;">';
+
+        cart.forEach((item, index) => {
+            const qty = item.quantity || 1;
+            const price = item.price || 0;
+            const itemTotal = qty * price;
+            totalQty += qty;
+            totalPrice += itemTotal;
+            const productName = item.name || "Produs";
+
+            html += `
+                <li style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding: 10px 0;">
+                    <div style="display: flex; align-items: center; gap: 12px; flex: 2;">
+                        <img src="${item.image || ''}" alt="${productName.replace(/"/g, '&quot;')}" style="width: 50px; height: 50px; object-fit: contain; border-radius: 8px;">
+                        <div>
+                            <div style="font-weight: 600;">${productName.replace(/</g, '&lt;')}</div>
+                            <div style="font-size: 0.8rem; color: #4a5568;">${price} MDL × ${qty}</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <button class="cart-decrease-qty" data-index="${index}" style="background: #e2e8f0; border: none; border-radius: 6px; width: 28px; height: 28px; cursor: pointer;">-</button>
+                        <span style="min-width: 20px; text-align: center;">${qty}</span>
+                        <button class="cart-increase-qty" data-index="${index}" style="background: #e2e8f0; border: none; border-radius: 6px; width: 28px; height: 28px; cursor: pointer;">+</button>
+                        <button class="cart-remove-item" data-index="${index}" style="background: #dc3545; color: white; border: none; border-radius: 6px; width: 28px; height: 28px; cursor: pointer;">×</button>
+                    </div>
+                </li>
+            `;
+        });
+
+        html += '</ul>';
+        container.innerHTML = html;
+        totalQtySpan.textContent = totalQty;
+        totalPriceSpan.textContent = totalPrice.toFixed(0);
+    }
+
+    function saveAndRefresh() {
+        localStorage.setItem("cart", JSON.stringify(cart));
+        displayCart();
+    }
+
+    document.getElementById("cart-items-list")?.addEventListener("click", function(e) {
+        const target = e.target;
+        const indexAttr = target.getAttribute("data-index");
+        if (indexAttr === null) return;
+
+        const idx = parseInt(indexAttr, 10);
+        if (isNaN(idx)) return;
+
+        if (target.classList.contains("cart-decrease-qty")) {
+            if (cart[idx].quantity > 1) {
+                cart[idx].quantity--;
+            } else {
+                cart.splice(idx, 1);
+            }
+            saveAndRefresh();
+        } else if (target.classList.contains("cart-increase-qty")) {
+            cart[idx].quantity = (cart[idx].quantity || 0) + 1;
+            saveAndRefresh();
+        } else if (target.classList.contains("cart-remove-item")) {
+            cart.splice(idx, 1);
+            saveAndRefresh();
+        }
+    });
+
+    document.getElementById("clear-cart-btn")?.addEventListener("click", function() {
+        cart = [];
+        saveAndRefresh();
+    });
+
+    displayCart();
+});
+</script>
 </body>
 </html>

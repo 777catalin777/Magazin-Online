@@ -266,10 +266,10 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                     <span>Total produse: <strong id="cart-total-qty">0</strong></span>
                     <span>Total: <strong id="cart-total-price">0</strong> MDL</span>
                 </div>
-                <button id="clear-cart-btn" class="btn-primary" style="background: #dc3545; margin-top: 0.5rem;">
+                <button id="clear-cart-btn" class="btn-primary" style="background: #030303; margin-top: 0.5rem;">
                     <i class='bx bx-trash'></i> Golește coșul
                 </button>
-                <button id="place-order-btn" class="btn-primary" style="background: #28a745; margin-top: 0.5rem;">
+                <button id="place-order-btn" class="btn-primary" style="background: #764ba2; margin-top: 0.5rem;">
                     <i class='bx bx-check-circle'></i> Plasează comanda
                 </button>
             </div>

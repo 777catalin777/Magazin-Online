@@ -11,7 +11,10 @@ $userId = $_SESSION['user_id'];
 
 try {
     $stmt = $pdo->prepare("
-        SELECT id, created_at as order_date, total as total_amount, status 
+        SELECT id, 
+               TO_CHAR(created_at, 'YYYY-MM-DD HH24:MI') as order_date, 
+               total as total_amount, 
+               status 
         FROM orders 
         WHERE user_id = ? 
         ORDER BY created_at DESC

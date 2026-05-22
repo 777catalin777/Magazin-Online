@@ -228,5 +228,31 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    document.getElementById('checkout-btn')?.addEventListener('click', async () => {
+        const cart = JSON.parse(localStorage.getItem('cart')) || [];
+        if (cart.length === 0) {
+            showNotification(t('empty_cart'));
+            return;
+        }
+        try {
+            const response = await fetch('checkout.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ cart })
+            });
+            const result = await response.json();
+            if (result.success) {
+                localStorage.removeItem('cart');
+                updateCart();
+                showNotification('Comanda a fost plasată cu succes!');
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                showNotification('Eroare: ' + (result.message || 'Încearcă din nou.'));
+            }
+        } catch (err) {
+            showNotification('Eroare de conexiune.');
+        }
+    });
+
     updateCart();
 });

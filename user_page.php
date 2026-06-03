@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
                 $stmt->execute([$email]);
 
-                if ($stmt->rowCount() > 0) {
+                if ($stmt->fetch()) {
                     $_SESSION['register_error'] = "Există deja un cont cu acest email!";
                 } else {
                     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
@@ -76,12 +76,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 error_log("Register error: " . $e->getMessage());
             }
         }
-        $_SESSION['active_form'] = 'register';
+        $_SESSION['active_form'] = isset($_SESSION['register_success']) ? 'login' : 'register';
         header("Location: login.php");
         exit();
     }
 
     if (isset($_POST['update_profile'])) {
+        if (!isset($_SESSION['email'])) {
+            header("Location: login.php");
+            exit();
+        }
+
         $name = trim($_POST['name'] ?? '');
         $phone = trim($_POST['phone'] ?? '');
         $address = trim($_POST['address'] ?? '');
@@ -106,6 +111,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (isset($_POST['change_password'])) {
+        if (!isset($_SESSION['email'])) {
+            header("Location: login.php");
+            exit();
+        }
+
         $current_password = $_POST['current_password'] ?? '';
         $new_password = $_POST['new_password'] ?? '';
         $confirm_password = $_POST['confirm_password'] ?? '';
@@ -344,13 +354,14 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                     totalQty += qty;
                     totalPrice += itemTotal;
                     const productName = item.name || "Produs";
+                    const safeProductName = escapeHtml(productName);
 
                     html += `
                 <li style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding: 10px 0;">
                     <div style="display: flex; align-items: center; gap: 12px; flex: 2;">
-                        <img src="${item.image || ''}" alt="${productName.replace(/"/g, '&quot;')}" style="width: 50px; height: 50px; object-fit: contain; border-radius: 8px;">
+                        <img src="${escapeHtml(item.image || '')}" alt="${safeProductName}" style="width: 50px; height: 50px; object-fit: contain; border-radius: 8px;">
                         <div>
-                            <div style="font-weight: 600;">${productName.replace(/</g, '&lt;')}</div>
+                            <div style="font-weight: 600;">${safeProductName}</div>
                             <div style="font-size: 0.8rem; color: #4a5568;">${price} MDL × ${qty}</div>
                         </div>
                     </div>
@@ -434,10 +445,12 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
             });
 
             function escapeHtml(str) {
-                return str.replace(/[&<>]/g, function (m) {
+                return String(str).replace(/[&<>"']/g, function (m) {
                     if (m === '&') return '&amp;';
                     if (m === '<') return '&lt;';
                     if (m === '>') return '&gt;';
+                    if (m === '"') return '&quot;';
+                    if (m === "'") return '&#039;';
                     return m;
                 });
             }

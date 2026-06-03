@@ -12,6 +12,8 @@
   "empty_cart": "Your cart is empty. Add products to get started!",
   "total": "Total",
   "clear_cart": "Clear Cart",
+  "or_login_with_social": "or login with",
+  "or_register_with_social": "or register with",
   "language": "Language",
   "login": "Login",
   "register": "Register",

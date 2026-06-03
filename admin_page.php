@@ -1,5 +1,4 @@
 <?php
-session_start();
 require_once 'config.php';
 require_once 'language_switcher.php';
 
@@ -12,29 +11,417 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header("Location: user_page.php");
     exit();
 }
-?>
 
+$statusOptions = [
+    'pending' => 'In asteptare',
+    'processing' => 'In procesare',
+    'shipped' => 'Expediata',
+    'delivered' => 'Livrata',
+];
+
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+$message = '';
+$error = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_order_status'])) {
+    $token = $_POST['csrf_token'] ?? '';
+    $orderId = (int)($_POST['order_id'] ?? 0);
+    $status = $_POST['status'] ?? '';
+
+    if (!hash_equals($_SESSION['csrf_token'], $token)) {
+        $error = 'Cerere invalida. Reincarca pagina si incearca din nou.';
+    } elseif ($orderId <= 0 || !array_key_exists($status, $statusOptions)) {
+        $error = 'Date invalide pentru actualizarea comenzii.';
+    } else {
+        try {
+            $stmt = $pdo->prepare("UPDATE orders SET status = ? WHERE id = ?");
+            $stmt->execute([$status, $orderId]);
+            $message = 'Statusul comenzii #' . $orderId . ' a fost actualizat.';
+        } catch (PDOException $e) {
+            error_log("Admin order status update error: " . $e->getMessage());
+            $error = 'Nu s-a putut actualiza statusul comenzii.';
+        }
+    }
+}
+
+function money($value)
+{
+    return number_format((float)$value, 0, '.', ' ') . ' MDL';
+}
+
+function e($value)
+{
+    return htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8');
+}
+
+try {
+    $stats = [
+        'users' => (int)$pdo->query("SELECT COUNT(*) FROM users")->fetchColumn(),
+        'orders' => (int)$pdo->query("SELECT COUNT(*) FROM orders")->fetchColumn(),
+        'pending' => (int)$pdo->query("SELECT COUNT(*) FROM orders WHERE status = 'pending'")->fetchColumn(),
+        'revenue' => (float)$pdo->query("SELECT COALESCE(SUM(total), 0) FROM orders")->fetchColumn(),
+    ];
+
+    $dateExpression = (($dbDriver ?? '') === 'sqlite')
+        ? "strftime('%Y-%m-%d %H:%M', orders.created_at)"
+        : "TO_CHAR(orders.created_at, 'YYYY-MM-DD HH24:MI')";
+
+    $ordersStmt = $pdo->query("
+        SELECT orders.id,
+               orders.total,
+               orders.status,
+               orders.shipping_address,
+               $dateExpression AS order_date,
+               users.name AS customer_name,
+               users.email AS customer_email
+        FROM orders
+        JOIN users ON users.id = orders.user_id
+        ORDER BY orders.created_at DESC
+        LIMIT 20
+    ");
+    $orders = $ordersStmt->fetchAll();
+
+    $itemsStmt = $pdo->prepare("
+        SELECT product_name, quantity, price
+        FROM order_items
+        WHERE order_id = ?
+        ORDER BY id ASC
+    ");
+
+    foreach ($orders as &$order) {
+        $itemsStmt->execute([$order['id']]);
+        $order['items'] = $itemsStmt->fetchAll();
+    }
+    unset($order);
+
+    $usersStmt = $pdo->query("
+        SELECT id, name, email, role, phone, address, created_at
+        FROM users
+        ORDER BY id DESC
+        LIMIT 10
+    ");
+    $users = $usersStmt->fetchAll();
+} catch (PDOException $e) {
+    error_log("Admin dashboard load error: " . $e->getMessage());
+    $stats = ['users' => 0, 'orders' => 0, 'pending' => 0, 'revenue' => 0];
+    $orders = [];
+    $users = [];
+    $error = $error ?: 'Nu s-au putut incarca datele din panoul de administrare.';
+}
+?>
 <!DOCTYPE html>
-<html lang="<?= htmlspecialchars($lang) ?>">
+<html lang="<?= e($lang) ?>">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars(lang('site_title')) ?> | Admin</title>
-    <link rel="stylesheet" href="styles.css">
+    <title><?= e(lang('site_title')) ?> | Admin</title>
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="user_page.css">
+    <style>
+        body {
+            align-items: stretch;
+            justify-content: flex-start;
+        }
+
+        .admin-dashboard {
+            max-width: 1500px;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metric-card {
+            background: #ffffff;
+            border-radius: 1rem;
+            padding: 1.25rem;
+            box-shadow: 0 16px 28px -14px rgba(0, 0, 0, 0.28);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .metric-card i {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.75rem;
+            background: #eef2ff;
+            color: #4f46e5;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .metric-label {
+            color: #64748b;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .metric-value {
+            color: #111827;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-top: 0.25rem;
+        }
+
+        .admin-content {
+            display: grid;
+            grid-template-columns: minmax(0, 2fr) minmax(320px, 1fr);
+            gap: 1.5rem;
+        }
+
+        .admin-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .admin-table th,
+        .admin-table td {
+            padding: 0.85rem;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .admin-table th {
+            color: #475569;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .status-form {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .status-form select {
+            border: 1px solid #cbd5e1;
+            border-radius: 0.6rem;
+            padding: 0.55rem 0.75rem;
+            background: white;
+            font: inherit;
+            color: #1e293b;
+        }
+
+        .icon-btn {
+            width: 2.35rem;
+            height: 2.35rem;
+            border: none;
+            border-radius: 0.6rem;
+            background: #111827;
+            color: white;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .muted {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 1100px) {
+            .admin-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .admin-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-table,
+            .admin-table tbody,
+            .admin-table tr,
+            .admin-table td {
+                display: block;
+                width: 100%;
+            }
+
+            .admin-table thead {
+                display: none;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <div class="box">
-        <h1><?= htmlspecialchars(lang('welcome')) ?>, <span><?= htmlspecialchars($_SESSION['name']); ?></span>!</h1>
-        <p><?= htmlspecialchars(lang('admin_dashboard')) ?></p>
-        <p style="margin: 10px 0;">Rol: Administrator</p>
-        <div style="display: flex; gap: 15px; margin-top: 20px;">
-            <button onclick="window.location.href='index.php'" class="btn">← Magazin</button>
-            <button onclick="window.location.href='logout.php'" class="btn"
-                style="background: linear-gradient(135deg, #dc3545, #c82333);"><?= htmlspecialchars(lang('logout')) ?></button>
+    <div class="dashboard-container admin-dashboard">
+        <div class="dashboard-header">
+            <div class="logo">
+                <i class='bx bxs-dashboard'></i>
+                <span>Admin Maison Lure</span>
+            </div>
+            <div class="header-actions">
+                <a href="index.php" class="btn-outline-light"><i class='bx bx-store'></i> Magazin</a>
+                <a href="logout.php" class="btn-outline-light"><i class='bx bx-log-out'></i> <?= e(lang('logout')) ?></a>
+            </div>
         </div>
+
+        <?php if ($message): ?>
+            <div class="alert-custom alert-success">
+                <i class='bx bx-check-circle'></i> <?= e($message) ?>
+            </div>
+        <?php endif; ?>
+        <?php if ($error): ?>
+            <div class="alert-custom alert-error">
+                <i class='bx bx-error-circle'></i> <?= e($error) ?>
+            </div>
+        <?php endif; ?>
+
+        <section class="admin-grid">
+            <div class="metric-card">
+                <i class='bx bx-user'></i>
+                <div class="metric-label">Utilizatori</div>
+                <div class="metric-value"><?= e($stats['users']) ?></div>
+            </div>
+            <div class="metric-card">
+                <i class='bx bx-package'></i>
+                <div class="metric-label">Comenzi</div>
+                <div class="metric-value"><?= e($stats['orders']) ?></div>
+            </div>
+            <div class="metric-card">
+                <i class='bx bx-time-five'></i>
+                <div class="metric-label">In asteptare</div>
+                <div class="metric-value"><?= e($stats['pending']) ?></div>
+            </div>
+            <div class="metric-card">
+                <i class='bx bx-wallet'></i>
+                <div class="metric-label">Venit total</div>
+                <div class="metric-value"><?= e(money($stats['revenue'])) ?></div>
+            </div>
+        </section>
+
+        <main class="admin-content">
+            <section class="card">
+                <div class="card-title">
+                    <i class='bx bx-receipt'></i>
+                    <span>Ultimele comenzi</span>
+                </div>
+
+                <?php if (empty($orders)): ?>
+                    <div class="orders-empty">
+                        <i class='bx bx-package'></i>
+                        <h3>Nu exista comenzi</h3>
+                        <p>Comenzile clientilor vor aparea aici.</p>
+                    </div>
+                <?php else: ?>
+                    <div class="admin-list">
+                        <?php foreach ($orders as $order): ?>
+                            <?php $status = $order['status'] ?? 'pending'; ?>
+                            <article class="order-card">
+                                <div class="order-header">
+                                    <div class="order-id-date">
+                                        <strong>Comanda #<?= e($order['id']) ?></strong>
+                                        <span class="order-date"><?= e($order['order_date']) ?></span>
+                                    </div>
+                                    <span class="order-status status-<?= e($status) ?>">
+                                        <?= e($statusOptions[$status] ?? $status) ?>
+                                    </span>
+                                </div>
+
+                                <p><strong><?= e($order['customer_name']) ?></strong> <span class="muted"><?= e($order['customer_email']) ?></span></p>
+                                <p class="muted">Livrare: <?= e($order['shipping_address'] ?: 'Nespecificata') ?></p>
+
+                                <ul class="product-list">
+                                    <?php foreach ($order['items'] as $item): ?>
+                                        <li class="product-item">
+                                            <span class="product-name"><?= e($item['product_name']) ?></span>
+                                            <span class="product-qty">x <?= e($item['quantity']) ?></span>
+                                            <span class="product-price"><?= e(money($item['price'])) ?></span>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+
+                                <div class="order-footer">
+                                    <form method="POST" class="status-form">
+                                        <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token']) ?>">
+                                        <input type="hidden" name="order_id" value="<?= e($order['id']) ?>">
+                                        <select name="status" aria-label="Status comanda">
+                                            <?php foreach ($statusOptions as $value => $label): ?>
+                                                <option value="<?= e($value) ?>" <?= $value === $status ? 'selected' : '' ?>>
+                                                    <?= e($label) ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                        <button class="icon-btn" type="submit" name="update_order_status" title="Salveaza statusul">
+                                            <i class='bx bx-save'></i>
+                                        </button>
+                                    </form>
+                                    <span class="total-amount"><?= e(money($order['total'])) ?></span>
+                                </div>
+                            </article>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </section>
+
+            <aside class="card">
+                <div class="card-title">
+                    <i class='bx bx-group'></i>
+                    <span>Clienti recenti</span>
+                </div>
+
+                <?php if (empty($users)): ?>
+                    <div class="orders-empty">
+                        <i class='bx bx-user-x'></i>
+                        <h3>Nu exista utilizatori</h3>
+                    </div>
+                <?php else: ?>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Nume</th>
+                                <th>Rol</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($users as $user): ?>
+                                <tr>
+                                    <td>
+                                        <strong><?= e($user['name']) ?></strong>
+                                        <div class="muted"><?= e($user['email']) ?></div>
+                                        <?php if (!empty($user['phone'])): ?>
+                                            <div class="muted"><?= e($user['phone']) ?></div>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <span class="role-badge"><?= e($user['role'] ?: 'user') ?></span>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php endif; ?>
+            </aside>
+        </main>
     </div>
 </body>
 

@@ -75,6 +75,16 @@ document.addEventListener("DOMContentLoaded", function () {
         return fallbackNames[key] || "Produs";
     }
 
+    function escapeHtml(value) {
+        return String(value).replace(/[&<>"']/g, char => ({
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        }[char]));
+    }
+
     function showNotification(message) {
         const existingNotification = document.querySelector(".notification");
         if (existingNotification) {
@@ -112,13 +122,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
         cart.forEach(item => {
             const currentName = item.name || getProductName(item.key);
+            const safeName = escapeHtml(currentName);
             total += (item.price || 0) * (item.quantity || 0);
 
             const li = document.createElement("li");
             li.innerHTML = `
-                <img src="${item.image || ''}" alt="${currentName.replace(/"/g, '&quot;')}">
+                <img src="${escapeHtml(item.image || '')}" alt="${safeName}">
                 <div class="item-details">
-                    <span class="item-name">${currentName.replace(/</g, '&lt;')}</span>
+                    <span class="item-name">${safeName}</span>
                     <span class="item-quantity">${t('quantity')}: ${item.quantity || 1}</span>
                 </div>
                 <span class="item-price">${((item.price || 0) * (item.quantity || 1)).toFixed(0)} MDL</span>

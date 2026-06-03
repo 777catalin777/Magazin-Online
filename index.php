@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
                 $stmt->execute([$email]);
 
-                if ($stmt->rowCount() > 0) {
+                if ($stmt->fetch()) {
                     $_SESSION['register_error'] = "Există deja un cont cu acest email!";
                 } else {
                     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 error_log("Register error: " . $e->getMessage());
             }
         }
-        $_SESSION['active_form'] = 'register';
+        $_SESSION['active_form'] = isset($_SESSION['register_success']) ? 'login' : 'register';
         header("Location: login.php");
         exit();
     }
@@ -255,20 +255,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <script>
-        window.productNames = {
-            "name_product_1": "<?= addslashes(lang('name_product_1')) ?>",
-            "name_product_2": "<?= addslashes(lang('name_product_2')) ?>",
-            "name_product_3": "<?= addslashes(lang('name_product_3')) ?>",
-            "name_product_4": "<?= addslashes(lang('name_product_4')) ?>",
-            "name_product_5": "<?= addslashes(lang('name_product_5')) ?>",
-            "name_product_6": "<?= addslashes(lang('name_product_6')) ?>",
-            "name_product_7": "<?= addslashes(lang('name_product_7')) ?>",
-            "name_product_8": "<?= addslashes(lang('name_product_8')) ?>",
-            "name_product_9": "<?= addslashes(lang('name_product_9')) ?>",
-            "name_product_10": "<?= addslashes(lang('name_product_10')) ?>",
-            "name_product_11": "<?= addslashes(lang('name_product_11')) ?>",
-            "name_product_12": "<?= addslashes(lang('name_product_12')) ?>"
-        };
+        window.productNames = <?= json_encode([
+            'name_product_1' => lang('name_product_1'),
+            'name_product_2' => lang('name_product_2'),
+            'name_product_3' => lang('name_product_3'),
+            'name_product_4' => lang('name_product_4'),
+            'name_product_5' => lang('name_product_5'),
+            'name_product_6' => lang('name_product_6'),
+            'name_product_7' => lang('name_product_7'),
+            'name_product_8' => lang('name_product_8'),
+            'name_product_9' => lang('name_product_9'),
+            'name_product_10' => lang('name_product_10'),
+            'name_product_11' => lang('name_product_11'),
+            'name_product_12' => lang('name_product_12'),
+        ], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
     </script>
 
     <div id="chrome-footer">

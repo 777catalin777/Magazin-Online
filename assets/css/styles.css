@@ -321,13 +321,13 @@ a {
 .hero {
     position: relative;
     display: grid;
-    grid-template-columns: 0.9fr 1.1fr;
+    grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
     align-items: center;
     gap: clamp(2rem, 5vw, 6rem);
-    min-height: 650px;
+    min-height: clamp(600px, 72vh, 760px);
     max-width: 1500px;
     margin: 0 auto;
-    padding: 5rem 5vw;
+    padding: clamp(3.5rem, 7vw, 6rem) 5vw;
     overflow: hidden;
     isolation: isolate;
 }
@@ -383,7 +383,7 @@ a {
 
 .hero h1 {
     margin-bottom: 1.5rem;
-    font-size: clamp(3.4rem, 7vw, 4.3rem);
+    font-size: clamp(3rem, 5vw, 4.3rem);
     letter-spacing: -0.055em;
     text-wrap: balance;
 }
@@ -437,42 +437,74 @@ a {
     position: relative;
     display: grid;
     place-items: center;
-    min-height: 510px;
+    width: min(100%, 560px);
+    aspect-ratio: 0.92;
+    margin-inline: auto;
+    overflow: hidden;
+    container-type: inline-size;
+    background:
+        radial-gradient(circle at 70% 22%, rgba(255, 255, 255, 0.9), transparent 28%),
+        linear-gradient(145deg, #e3e9df 0%, #d5ded0 55%, #c9d5c3 100%);
+    border: 1px solid rgba(23, 23, 20, 0.08);
+    border-radius: 42px;
+    border-radius: 7.5cqw;
+    box-shadow:
+        0 34px 70px rgba(50, 61, 45, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.75);
     isolation: isolate;
 }
 
 .hero-showcase::before {
     content: "";
     position: absolute;
-    width: 520px;
-    height: 520px;
-    background: linear-gradient(
-        135deg,
-        #dbe3d5,
-        #f7f5f0
-    );
+    z-index: 0;
+    top: -18%;
+    right: -28%;
+    width: 78%;
+    aspect-ratio: 1;
+    background: rgba(255, 255, 255, 0.34);
+    border-radius: 35% 65% 58% 42% / 48% 40% 60% 52%;
+    transform: rotate(24deg);
+}
+
+.hero-showcase::after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    bottom: 4%;
+    width: 58%;
+    height: 8%;
+    opacity: 0.28;
+    background: rgba(23, 23, 20, 0.38);
     border-radius: 50%;
-    box-shadow:
-        0 20px 60px rgba(0,0,0,0.08),
-        inset 0 0 30px rgba(255,255,255,0.7);
+    filter: blur(20px);
 }
 
 .hero-showcase img {
-    position: relative;
+    position: absolute;
     z-index: 2;
-    width: 330px;
-    max-height: 400px;
+    bottom: 0;
+    width: auto;
+    height: 91%;
+    max-width: 86%;
     object-fit: contain;
+    object-position: center bottom;
     filter:
-        drop-shadow(0 25px 35px rgba(0,0,0,0.15));
+        drop-shadow(0 24px 28px rgba(23, 23, 20, 0.18));
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
+
+.hero-showcase:hover img {
+    transform: translateY(-4px);
+}
+
 .hero-orbit {
     position: absolute;
     z-index: 0;
-    width: min(40vw, 580px);
-    aspect-ratio: 1;
-    border: 1px solid rgba(23, 23, 20, 0.15);
-    border-radius: 50%;
+    inset: 5%;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 34px;
+    border-radius: 6cqw;
     animation: hero-orbit-pulse 5s ease-in-out infinite;
 }
 
@@ -487,29 +519,34 @@ a {
 
 .floating-note {
     position: absolute;
-    z-index: 2;
-    padding: 0.75rem 1rem;
+    z-index: 3;
+    width: 29%;
+    padding: 3.2% 3.6%;
     background: rgba(255, 255, 255, 0.78);
     border: 1px solid rgba(255, 255, 255, 0.8);
-    border-radius: 14px;
+    border-radius: 22px;
+    border-radius: 4cqw;
     box-shadow: 0 12px 40px rgba(23, 23, 20, 0.09);
     backdrop-filter: blur(12px);
     font-size: 0.7rem;
+    font-size: 2.25cqw;
+    line-height: 1.45;
 }
 
 .floating-note strong {
     font-family: "Poppins", sans-serif;
     font-size: 1rem;
+    font-size: 3.5cqw;
 }
 
 .note-one {
-    top: 18%;
-    right: 3%;
+    top: 8%;
+    right: 7%;
 }
 
 .note-two {
-    bottom: 18%;
-    left: 3%;
+    bottom: 8%;
+    left: 7%;
 }
 
 .benefits {
@@ -812,6 +849,21 @@ a {
     .container {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+
+    .hero {
+        grid-template-columns: minmax(0, 1fr) minmax(340px, 0.9fr);
+        gap: 2rem;
+        min-height: 570px;
+    }
+
+    .hero h1 {
+        font-size: clamp(2.7rem, 5vw, 3.6rem);
+    }
+
+    .hero-showcase {
+        width: min(100%, 440px);
+    }
+
 }
 
 @media (max-width: 800px) {
@@ -831,7 +883,9 @@ a {
 
     .hero {
         grid-template-columns: 1fr;
-        padding: 4rem 1.2rem 2rem;
+        gap: 1.5rem;
+        min-height: auto;
+        padding: clamp(3rem, 9vw, 4.5rem) 1.2rem 2.5rem;
         text-align: center;
     }
 
@@ -839,27 +893,25 @@ a {
         margin: 0 auto;
     }
 
+    .hero-copy .eyebrow {
+        justify-content: center;
+    }
+
+    .hero h1 {
+        font-size: clamp(2.75rem, 9vw, 3.8rem);
+    }
+
     .hero-copy > p {
         margin: 0 auto;
     }
 
     .hero-showcase {
-        min-height: min(92vw, 430px);
-    }
-
-    .hero-showcase::before {
-        width: min(86vw, 430px);
-        height: auto;
-        aspect-ratio: 1;
+        width: min(88vw, 440px);
     }
 
     .hero-showcase img {
-        width: min(72vw, 330px);
-        max-height: min(82vw, 400px);
-    }
-
-    .hero-orbit {
-        width: min(92vw, 460px);
+        height: 91%;
+        max-width: 86%;
     }
 
     .benefits {
@@ -904,12 +956,28 @@ a {
         font-size: 0.55rem;
     }
 
-    .hero h1 {
-        font-size: clamp(3rem, 15vw, 4.5rem);
+    .hero {
+        gap: 0.75rem;
+        padding-inline: 1rem;
     }
 
-    .floating-note {
-        display: none;
+    .hero h1 {
+        margin-bottom: 1rem;
+        font-size: clamp(2.35rem, 12vw, 3.2rem);
+        line-height: 1.02;
+    }
+
+    .hero-copy > p {
+        font-size: 0.9rem;
+        line-height: 1.65;
+    }
+
+    .hero-cta {
+        margin-top: 1.5rem;
+    }
+
+    .hero-showcase {
+        width: min(92vw, 360px);
     }
 
     .container {

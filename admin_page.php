@@ -69,7 +69,6 @@ try {
         SELECT orders.id,
                orders.total,
                orders.status,
-               orders.shipping_address,
                orders.created_at,
                users.name AS customer_name,
                users.email AS customer_email,
@@ -348,7 +347,7 @@ try {
 
                                 <p><strong><?= e($order['customer_name']) ?></strong> <span class="muted"><?= e($order['customer_email']) ?></span></p>
                                 <p class="muted">Telefon: <?= e($order['customer_phone'] ?: 'Nespecificat') ?></p>
-                                <p class="muted">Livrare: <?= e($order['shipping_address'] ?: ($order['customer_address'] ?: 'Nespecificata')) ?></p>
+                                <p class="muted">Livrare: <?= e($order['customer_address'] ?: 'Nespecificata') ?></p>
 
                                 <ul class="product-list">
                                     <?php foreach ($order['items'] as $item): ?>

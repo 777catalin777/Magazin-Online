@@ -13,10 +13,10 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 }
 
 $statusOptions = [
-    'pending' => 'In asteptare',
-    'processing' => 'In procesare',
-    'shipped' => 'Expediata',
-    'delivered' => 'Livrata',
+    'pending' => 'În așteptare',
+    'processing' => 'În procesare',
+    'shipped' => 'Expediată',
+    'delivered' => 'Livrată',
 ];
 
 if (empty($_SESSION['csrf_token'])) {
@@ -32,14 +32,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_order_status']
     $status = $_POST['status'] ?? '';
 
     if (!hash_equals($_SESSION['csrf_token'], $token)) {
-        $error = 'Cerere invalida. Reincarca pagina si incearca din nou.';
+        $error = 'Cerere invalidă. Reincarcă pagina și încearcă din nou.';
     } elseif ($orderId <= 0 || !array_key_exists($status, $statusOptions)) {
         $error = 'Date invalide pentru actualizarea comenzii.';
     } else {
         try {
             $stmt = $pdo->prepare("UPDATE orders SET status = ? WHERE id = ?");
             $stmt->execute([$status, $orderId]);
-            $message = 'Statusul comenzii #' . $orderId . ' a fost actualizat.';
+            $message = 'Statusul comenzii ' . $orderId . ' a fost actualizată.';
         } catch (PDOException $e) {
             error_log("Admin order status update error: " . $e->getMessage());
             $error = 'Nu s-a putut actualiza statusul comenzii.';
@@ -327,8 +327,8 @@ try {
                 <?php if (empty($orders)): ?>
                     <div class="orders-empty">
                         <i class='bx bx-package'></i>
-                        <h3>Nu exista comenzi</h3>
-                        <p>Comenzile clientilor vor aparea aici.</p>
+                        <h3>Nu există comenzi</h3>
+                        <p>Comenzile clientilor vor apărea aici.</p>
                     </div>
                 <?php else: ?>
                     <div class="admin-list">
@@ -347,7 +347,7 @@ try {
 
                                 <p><strong><?= e($order['customer_name']) ?></strong> <span class="muted"><?= e($order['customer_email']) ?></span></p>
                                 <p class="muted">Telefon: <?= e($order['customer_phone'] ?: 'Nespecificat') ?></p>
-                                <p class="muted">Livrare: <?= e($order['customer_address'] ?: 'Nespecificata') ?></p>
+                                <p class="muted">Livrare: <?= e($order['customer_address'] ?: 'Nespecificată') ?></p>
 
                                 <ul class="product-list">
                                     <?php foreach ($order['items'] as $item): ?>
@@ -363,14 +363,14 @@ try {
                                     <form method="POST" class="status-form">
                                         <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token']) ?>">
                                         <input type="hidden" name="order_id" value="<?= e($order['id']) ?>">
-                                        <select name="status" aria-label="Status comanda">
+                                        <select name="status" aria-label="Status comandă">
                                             <?php foreach ($statusOptions as $value => $label): ?>
                                                 <option value="<?= e($value) ?>" <?= $value === $status ? 'selected' : '' ?>>
                                                     <?= e($label) ?>
                                                 </option>
                                             <?php endforeach; ?>
                                         </select>
-                                        <button class="icon-btn" type="submit" name="update_order_status" title="Salveaza statusul">
+                                        <button class="icon-btn" type="submit" name="update_order_status" title="Salvează statusul">
                                             <i class='bx bx-save'></i>
                                         </button>
                                     </form>
@@ -411,7 +411,7 @@ try {
                                     </td>
                                     <td>
                                         <div><strong>Telefon:</strong> <?= e($user['phone'] ?: 'Nespecificat') ?></div>
-                                        <div class="muted"><strong>Adresa:</strong> <?= e($user['address'] ?: 'Nespecificata') ?></div>
+                                        <div class="muted"><strong>Adresa:</strong> <?= e($user['address'] ?: 'Nespecificată') ?></div>
                                     </td>
                                     <td>
                                         <span class="role-badge"><?= e($user['role'] ?: 'user') ?></span>

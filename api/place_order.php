@@ -48,10 +48,21 @@ $total = 0;
 $seenKeys = [];
 
 foreach ($input['cart'] as $item) {
-    $key = $item['key'] ?? '';
-    $quantity = (int)($item['quantity'] ?? 1);
+    if (!is_array($item)) {
+        respond(['success' => false, 'message' => 'Datele cosului sunt invalide.'], 422);
+    }
 
-    if (!isset($catalog[$key]) || $quantity <= 0 || $quantity > 99 || isset($seenKeys[$key])) {
+    $key = $item['key'] ?? '';
+    $rawQuantity = $item['quantity'] ?? 1;
+    $quantity = filter_var($rawQuantity, FILTER_VALIDATE_INT);
+
+    if (!is_string($key)
+        || $quantity === false
+        || !isset($catalog[$key])
+        || $quantity <= 0
+        || $quantity > 99
+        || isset($seenKeys[$key])
+    ) {
         respond(['success' => false, 'message' => 'Datele cosului sunt invalide.'], 422);
     }
     $seenKeys[$key] = true;

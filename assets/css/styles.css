@@ -844,20 +844,22 @@ a {
     }
 
     .hero-showcase {
-        min-height: 360px;
+        min-height: min(92vw, 430px);
     }
 
     .hero-showcase::before {
-        width: 70vw;
+        width: min(86vw, 430px);
+        height: auto;
+        aspect-ratio: 1;
     }
 
     .hero-showcase img {
-        width: 82vw;
-        max-height: 330px;
+        width: min(72vw, 330px);
+        max-height: min(82vw, 400px);
     }
 
     .hero-orbit {
-        width: 78vw;
+        width: min(92vw, 460px);
     }
 
     .benefits {

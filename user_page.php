@@ -331,7 +331,9 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
             let cart = [];
             try {
                 const storedCart = JSON.parse(localStorage.getItem("cart"));
-                cart = Array.isArray(storedCart) ? storedCart : [];
+                cart = Array.isArray(storedCart)
+                    ? storedCart.filter(item => item && typeof item === "object" && !Array.isArray(item))
+                    : [];
             } catch {
                 localStorage.removeItem("cart");
             }
@@ -358,8 +360,10 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                 let html = '<ul style="list-style: none; padding: 0; margin: 0;">';
 
                 cart.forEach((item, index) => {
-                    const qty = item.quantity || 1;
-                    const price = item.price || 0;
+                    const parsedQty = Number(item.quantity);
+                    const parsedPrice = Number(item.price);
+                    const qty = Number.isInteger(parsedQty) && parsedQty > 0 ? parsedQty : 1;
+                    const price = Number.isFinite(parsedPrice) && parsedPrice >= 0 ? parsedPrice : 0;
                     const itemTotal = qty * price;
                     totalQty += qty;
                     totalPrice += itemTotal;
@@ -402,7 +406,7 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                 if (indexAttr === null) return;
 
                 const idx = parseInt(indexAttr, 10);
-                if (isNaN(idx)) return;
+                if (isNaN(idx) || !cart[idx]) return;
 
                 if (target.classList.contains("cart-decrease-qty")) {
                     if (cart[idx].quantity > 1) {
@@ -412,7 +416,7 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                     }
                     saveAndRefresh();
                 } else if (target.classList.contains("cart-increase-qty")) {
-                    cart[idx].quantity = (cart[idx].quantity || 0) + 1;
+                    cart[idx].quantity = Number(cart[idx].quantity || 0) + 1;
                     saveAndRefresh();
                 } else if (target.classList.contains("cart-remove-item")) {
                     cart.splice(idx, 1);

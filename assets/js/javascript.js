@@ -16,7 +16,9 @@ document.addEventListener("DOMContentLoaded", () => {
     function readCart() {
         try {
             const value = JSON.parse(localStorage.getItem("cart"));
-            return Array.isArray(value) ? value : [];
+            return Array.isArray(value)
+                ? value.filter(item => item && typeof item === "object" && !Array.isArray(item))
+                : [];
         } catch {
             return [];
         }

@@ -35,7 +35,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_order_status']
         try {
             $stmt = $pdo->prepare("UPDATE orders SET status = ? WHERE id = ?");
             $stmt->execute([$status, $orderId]);
-            $message = 'Statusul comenzii ' . $orderId . ' a fost actualizată.';
+            if ($stmt->rowCount() === 0) {
+                $error = 'Comanda nu a fost gasita.';
+            } else {
+                $message = 'Statusul comenzii ' . $orderId . ' a fost actualizată.';
+            }
         } catch (PDOException $e) {
             error_log("Admin order status update error: " . $e->getMessage());
             $error = 'Nu s-a putut actualiza statusul comenzii.';

@@ -1,6 +1,6 @@
 <?php
-require_once 'config.php';
-require_once 'language_switcher.php';
+require_once __DIR__ . '/app/config/config.php';
+require_once __DIR__ . '/app/includes/language_switcher.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -170,14 +170,11 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars(lang('site_title')) ?> | Contul meu</title>
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="user_page.css">
-    <link rel="apple-touch-icon" sizes="180x180" href="images/favicon/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="images/favicon/favicon-16x16.png">
-    <link rel="manifest" href="images/favicon/site.webmanifest">
+    <link rel="stylesheet" href="assets/css/user_page.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/images/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon/favicon-16x16.png">
+    <link rel="manifest" href="assets/images/favicon/site.webmanifest">
 </head>
 
 <body>
@@ -421,7 +418,7 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                     return;
                 }
 
-                fetch("place_order.php", {
+                fetch("api/place_order.php", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ cart: cart })
@@ -456,7 +453,7 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
             }
 
             function loadOrders() {
-                fetch("get_orders.php")
+                fetch("api/get_orders.php")
                     .then(response => response.json())
                     .then(data => {
                         const ordersContainer = document.getElementById("orders-list");

@@ -1,6 +1,6 @@
 <?php
-require_once 'config.php';
-require_once 'language_switcher.php';
+require_once __DIR__ . '/app/config/config.php';
+require_once __DIR__ . '/app/includes/language_switcher.php';
 
 if (!isset($_SESSION['email'])) {
     header("Location: login.php");
@@ -81,17 +81,25 @@ try {
     ");
     $orders = $ordersStmt->fetchAll();
 
-    $itemsStmt = $pdo->prepare("
-        SELECT product_name, quantity, price
-        FROM order_items
-        WHERE order_id = ?
-        ORDER BY id ASC
-    ");
+    $itemsByOrder = [];
+    if ($orders) {
+        $orderIds = array_column($orders, 'id');
+        $placeholders = implode(',', array_fill(0, count($orderIds), '?'));
+        $itemsStmt = $pdo->prepare("
+            SELECT order_id, product_name, quantity, price
+            FROM order_items
+            WHERE order_id IN ($placeholders)
+            ORDER BY id ASC
+        ");
+        $itemsStmt->execute($orderIds);
+        foreach ($itemsStmt->fetchAll() as $item) {
+            $itemsByOrder[$item['order_id']][] = $item;
+        }
+    }
 
     foreach ($orders as &$order) {
         $order['order_date'] = formatLocalDateTime($order['created_at']);
-        $itemsStmt->execute([$order['id']]);
-        $order['items'] = $itemsStmt->fetchAll();
+        $order['items'] = $itemsByOrder[$order['id']] ?? [];
     }
     unset($order);
 
@@ -118,10 +126,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= e(lang('site_title')) ?> | Admin</title>
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="user_page.css">
+    <link rel="stylesheet" href="assets/css/user_page.css">
     <style>
         body {
             align-items: stretch;
@@ -268,6 +273,7 @@ try {
             }
         }
     </style>
+    <link rel="stylesheet" href="assets/css/admin_page.css">
 </head>
 
 <body>

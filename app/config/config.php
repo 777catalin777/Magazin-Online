@@ -38,7 +38,8 @@ if (!isset($_SESSION['lang'])) {
 
 $lang = $_SESSION['lang'];
 $translations = [];
-$langFile = __DIR__ . "/languages/{$lang}.json";
+$projectRoot = dirname(__DIR__, 2);
+$langFile = $projectRoot . "/languages/{$lang}.json";
 if (file_exists($langFile)) {
     $translations = json_decode(file_get_contents($langFile), true) ?: [];
 }
@@ -57,7 +58,7 @@ try {
     } else {
         $username = null;
         $password = null;
-        $dsn = "sqlite:" . __DIR__ . "/database.sqlite";
+        $dsn = "sqlite:" . $projectRoot . "/database/database.sqlite";
     }
 
     $pdo = new PDO($dsn, $username, $password, [

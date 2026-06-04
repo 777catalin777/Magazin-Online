@@ -1,6 +1,7 @@
 <?php
-require_once 'config.php';
-require_once 'language_switcher.php';
+require_once __DIR__ . '/../app/config/config.php';
+require_once __DIR__ . '/../app/includes/language_switcher.php';
+require_once __DIR__ . '/../app/includes/catalog.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -20,20 +21,13 @@ if (!isset($input['cart']) || !is_array($input['cart']) || empty($input['cart'])
     exit;
 }
 
-$catalog = [
-    'name_product_1' => ['name' => lang('name_product_1'), 'price' => 800],
-    'name_product_2' => ['name' => lang('name_product_2'), 'price' => 990],
-    'name_product_3' => ['name' => lang('name_product_3'), 'price' => 320],
-    'name_product_4' => ['name' => lang('name_product_4'), 'price' => 650],
-    'name_product_5' => ['name' => lang('name_product_5'), 'price' => 650],
-    'name_product_6' => ['name' => lang('name_product_6'), 'price' => 630],
-    'name_product_7' => ['name' => lang('name_product_7'), 'price' => 700],
-    'name_product_8' => ['name' => lang('name_product_8'), 'price' => 900],
-    'name_product_9' => ['name' => lang('name_product_9'), 'price' => 1200],
-    'name_product_10' => ['name' => lang('name_product_10'), 'price' => 3400],
-    'name_product_11' => ['name' => lang('name_product_11'), 'price' => 2500],
-    'name_product_12' => ['name' => lang('name_product_12'), 'price' => 2000],
-];
+$catalog = [];
+foreach ($products as $product) {
+    $catalog[$product['key']] = [
+        'name' => lang($product['key']),
+        'price' => $product['price'],
+    ];
+}
 
 $validatedItems = [];
 $total = 0;

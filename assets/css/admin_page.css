@@ -1,0 +1,85 @@
+.admin-dashboard {
+    max-width: 1500px;
+}
+
+.admin-grid {
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+}
+
+.metric-card {
+    position: relative;
+    overflow: hidden;
+    padding: 1.25rem !important;
+    background: rgba(255, 255, 255, 0.94) !important;
+    border: 1px solid rgba(255, 255, 255, 0.9) !important;
+    border-radius: 20px !important;
+    box-shadow: var(--shadow) !important;
+}
+
+.metric-card::after {
+    content: "";
+    position: absolute;
+    right: -24px;
+    bottom: -34px;
+    width: 90px;
+    height: 90px;
+    background: var(--accent-soft);
+    border-radius: 50%;
+}
+
+.metric-card i {
+    position: relative;
+    z-index: 1;
+    background: var(--accent-soft) !important;
+    color: var(--accent) !important;
+    border-radius: 50% !important;
+}
+
+.metric-label {
+    color: var(--muted) !important;
+    font-size: 0.68rem !important;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.metric-value {
+    position: relative;
+    z-index: 1;
+    color: var(--ink) !important;
+    font-family: "Poppins", sans-serif;
+    font-size: 1.65rem !important;
+}
+
+.admin-content {
+    gap: 1.25rem !important;
+}
+
+.admin-list {
+    gap: 0.8rem !important;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 0.7rem !important;
+    border-color: var(--line) !important;
+    font-size: 0.7rem;
+}
+
+.admin-table th {
+    color: var(--muted) !important;
+}
+
+.status-form select {
+    padding: 0.5rem 0.7rem !important;
+    background: var(--paper) !important;
+    color: var(--ink) !important;
+    border-color: var(--line) !important;
+    border-radius: 999px !important;
+    font-size: 0.7rem;
+}
+
+.icon-btn {
+    background: var(--ink) !important;
+    border-radius: 50% !important;
+}

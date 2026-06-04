@@ -1,0 +1,76 @@
+[Thu Jun  4 22:33:31 2026] PHP 8.5.7 Development Server (http://127.0.0.1:8765) started
+[Thu Jun  4 22:33:39 2026] 127.0.0.1:58122 Accepted
+[Thu Jun  4 22:33:39 2026] 127.0.0.1:58122 [200]: GET /index.php
+[Thu Jun  4 22:33:39 2026] 127.0.0.1:58122 Closing
+[Thu Jun  4 22:33:50 2026] 127.0.0.1:58197 Accepted
+[Thu Jun  4 22:33:50 2026] 127.0.0.1:58197 [200]: HEAD /database/database.sqlite
+[Thu Jun  4 22:33:50 2026] 127.0.0.1:58197 Closing
+[Thu Jun  4 22:33:50 2026] 127.0.0.1:58198 Accepted
+[Thu Jun  4 22:33:50 2026] 127.0.0.1:58198 [401]: GET /api/get_orders.php
+[Thu Jun  4 22:33:50 2026] 127.0.0.1:58198 Closing
+[Thu Jun  4 22:34:04 2026] 127.0.0.1:58307 Accepted
+[Thu Jun  4 22:34:04 2026] 127.0.0.1:58307 [200]: GET /login.php
+[Thu Jun  4 22:34:04 2026] 127.0.0.1:58307 Closing
+[Thu Jun  4 22:34:20 2026] 127.0.0.1:58469 Accepted
+[Thu Jun  4 22:34:20 2026] 127.0.0.1:58469 [302]: POST /user_page.php
+[Thu Jun  4 22:34:20 2026] 127.0.0.1:58469 Closing
+[Thu Jun  4 22:34:26 2026] 127.0.0.1:58560 Accepted
+[Thu Jun  4 22:34:26 2026] 127.0.0.1:58560 [200]: GET /login.php
+[Thu Jun  4 22:34:26 2026] 127.0.0.1:58560 Closing
+[Thu Jun  4 22:34:42 2026] 127.0.0.1:58758 Accepted
+[Thu Jun  4 22:34:42 2026] 127.0.0.1:58758 [302]: POST /user_page.php
+[Thu Jun  4 22:34:42 2026] 127.0.0.1:58758 Closing
+[Thu Jun  4 22:34:50 2026] 127.0.0.1:58882 Accepted
+[Thu Jun  4 22:34:50 2026] 127.0.0.1:58882 [200]: GET /user_page.php
+[Thu Jun  4 22:34:50 2026] 127.0.0.1:58882 Closing
+[Thu Jun  4 22:34:56 2026] 127.0.0.1:58993 Accepted
+[Thu Jun  4 22:34:56 2026] 127.0.0.1:58993 [422]: POST /api/place_order.php
+[Thu Jun  4 22:34:56 2026] 127.0.0.1:58993 Closing
+[Thu Jun  4 22:35:14 2026] 127.0.0.1:59086 Accepted
+[Thu Jun  4 22:35:14 2026] 127.0.0.1:59086 [401]: POST /api/place_order.php
+[Thu Jun  4 22:35:14 2026] 127.0.0.1:59086 Closing
+[Thu Jun  4 22:35:49 2026] 127.0.0.1:59261 Accepted
+[Thu Jun  4 22:35:50 2026] 127.0.0.1:59261 [201]: POST /api/place_order.php
+[Thu Jun  4 22:35:50 2026] 127.0.0.1:59261 Closing
+[Thu Jun  4 22:35:54 2026] 127.0.0.1:59340 Accepted
+[Thu Jun  4 22:35:54 2026] 127.0.0.1:59340 [200]: GET /api/get_orders.php
+[Thu Jun  4 22:35:54 2026] 127.0.0.1:59340 Closing
+[Thu Jun  4 22:38:40 2026] 127.0.0.1:54494 Accepted
+[Thu Jun  4 22:38:40 2026] 127.0.0.1:54494 [200]: GET /login.php
+[Thu Jun  4 22:38:40 2026] 127.0.0.1:54494 Closing
+[Thu Jun  4 22:38:46 2026] 127.0.0.1:54496 Accepted
+[Thu Jun  4 22:38:46 2026] 127.0.0.1:54496 [302]: POST /user_page.php
+[Thu Jun  4 22:38:46 2026] 127.0.0.1:54496 Closing
+[Thu Jun  4 22:38:56 2026] 127.0.0.1:54498 Accepted
+[Thu Jun  4 22:38:56 2026] 127.0.0.1:54498 [200]: GET /admin_page.php
+[Thu Jun  4 22:38:56 2026] 127.0.0.1:54498 Closing
+[Thu Jun  4 22:39:09 2026] 127.0.0.1:54501 Accepted
+[Thu Jun  4 22:39:09 2026] 127.0.0.1:54501 [200]: GET /admin_page.php
+[Thu Jun  4 22:39:09 2026] 127.0.0.1:54501 Closing
+[Thu Jun  4 22:42:00 2026] 127.0.0.1:51262 Accepted
+[Thu Jun  4 22:42:00 2026] 127.0.0.1:51262 [404]: GET /database/init_db.php
+[Thu Jun  4 22:42:00 2026] 127.0.0.1:51262 Closing
+[Thu Jun  4 22:42:00 2026] 127.0.0.1:51263 Accepted
+[Thu Jun  4 22:42:00 2026] 127.0.0.1:51263 [200]: GET /index.php
+[Thu Jun  4 22:42:00 2026] 127.0.0.1:51263 Closing
+[Thu Jun  4 22:42:00 2026] 127.0.0.1:51265 Accepted
+[Thu Jun  4 22:42:00 2026] 127.0.0.1:51265 [401]: GET /api/get_orders.php
+[Thu Jun  4 22:42:00 2026] 127.0.0.1:51265 Closing
+[Thu Jun  4 22:42:14 2026] 127.0.0.1:51269 Accepted
+[Thu Jun  4 22:42:14 2026] 127.0.0.1:51269 [200]: GET /admin_page.php
+[Thu Jun  4 22:42:14 2026] 127.0.0.1:51269 Closing
+[Thu Jun  4 22:42:21 2026] 127.0.0.1:51271 Accepted
+[Thu Jun  4 22:42:21 2026] 127.0.0.1:51271 [201]: POST /api/place_order.php
+[Thu Jun  4 22:42:21 2026] 127.0.0.1:51271 Closing
+[Thu Jun  4 22:42:47 2026] 127.0.0.1:51276 Accepted
+[Thu Jun  4 22:42:47 2026] 127.0.0.1:51276 [200]: GET /admin_page.php
+[Thu Jun  4 22:42:47 2026] 127.0.0.1:51276 Closing
+[Thu Jun  4 22:42:56 2026] 127.0.0.1:51278 Accepted
+[Thu Jun  4 22:42:56 2026] 127.0.0.1:51278 [422]: POST /api/place_order.php
+[Thu Jun  4 22:42:56 2026] 127.0.0.1:51278 Closing
+[Thu Jun  4 22:43:10 2026] 127.0.0.1:51280 Accepted
+[Thu Jun  4 22:43:10 2026] 127.0.0.1:51280 [302]: GET /logout.php
+[Thu Jun  4 22:43:10 2026] 127.0.0.1:51280 Closing
+[Thu Jun  4 22:43:15 2026] 127.0.0.1:51282 Accepted
+[Thu Jun  4 22:43:15 2026] 127.0.0.1:51282 [302]: GET /admin_page.php
+[Thu Jun  4 22:43:15 2026] 127.0.0.1:51282 Closing

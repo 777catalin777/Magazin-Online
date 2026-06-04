@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const itemCount = document.getElementById("item-count");
     const cartContent = document.querySelector(".cart-content");
     const currentLang = document.documentElement.lang || "ro";
+    const MAX_CART_QUANTITY = 99;
 
     const translations = {
         ro: { added: "Produsul a fost adaugat in cos.", cleared: "Cosul a fost golit.", quantity: "Cantitate" },
@@ -17,11 +18,29 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             const value = JSON.parse(localStorage.getItem("cart"));
             return Array.isArray(value)
-                ? value.filter(item => item && typeof item === "object" && !Array.isArray(item))
+                ? value
+                    .filter(item => item && typeof item === "object" && !Array.isArray(item) && typeof item.key === "string" && item.key !== "")
+                    .map(item => ({
+                        ...item,
+                        quantity: normalizeQuantity(item.quantity),
+                        price: normalizePrice(item.price)
+                    }))
                 : [];
         } catch {
             return [];
         }
+    }
+
+    function normalizeQuantity(value) {
+        const quantity = Number(value);
+        return Number.isInteger(quantity) && quantity > 0
+            ? Math.min(quantity, MAX_CART_QUANTITY)
+            : 1;
+    }
+
+    function normalizePrice(value) {
+        const price = Number(value);
+        return Number.isFinite(price) && price >= 0 ? price : 0;
     }
 
     function escapeHtml(value) {
@@ -44,8 +63,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function updateCart() {
-        const totalQuantity = cart.reduce((sum, item) => sum + Number(item.quantity || 0), 0);
-        const total = cart.reduce((sum, item) => sum + Number(item.price || 0) * Number(item.quantity || 0), 0);
+        const totalQuantity = cart.reduce((sum, item) => sum + normalizeQuantity(item.quantity), 0);
+        const total = cart.reduce((sum, item) => sum + normalizePrice(item.price) * normalizeQuantity(item.quantity), 0);
 
         if (cartDisplay) {
             cartDisplay.textContent = totalQuantity;
@@ -60,8 +79,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const name = escapeHtml(item.name || window.productNames?.[item.key] || "Produs");
                 const key = escapeHtml(item.key || "");
                 const image = escapeHtml(item.image || "");
-                const quantity = Number(item.quantity || 1);
-                const price = Number(item.price || 0) * quantity;
+                const quantity = normalizeQuantity(item.quantity);
+                const price = normalizePrice(item.price) * quantity;
                 return `<li>
                     <img src="${image}" alt="${name}">
                     <div class="item-details">
@@ -89,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const existing = cart.find(item => item.key === key);
 
         if (existing) {
-            existing.quantity = Number(existing.quantity || 0) + 1;
+            existing.quantity = Math.min(normalizeQuantity(existing.quantity) + 1, MAX_CART_QUANTITY);
         } else {
             cart.push({
                 key,
@@ -110,8 +129,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const index = cart.findIndex(item => item.key === button.dataset.key);
         if (index < 0) return;
 
-        if (button.classList.contains("decrease-quantity") && cart[index].quantity > 1) {
-            cart[index].quantity--;
+        const quantity = normalizeQuantity(cart[index].quantity);
+        if (button.classList.contains("decrease-quantity") && quantity > 1) {
+            cart[index].quantity = quantity - 1;
         } else {
             cart.splice(index, 1);
         }

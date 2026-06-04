@@ -45,9 +45,9 @@ foreach ($products as $product) {
                 <a href="?lang=ru" class="<?= $lang === 'ru' ? 'active' : '' ?>">RU</a>
             </div>
 
-            <?php if (isset($_SESSION['email'])): ?>
-                <a href="<?= $_SESSION['role'] === 'admin' ? 'admin_page.php' : 'user_page.php' ?>" class="icon-link">
-                    <i class="bx bx-user"></i><span><?= htmlspecialchars($_SESSION['name']) ?></span>
+            <?php if (isset($_SESSION['user_id'])): ?>
+                <a href="<?= ($_SESSION['role'] ?? 'user') === 'admin' ? 'admin_page.php' : 'user_page.php' ?>" class="icon-link">
+                    <i class="bx bx-user"></i><span><?= htmlspecialchars($_SESSION['name'] ?? '') ?></span>
                 </a>
             <?php else: ?>
                 <a href="login.php" class="icon-link">
@@ -93,7 +93,7 @@ foreach ($products as $product) {
                 <a href="#collection" class="hero-cta">Descoperă colecția <i class="bx bx-right-arrow-alt"></i></a>
             </div>
             <div class="hero-showcase">
-                <img src="assets/images/produse/Hanorac Diorr.png" alt="Hanorac Adidas">
+                <img src="assets/images/produse/Hanorac Diorr.png" alt="Hanorac Dior">
                 <div class="floating-note note-one">
                     <strong>-20%</strong><br>
                     Oferta săptămânii

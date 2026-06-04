@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (isset($_POST['update_profile'])) {
-        if (!isset($_SESSION['email'])) {
+        if (!isset($_SESSION['user_id'])) {
             header("Location: login.php");
             exit();
         }
@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (isset($_POST['change_password'])) {
-        if (!isset($_SESSION['email'])) {
+        if (!isset($_SESSION['user_id'])) {
             header("Location: login.php");
             exit();
         }
@@ -153,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-if (!isset($_SESSION['email'])) {
+if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
@@ -329,10 +329,21 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             let cart = [];
+            const MAX_CART_QUANTITY = 99;
+
+            function normalizeQuantity(value) {
+                const quantity = Number(value);
+                return Number.isInteger(quantity) && quantity > 0
+                    ? Math.min(quantity, MAX_CART_QUANTITY)
+                    : 1;
+            }
+
             try {
                 const storedCart = JSON.parse(localStorage.getItem("cart"));
                 cart = Array.isArray(storedCart)
-                    ? storedCart.filter(item => item && typeof item === "object" && !Array.isArray(item))
+                    ? storedCart
+                        .filter(item => item && typeof item === "object" && !Array.isArray(item) && typeof item.key === "string" && item.key !== "")
+                        .map(item => ({ ...item, quantity: normalizeQuantity(item.quantity) }))
                     : [];
             } catch {
                 localStorage.removeItem("cart");
@@ -362,7 +373,7 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                 cart.forEach((item, index) => {
                     const parsedQty = Number(item.quantity);
                     const parsedPrice = Number(item.price);
-                    const qty = Number.isInteger(parsedQty) && parsedQty > 0 ? parsedQty : 1;
+                    const qty = normalizeQuantity(parsedQty);
                     const price = Number.isFinite(parsedPrice) && parsedPrice >= 0 ? parsedPrice : 0;
                     const itemTotal = qty * price;
                     totalQty += qty;
@@ -409,14 +420,15 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                 if (isNaN(idx) || !cart[idx]) return;
 
                 if (target.classList.contains("cart-decrease-qty")) {
-                    if (cart[idx].quantity > 1) {
-                        cart[idx].quantity--;
+                    const quantity = normalizeQuantity(cart[idx].quantity);
+                    if (quantity > 1) {
+                        cart[idx].quantity = quantity - 1;
                     } else {
                         cart.splice(idx, 1);
                     }
                     saveAndRefresh();
                 } else if (target.classList.contains("cart-increase-qty")) {
-                    cart[idx].quantity = Number(cart[idx].quantity || 0) + 1;
+                    cart[idx].quantity = Math.min(normalizeQuantity(cart[idx].quantity) + 1, MAX_CART_QUANTITY);
                     saveAndRefresh();
                 } else if (target.classList.contains("cart-remove-item")) {
                     cart.splice(idx, 1);

@@ -2,7 +2,7 @@
 require_once __DIR__ . '/app/config/config.php';
 require_once __DIR__ . '/app/includes/language_switcher.php';
 
-if (!isset($_SESSION['email'])) {
+if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit();
 }
@@ -76,11 +76,11 @@ try {
         SELECT orders.id,
                orders.total,
                orders.status,
+               orders.shipping_address,
                orders.created_at,
                users.name AS customer_name,
                users.email AS customer_email,
-               users.phone AS customer_phone,
-               users.address AS customer_address
+               users.phone AS customer_phone
         FROM orders
         JOIN users ON users.id = orders.user_id
         ORDER BY orders.created_at DESC
@@ -360,7 +360,7 @@ try {
 
                                 <p><strong><?= e($order['customer_name']) ?></strong> <span class="muted"><?= e($order['customer_email']) ?></span></p>
                                 <p class="muted">Telefon: <?= e($order['customer_phone'] ?: 'Nespecificat') ?></p>
-                                <p class="muted">Livrare: <?= e($order['customer_address'] ?: 'Nespecificată') ?></p>
+                                <p class="muted">Livrare: <?= e($order['shipping_address'] ?: 'Nespecificată') ?></p>
 
                                 <ul class="product-list">
                                     <?php foreach ($order['items'] as $item): ?>

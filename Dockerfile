@@ -7,6 +7,13 @@ RUN apt-get update && apt-get install -y \
 
 COPY . /var/www/html/
 
+RUN printf '%s\n' \
+    '<Directory "/var/www/html/database">' \
+    '    Require all denied' \
+    '</Directory>' \
+    > /etc/apache2/conf-available/maison-lure-security.conf \
+    && a2enconf maison-lure-security
+
 RUN chown -R www-data:www-data /var/www/html
 
 EXPOSE 80

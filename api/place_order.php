@@ -76,9 +76,19 @@ foreach ($input['cart'] as $item) {
     $total += $price * $quantity;
 }
 
-$shippingAddress = $_SESSION['address'] ?? 'Adresa nespecificata';
-
 try {
+    $addressStmt = $pdo->prepare("SELECT address FROM users WHERE id = ?");
+    $addressStmt->execute([$_SESSION['user_id']]);
+    $shippingAddress = $addressStmt->fetchColumn();
+    if ($shippingAddress === false) {
+        respond(['success' => false, 'message' => 'Trebuie sa fii autentificat.'], 401);
+    }
+
+    $shippingAddress = trim((string)$shippingAddress);
+    if ($shippingAddress === '') {
+        $shippingAddress = 'Adresa nespecificata';
+    }
+
     $pdo->beginTransaction();
 
     if (($dbDriver ?? '') === 'sqlite') {

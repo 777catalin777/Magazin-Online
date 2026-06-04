@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $password = $_POST['password'] ?? '';
 
         if (empty($email) || empty($password)) {
-            $_SESSION['login_error'] = "Email și parola sunt obligatorii!";
+            $_SESSION['login_error'] = "Email-ul și parola sunt obligatorii!";
         } else {
             try {
                 $stmt = $pdo->prepare("SELECT id, name, email, password, role, phone, address FROM users WHERE email = ?");
@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                     exit();
                 } else {
-                    $_SESSION['login_error'] = "Email sau parolă incorectă!";
+                    $_SESSION['login_error'] = "Email-ul sau parola sunt incorecte!";
                 }
             } catch (PDOException $e) {
                 $_SESSION['login_error'] = "Eroare la autentificare.";
@@ -181,7 +181,6 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
     <div class="dashboard-container">
         <div class="dashboard-header">
             <div class="logo">
-                <i class='bx bxs-store-alt'></i>
                 <span>Maison Lure</span>
             </div>
             <div class="header-actions">

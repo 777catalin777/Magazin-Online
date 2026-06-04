@@ -76,7 +76,9 @@ try {
                orders.shipping_address,
                $dateExpression AS order_date,
                users.name AS customer_name,
-               users.email AS customer_email
+               users.email AS customer_email,
+               users.phone AS customer_phone,
+               users.address AS customer_address
         FROM orders
         JOIN users ON users.id = orders.user_id
         ORDER BY orders.created_at DESC
@@ -348,7 +350,8 @@ try {
                                 </div>
 
                                 <p><strong><?= e($order['customer_name']) ?></strong> <span class="muted"><?= e($order['customer_email']) ?></span></p>
-                                <p class="muted">Livrare: <?= e($order['shipping_address'] ?: 'Nespecificata') ?></p>
+                                <p class="muted">Telefon: <?= e($order['customer_phone'] ?: 'Nespecificat') ?></p>
+                                <p class="muted">Livrare: <?= e($order['shipping_address'] ?: ($order['customer_address'] ?: 'Nespecificata')) ?></p>
 
                                 <ul class="product-list">
                                     <?php foreach ($order['items'] as $item): ?>
@@ -399,6 +402,7 @@ try {
                         <thead>
                             <tr>
                                 <th>Nume</th>
+                                <th>Contact si adresa</th>
                                 <th>Rol</th>
                             </tr>
                         </thead>
@@ -408,9 +412,10 @@ try {
                                     <td>
                                         <strong><?= e($user['name']) ?></strong>
                                         <div class="muted"><?= e($user['email']) ?></div>
-                                        <?php if (!empty($user['phone'])): ?>
-                                            <div class="muted"><?= e($user['phone']) ?></div>
-                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <div><strong>Telefon:</strong> <?= e($user['phone'] ?: 'Nespecificat') ?></div>
+                                        <div class="muted"><strong>Adresa:</strong> <?= e($user['address'] ?: 'Nespecificata') ?></div>
                                     </td>
                                     <td>
                                         <span class="role-badge"><?= e($user['role'] ?: 'user') ?></span>

@@ -36,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_order_status']
             $stmt = $pdo->prepare("UPDATE orders SET status = ? WHERE id = ?");
             $stmt->execute([$status, $orderId]);
             if ($stmt->rowCount() === 0) {
-                $error = 'Comanda nu a fost gasita.';
+                $error = 'Comanda nu a fost găsită.';
             } else {
                 $message = 'Statusul comenzii ' . $orderId . ' a fost actualizată.';
             }
@@ -76,7 +76,7 @@ try {
         SELECT orders.id,
                orders.total,
                orders.status,
-               orders.shipping_address,
+               COALESCE(NULLIF(users.address, ''), orders.shipping_address) AS shipping_address,
                orders.created_at,
                users.name AS customer_name,
                users.email AS customer_email,
@@ -135,6 +135,10 @@ try {
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
     <link rel="stylesheet" href="assets/css/user_page.css">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/images/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon/favicon-16x16.png">
+    <link rel="manifest" href="assets/images/favicon/site.webmanifest">
     <style>
         body {
             align-items: stretch;
@@ -320,7 +324,7 @@ try {
             </div>
             <div class="metric-card">
                 <i class='bx bx-time-five'></i>
-                <div class="metric-label">In asteptare</div>
+                <div class="metric-label">În așteptare</div>
                 <div class="metric-value"><?= e($stats['pending']) ?></div>
             </div>
             <div class="metric-card">
@@ -341,7 +345,7 @@ try {
                     <div class="orders-empty">
                         <i class='bx bx-package'></i>
                         <h3>Nu există comenzi</h3>
-                        <p>Comenzile clientilor vor apărea aici.</p>
+                        <p>Comenzile clienților vor apărea aici.</p>
                     </div>
                 <?php else: ?>
                     <div class="admin-list">
@@ -350,7 +354,7 @@ try {
                             <article class="order-card">
                                 <div class="order-header">
                                     <div class="order-id-date">
-                                        <strong>Comanda #<?= e($order['id']) ?></strong>
+                                        <strong>Comanda <?= e($order['id']) ?></strong>
                                         <span class="order-date"><?= e($order['order_date']) ?></span>
                                     </div>
                                     <span class="order-status status-<?= e($status) ?>">
@@ -398,20 +402,20 @@ try {
             <aside class="card">
                 <div class="card-title">
                     <i class='bx bx-group'></i>
-                    <span>Clienti recenti</span>
+                    <span>Clienți recenți</span>
                 </div>
 
                 <?php if (empty($users)): ?>
                     <div class="orders-empty">
                         <i class='bx bx-user-x'></i>
-                        <h3>Nu exista utilizatori</h3>
+                        <h3>Nu există utilizatori</h3>
                     </div>
                 <?php else: ?>
                     <table class="admin-table">
                         <thead>
                             <tr>
                                 <th>Nume</th>
-                                <th>Contact si adresa</th>
+                                <th>Contact și adresă</th>
                                 <th>Rol</th>
                             </tr>
                         </thead>

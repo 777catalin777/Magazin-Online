@@ -17,6 +17,7 @@ foreach ($products as $product) {
     <meta name="description" content="Maison Lure - moda atent selectata pentru fiecare zi">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars(lang('site_title')) ?></title>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/images/favicon/apple-touch-icon.png">
@@ -118,7 +119,8 @@ foreach ($products as $product) {
                             <span class="product-tag"><?= htmlspecialchars($product['tag']) ?></span>
                             <img src="assets/images/produse/<?= htmlspecialchars($product['image']) ?>"
                                 alt="<?= htmlspecialchars(lang($product['key'])) ?>"
-                                loading="<?= $index > 3 ? 'lazy' : 'eager' ?>" decoding="async">
+                                loading="<?= $index === 0 ? 'eager' : 'lazy' ?>"
+                                <?= $index === 0 ? 'fetchpriority="high"' : '' ?> decoding="async">
                         </div>
                         <div class="product-info">
                             <div>

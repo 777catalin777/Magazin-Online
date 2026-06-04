@@ -29,6 +29,7 @@ function isActiveForm($formName, $activeForm)
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars(lang('site_title')) ?> | <?= htmlspecialchars(lang('login')) ?></title>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
     <link rel="stylesheet" href="assets/css/login.css">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/images/favicon/apple-touch-icon.png">
@@ -42,6 +43,7 @@ function isActiveForm($formName, $activeForm)
 
         <div class="form-box login <?= isActiveForm('login', $activeForm); ?>">
             <form action="user_page.php" method="post">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
                 <h1><?= htmlspecialchars(lang('login')) ?></h1>
                 <?php if ($success): ?>
                     <p class="success-message"><?= htmlspecialchars($success) ?></p>
@@ -71,6 +73,7 @@ function isActiveForm($formName, $activeForm)
 
         <div class="form-box register <?= isActiveForm('register', $activeForm); ?>">
             <form action="user_page.php" method="post">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
                 <h1><?= htmlspecialchars(lang('register')) ?></h1>
                 <?= showError($errors['register']); ?>
                 <div class="input-box">

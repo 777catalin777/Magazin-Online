@@ -31,6 +31,9 @@ CREATE TABLE IF NOT EXISTS order_items (
     quantity INTEGER NOT NULL CHECK (quantity > 0),
     price REAL NOT NULL CHECK (price >= 0)
 );
+
+CREATE INDEX IF NOT EXISTS idx_orders_user_created ON orders(user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);
 " : "
 CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
@@ -59,6 +62,9 @@ CREATE TABLE IF NOT EXISTS order_items (
     quantity INTEGER NOT NULL CHECK (quantity > 0),
     price NUMERIC(10, 2) NOT NULL CHECK (price >= 0)
 );
+
+CREATE INDEX IF NOT EXISTS idx_orders_user_created ON orders(user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);
 ";
 
 try {

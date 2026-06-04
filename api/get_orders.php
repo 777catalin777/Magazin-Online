@@ -1,8 +1,10 @@
 <?php
 require_once __DIR__ . '/../app/config/config.php';
 header('Content-Type: application/json; charset=utf-8');
+header('Cache-Control: no-store');
 
 if (!isset($_SESSION['user_id'])) {
+    http_response_code(401);
     echo json_encode(['orders' => []]);
     exit;
 }
@@ -13,6 +15,7 @@ try {
         FROM orders
         WHERE user_id = ?
         ORDER BY created_at DESC
+        LIMIT 50
     ");
     $ordersStmt->execute([$_SESSION['user_id']]);
     $orders = $ordersStmt->fetchAll();
@@ -43,5 +46,6 @@ try {
     echo json_encode(['orders' => $orders]);
 } catch (PDOException $e) {
     error_log("Get orders error: " . $e->getMessage());
+    http_response_code(500);
     echo json_encode(['orders' => []]);
 }

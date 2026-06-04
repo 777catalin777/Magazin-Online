@@ -3,6 +3,10 @@ require_once __DIR__ . '/app/config/config.php';
 require_once __DIR__ . '/app/includes/language_switcher.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isValidCsrfToken($_POST['csrf_token'] ?? '')) {
+        http_response_code(403);
+        die('Cerere invalidă. Reîncarcă pagina și încearcă din nou.');
+    }
 
     if (isset($_POST['login'])) {
         $email = trim($_POST['email'] ?? '');
@@ -17,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $user = $stmt->fetch();
 
                 if ($user && password_verify($password, $user['password'])) {
+                    session_regenerate_id(true);
                     $_SESSION['user_id'] = $user['id'];
                     $_SESSION['name'] = $user['name'];
                     $_SESSION['email'] = $user['email'];
@@ -95,8 +100,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['profile_error'] = "Numele este obligatoriu!";
         } else {
             try {
-                $stmt = $pdo->prepare("UPDATE users SET name = ?, phone = ?, address = ? WHERE email = ?");
-                $stmt->execute([$name, $phone, $address, $_SESSION['email']]);
+                $stmt = $pdo->prepare("UPDATE users SET name = ?, phone = ?, address = ? WHERE id = ?");
+                $stmt->execute([$name, $phone, $address, $_SESSION['user_id']]);
                 $_SESSION['name'] = $name;
                 $_SESSION['phone'] = $phone;
                 $_SESSION['address'] = $address;
@@ -121,8 +126,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $confirm_password = $_POST['confirm_password'] ?? '';
 
         try {
-            $stmt = $pdo->prepare("SELECT password FROM users WHERE email = ?");
-            $stmt->execute([$_SESSION['email']]);
+            $stmt = $pdo->prepare("SELECT password FROM users WHERE id = ?");
+            $stmt->execute([$_SESSION['user_id']]);
             $user = $stmt->fetch();
 
             if ($user && password_verify($current_password, $user['password'])) {
@@ -132,8 +137,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $_SESSION['profile_error'] = "Parolele nu se potrivesc!";
                 } else {
                     $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-                    $stmt = $pdo->prepare("UPDATE users SET password = ? WHERE email = ?");
-                    $stmt->execute([$hashed_password, $_SESSION['email']]);
+                    $stmt = $pdo->prepare("UPDATE users SET password = ? WHERE id = ?");
+                    $stmt->execute([$hashed_password, $_SESSION['user_id']]);
                     $_SESSION['profile_success'] = "Parola a fost schimbată cu succes!";
                 }
             } else {
@@ -169,6 +174,7 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars(lang('site_title')) ?> | Contul meu</title>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
     <link rel="stylesheet" href="assets/css/user_page.css">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/images/favicon/apple-touch-icon.png">
@@ -236,6 +242,7 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                     <span>Actualizează datele</span>
                 </div>
                 <form method="POST" style="flex: 1; display: flex; flex-direction: column;">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
                     <input type="hidden" name="update_profile" value="1">
                     <div class="input-box">
                         <i class='bx bx-user'></i>
@@ -300,6 +307,7 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                 <span>Schimbă parola</span>
             </div>
             <form method="POST">
+                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
                 <input type="hidden" name="change_password" value="1">
                 <div class="input-box">
                     <i class='bx bx-key'></i>
@@ -320,7 +328,13 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            let cart = JSON.parse(localStorage.getItem("cart")) || [];
+            let cart = [];
+            try {
+                const storedCart = JSON.parse(localStorage.getItem("cart"));
+                cart = Array.isArray(storedCart) ? storedCart : [];
+            } catch {
+                localStorage.removeItem("cart");
+            }
 
             function displayCart() {
                 const container = document.getElementById("cart-items-list");
@@ -419,7 +433,10 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
 
                 fetch("api/place_order.php", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-Token": <?= json_encode(csrfToken()) ?>
+                    },
                     body: JSON.stringify({ cart: cart })
                 })
                     .then(response => response.json())

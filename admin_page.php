@@ -19,10 +19,6 @@ $statusOptions = [
     'delivered' => 'Livrată',
 ];
 
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-
 $message = '';
 $error = '';
 
@@ -31,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_order_status']
     $orderId = (int)($_POST['order_id'] ?? 0);
     $status = $_POST['status'] ?? '';
 
-    if (!hash_equals($_SESSION['csrf_token'], $token)) {
+    if (!isValidCsrfToken($token)) {
         $error = 'Cerere invalidă. Reincarcă pagina și încearcă din nou.';
     } elseif ($orderId <= 0 || !array_key_exists($status, $statusOptions)) {
         $error = 'Date invalide pentru actualizarea comenzii.';
@@ -58,11 +54,18 @@ function e($value)
 }
 
 try {
+    $orderStats = $pdo->query("
+        SELECT COUNT(*) AS orders,
+               COALESCE(SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END), 0) AS pending,
+               COALESCE(SUM(total), 0) AS revenue
+        FROM orders
+    ")->fetch();
+
     $stats = [
         'users' => (int)$pdo->query("SELECT COUNT(*) FROM users")->fetchColumn(),
-        'orders' => (int)$pdo->query("SELECT COUNT(*) FROM orders")->fetchColumn(),
-        'pending' => (int)$pdo->query("SELECT COUNT(*) FROM orders WHERE status = 'pending'")->fetchColumn(),
-        'revenue' => (float)$pdo->query("SELECT COALESCE(SUM(total), 0) FROM orders")->fetchColumn(),
+        'orders' => (int)$orderStats['orders'],
+        'pending' => (int)$orderStats['pending'],
+        'revenue' => (float)$orderStats['revenue'],
     ];
 
     $ordersStmt = $pdo->query("
@@ -104,7 +107,7 @@ try {
     unset($order);
 
     $usersStmt = $pdo->query("
-        SELECT id, name, email, role, phone, address, created_at
+        SELECT id, name, email, role, phone, address
         FROM users
         ORDER BY id DESC
         LIMIT 10
@@ -125,6 +128,7 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= e(lang('site_title')) ?> | Admin</title>
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
     <link rel="stylesheet" href="assets/css/user_page.css">
     <style>
@@ -367,7 +371,7 @@ try {
 
                                 <div class="order-footer">
                                     <form method="POST" class="status-form">
-                                        <input type="hidden" name="csrf_token" value="<?= e($_SESSION['csrf_token']) ?>">
+                                        <input type="hidden" name="csrf_token" value="<?= e(csrfToken()) ?>">
                                         <input type="hidden" name="order_id" value="<?= e($order['id']) ?>">
                                         <select name="status" aria-label="Status comandă">
                                             <?php foreach ($statusOptions as $value => $label): ?>

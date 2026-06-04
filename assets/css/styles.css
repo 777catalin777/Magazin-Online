@@ -103,6 +103,15 @@ a {
     color: var(--ink);
 }
 
+.search-form input::-webkit-search-cancel-button {
+    display: none;
+    appearance: none;
+}
+
+.search-form input::-ms-clear {
+    display: none;
+}
+
 .header-actions,
 .language-switcher,
 .icon-link {
@@ -374,12 +383,14 @@ a {
 
 .hero h1 {
     margin-bottom: 1.5rem;
-    font-size: clamp(3.4rem, 7vw, 7.3rem);
+    font-size: clamp(3.4rem, 7vw, 4.3rem);
     letter-spacing: -0.055em;
     text-wrap: balance;
 }
 
 .hero h1 em {
+    display: inline-block;
+    padding-top: 0.25em;
     color: var(--accent);
     font-weight: 600;
     text-shadow: 0 12px 34px rgba(196, 111, 76, 0.12);

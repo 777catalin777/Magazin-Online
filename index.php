@@ -92,7 +92,16 @@ foreach ($products as $product) {
                 <p>Descoperă îmbrăcăminte modernă, atent selectată pentru confortul și personalitatea ta.</p>
                 <a href="#collection" class="hero-cta">Descoperă colecția <i class="bx bx-right-arrow-alt"></i></a>
             </div>
-            <div class="hero-showcase" aria-hidden="true">
+            <div class="hero-showcase">
+                <img src="assets/images/produse/Hanorac Diorr.png" alt="Hanorac Adidas">
+                <div class="floating-note note-one">
+                    <strong>-20%</strong><br>
+                    Oferta săptămânii
+                </div>
+                <div class="floating-note note-two">
+                    <strong>100+</strong><br>
+                    Clienți mulțumiți
+                </div>
                 <div class="hero-orbit"></div>
             </div>
         </section>
@@ -119,8 +128,7 @@ foreach ($products as $product) {
                             <span class="product-tag"><?= htmlspecialchars($product['tag']) ?></span>
                             <img src="assets/images/produse/<?= htmlspecialchars($product['image']) ?>"
                                 alt="<?= htmlspecialchars(lang($product['key'])) ?>"
-                                loading="<?= $index === 0 ? 'eager' : 'lazy' ?>"
-                                <?= $index === 0 ? 'fetchpriority="high"' : '' ?> decoding="async">
+                                loading="<?= $index === 0 ? 'eager' : 'lazy' ?>" <?= $index === 0 ? 'fetchpriority="high"' : '' ?> decoding="async">
                         </div>
                         <div class="product-info">
                             <div>

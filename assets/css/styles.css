@@ -100,7 +100,6 @@ a {
 
 .search-form:focus-within {
     border-color: var(--ink);
-    box-shadow: 0 0 0 4px rgba(23, 23, 20, 0.06);
 }
 
 .search-form i {
@@ -527,6 +526,10 @@ a {
     flex-direction: column;
     animation: reveal 0.55s ease both;
     animation-delay: calc(var(--order) * 35ms);
+}
+
+.product[hidden] {
+    display: none;
 }
 
 .product-media {

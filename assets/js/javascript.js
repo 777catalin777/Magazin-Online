@@ -129,15 +129,35 @@ document.addEventListener("DOMContentLoaded", () => {
         showNotification(translations[currentLang]?.cleared || translations.ro.cleared);
     });
 
-    document.querySelector('input[name="search"]')?.addEventListener("input", event => {
-        const term = event.target.value.toLocaleLowerCase().trim();
+    const searchInput = document.querySelector('input[name="search"]');
+    const productGrid = document.querySelector(".collection .container");
+    const noResults = document.querySelector(".no-results");
+
+    function normalizeSearchText(value) {
+        return String(value)
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .toLocaleLowerCase()
+            .trim();
+    }
+
+    searchInput?.addEventListener("input", event => {
+        const term = normalizeSearchText(event.target.value);
         let resultCount = 0;
-        document.querySelectorAll(".product").forEach(product => {
-            const visible = product.querySelector("h3")?.textContent.toLocaleLowerCase().includes(term);
+
+        productGrid?.querySelectorAll(".product").forEach(product => {
+            const searchableText = normalizeSearchText([
+                product.querySelector("h3")?.textContent,
+                product.querySelector(".product-category")?.textContent,
+                product.querySelector(".product-tag")?.textContent
+            ].join(" "));
+            const visible = searchableText.includes(term);
+
             product.hidden = !visible;
             if (visible) resultCount++;
         });
-        document.querySelector(".no-results")?.classList.toggle("active", resultCount === 0);
+
+        noResults?.classList.toggle("active", resultCount === 0);
     });
 
     updateCart();

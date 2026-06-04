@@ -91,15 +91,13 @@ foreach ($products as $product) {
         <section class="hero">
             <div class="hero-copy">
                 <span class="eyebrow">Colecția 2026</span>
-                <h1>Stil simplu.<br><em>Prezență memorabilă.</em></h1>
-                <p>Piese atent selectate, croieli actuale si confort care ramane cu tine in fiecare zi.</p>
+                <h1>Definește-ți stilul.<br><em>Poartă-l cu încredere.</em></h1>
+                <p>Descoperă îmbrăcăminte modernă, atent selectată pentru confortul și personalitatea ta.</p>
                 <a href="#collection" class="hero-cta">Descoperă colecția <i class="bx bx-right-arrow-alt"></i></a>
             </div>
             <div class="hero-showcase" aria-hidden="true">
                 <div class="hero-orbit"></div>
-                <img src="assets/images/produse/NewBalance 9060.avif" alt="">
-                <span class="floating-note note-one">Selectie<br><strong>Premium</strong></span>
-                <span class="floating-note note-two">12 piese<br><strong>Esentiale</strong></span>
+                <!-- <img src="assets/images/produse/NewBalance 9060.avif" alt="NewBalance 9060"> -->
             </div>
         </section>
 
@@ -142,7 +140,7 @@ foreach ($products as $product) {
                     </article>
                 <?php endforeach; ?>
             </div>
-            <div class="no-results">Nu s-au gasit produse.</div>
+            <div class="no-results">Nu s-au găsit produse.</div>
         </section>
     </main>
 
@@ -150,29 +148,28 @@ foreach ($products as $product) {
         <div class="footer-main">
             <div class="footer-brand">
                 <a href="index.php" class="brand"><span class="brand-name">Maison Lure</span></a>
-                <p>Moda contemporana, aleasa cu grija pentru ritmul tau.</p>
+                <p>Moda contemporană, aleasă cu grijă pentru ritmul tău.</p>
             </div>
             <div>
                 <h3>Magazin</h3>
-                <a href="#collection">Colectie</a>
+                <a href="#collection">Colecție</a>
                 <a href="login.php">Contul meu</a>
                 <a href="#collection">Produse noi</a>
             </div>
             <div>
                 <h3>Ajutor</h3>
-                <a href="#">Livrare si retur</a>
-                <a href="#">Intrebari frecvente</a>
-                <a href="#">Contact</a>
+                <a href="#">Livrare și retur</a>
+                <a href="#">Întrebări frecvente</a>
+                <a href="#">Contacte</a>
             </div>
             <div class="footer-newsletter">
-                <h3>Ramai aproape</h3>
-                <p>Afla primul despre colectii si oferte noi.</p>
-                <a href="login.php">Creeaza un cont <i class="bx bx-right-arrow-alt"></i></a>
+                <h3>Rămâi aproape</h3>
+                <p>Află primul despre colecții și oferte noi.</p>
+                <a href="login.php">Creează un cont <i class="bx bx-right-arrow-alt"></i></a>
             </div>
         </div>
         <div class="footer-legal">
             <span>&copy; <?= date('Y') ?> Maison Lure</span>
-            <span>Chisinau, Moldova</span>
         </div>
     </footer>
 

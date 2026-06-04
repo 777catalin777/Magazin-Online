@@ -97,7 +97,6 @@ foreach ($products as $product) {
             </div>
             <div class="hero-showcase" aria-hidden="true">
                 <div class="hero-orbit"></div>
-                <!-- <img src="assets/images/produse/NewBalance 9060.avif" alt="NewBalance 9060"> -->
             </div>
         </section>
 

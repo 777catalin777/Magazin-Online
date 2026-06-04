@@ -345,14 +345,16 @@ select {
 
 .order-id-date {
     display: flex;
-    align-items: baseline;
-    gap: 0.6rem;
-    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
     font-size: 0.8rem;
 }
 
 .order-date {
+    padding-left: 0.5rem;
     color: var(--muted);
+    border-left: 1px solid var(--line);
     font-size: 0.66rem;
 }
 

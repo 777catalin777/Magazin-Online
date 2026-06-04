@@ -490,7 +490,7 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                                     <div class="order-card">
                                         <div class="order-header">
                                             <div class="order-id-date">
-                                                <strong>Comanda #${order.id}</strong>
+                                                <strong>Comanda ${order.id}</strong>
                                                 <span class="order-date">${order.order_date}</span>
                                             </div>
                                             <div class="order-status ${statusClass}">${statusText}</div>

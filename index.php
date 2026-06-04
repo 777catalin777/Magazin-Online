@@ -26,11 +26,6 @@ foreach ($products as $product) {
 </head>
 
 <body>
-    <div class="announcement">
-        <span>Livrare gratuita pentru comenzile de peste 1 500 MDL</span>
-        <span class="announcement-detail">Retur simplu in 14 zile</span>
-    </div>
-
     <header class="site-header">
         <a href="index.php" class="brand" aria-label="Maison Lure">
             <span class="brand-name">Maison Lure</span>
@@ -79,7 +74,8 @@ foreach ($products as $product) {
                     <ul id="cart-items"></ul>
                     <div class="cart-summary">
                         <p><?= htmlspecialchars(lang('products')) ?> <span id="item-count">0</span></p>
-                        <p><?= htmlspecialchars(lang('total')) ?> <strong><span id="cart-total">0</span> MDL</strong></p>
+                        <p><?= htmlspecialchars(lang('total')) ?> <strong><span id="cart-total">0</span> MDL</strong>
+                        </p>
                     </div>
                     <button class="clear-cart" type="button"><?= htmlspecialchars(lang('clear_cart')) ?></button>
                 </aside>
@@ -121,8 +117,8 @@ foreach ($products as $product) {
                         <div class="product-media">
                             <span class="product-tag"><?= htmlspecialchars($product['tag']) ?></span>
                             <img src="assets/images/produse/<?= htmlspecialchars($product['image']) ?>"
-                                alt="<?= htmlspecialchars(lang($product['key'])) ?>" loading="<?= $index > 3 ? 'lazy' : 'eager' ?>"
-                                decoding="async">
+                                alt="<?= htmlspecialchars(lang($product['key'])) ?>"
+                                loading="<?= $index > 3 ? 'lazy' : 'eager' ?>" decoding="async">
                         </div>
                         <div class="product-info">
                             <div>

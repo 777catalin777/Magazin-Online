@@ -71,7 +71,7 @@ try {
     } else {
         $stmt = $pdo->prepare("
             INSERT INTO orders (user_id, total, status, shipping_address, created_at)
-            VALUES (?, ?, 'pending', ?, NOW())
+            VALUES (?, ?, 'pending', ?, CURRENT_TIMESTAMP AT TIME ZONE 'UTC')
             RETURNING id
         ");
         $stmt->execute([$_SESSION['user_id'], $total, $shippingAddress]);

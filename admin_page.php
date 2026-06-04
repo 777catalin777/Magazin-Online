@@ -65,16 +65,12 @@ try {
         'revenue' => (float)$pdo->query("SELECT COALESCE(SUM(total), 0) FROM orders")->fetchColumn(),
     ];
 
-    $dateExpression = (($dbDriver ?? '') === 'sqlite')
-        ? "strftime('%Y-%m-%d %H:%M', orders.created_at)"
-        : "TO_CHAR(orders.created_at, 'YYYY-MM-DD HH24:MI')";
-
     $ordersStmt = $pdo->query("
         SELECT orders.id,
                orders.total,
                orders.status,
                orders.shipping_address,
-               $dateExpression AS order_date,
+               orders.created_at,
                users.name AS customer_name,
                users.email AS customer_email,
                users.phone AS customer_phone,
@@ -94,6 +90,7 @@ try {
     ");
 
     foreach ($orders as &$order) {
+        $order['order_date'] = formatLocalDateTime($order['created_at']);
         $itemsStmt->execute([$order['id']]);
         $order['items'] = $itemsStmt->fetchAll();
     }

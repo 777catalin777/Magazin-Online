@@ -10,13 +10,9 @@ if (!isset($_SESSION['user_id'])) {
 $userId = $_SESSION['user_id'];
 
 try {
-    $dateExpression = (($dbDriver ?? '') === 'sqlite')
-        ? "strftime('%Y-%m-%d %H:%M', created_at)"
-        : "TO_CHAR(created_at, 'YYYY-MM-DD HH24:MI')";
-
     $stmt = $pdo->prepare("
         SELECT id,
-               $dateExpression as order_date,
+               created_at,
                total as total_amount,
                status
         FROM orders
@@ -27,6 +23,9 @@ try {
     $orders = $stmt->fetchAll();
 
     foreach ($orders as &$order) {
+        $order['order_date'] = formatLocalDateTime($order['created_at']);
+        unset($order['created_at']);
+
         $stmtItems = $pdo->prepare("
             SELECT product_name, quantity, price as product_price 
             FROM order_items 

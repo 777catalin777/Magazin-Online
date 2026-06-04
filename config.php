@@ -4,6 +4,26 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $availableLanguages = ['ro', 'en', 'ru'];
+$appTimezone = new DateTimeZone('Europe/Chisinau');
+$storageTimezone = new DateTimeZone('UTC');
+
+function formatLocalDateTime($value, $format = 'Y-m-d H:i')
+{
+    global $appTimezone, $storageTimezone;
+
+    if (empty($value)) {
+        return '';
+    }
+
+    try {
+        return (new DateTimeImmutable((string)$value, $storageTimezone))
+            ->setTimezone($appTimezone)
+            ->format($format);
+    } catch (Exception $e) {
+        error_log("Date formatting error: " . $e->getMessage());
+        return (string)$value;
+    }
+}
 
 if (isset($_GET['lang']) && in_array($_GET['lang'], $availableLanguages, true)) {
     $_SESSION['lang'] = $_GET['lang'];

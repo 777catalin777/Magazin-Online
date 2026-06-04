@@ -284,7 +284,6 @@ try {
     <div class="dashboard-container admin-dashboard">
         <div class="dashboard-header">
             <div class="logo">
-                <i class='bx bxs-dashboard'></i>
                 <span>Admin Maison Lure</span>
             </div>
             <div class="header-actions">

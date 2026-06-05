@@ -162,7 +162,7 @@ foreach ($products as $product) {
             <div class="mega-column mega-edit">
                 <h2>NOI EDITĂRI</h2>
                 <a href="#" class="mega-edit-card">
-                    <img src="assets/images/produse/Hanorac Diorr.png" alt="Match-day ready" loading="lazy"
+                    <img src="assets/images/produse/ws-image-menu.avif" alt="Match-day ready" loading="lazy"
                         decoding="async">
                     <strong>PREGĂTIT PENTRU ZIUA MECIULUI</strong>
                 </a>

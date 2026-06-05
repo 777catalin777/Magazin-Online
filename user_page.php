@@ -184,146 +184,182 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
 </head>
 
 <body>
-    <div class="dashboard-container">
-        <div class="dashboard-header">
-            <div class="logo">
-                <span>Maison Lure</span>
-            </div>
+    <div id="order-notifications" class="notification-stack" aria-live="polite" aria-atomic="true"></div>
+
+    <div class="dashboard-shell">
+        <header class="dashboard-header">
+            <a href="index.php" class="header-brand" aria-label="Maison Lure">
+                <span class="brand-copy">
+                    <strong>Maison Lure</strong>
+                </span>
+            </a>
             <div class="header-actions">
                 <a href="index.php" class="btn-outline-light"><i class='bx bx-shopping-bag'></i> Magazin</a>
                 <a href="logout.php" class="btn-outline-light"><i class='bx bx-log-out'></i> Deconectare</a>
             </div>
-        </div>
+        </header>
 
-        <?php if ($success): ?>
-            <div class="alert-custom alert-success" style="margin-bottom: 1.5rem;">
-                <i class='bx bx-check-circle'></i> <?= htmlspecialchars($success) ?>
-            </div>
-        <?php endif; ?>
-        <?php if ($error): ?>
-            <div class="alert-custom alert-error" style="margin-bottom: 1.5rem;">
-                <i class='bx bx-error-circle'></i> <?= htmlspecialchars($error) ?>
-            </div>
-        <?php endif; ?>
-
-        <div class="dashboard-grid">
-
-            <div class="card">
-                <div class="card-title">
-                    <i class='bx bx-user-circle'></i>
-                    <span>Profilul meu</span>
+        <main class="dashboard-main">
+            <section class="dashboard-page-head">
+                <div>
+                    <span class="section-kicker">Panou client</span>
+                    <h1>Contul meu</h1>
                 </div>
-                <div class="profile-avatar">
-                    <div class="avatar-circle">
-                        <i class='bx bx-user'></i>
+                <span class="page-status-pill"><i class='bx bx-check-shield'></i> Activ</span>
+            </section>
+
+            <?php if ($success): ?>
+                <div class="alert-custom alert-success">
+                    <i class='bx bx-check-circle'></i> <?= htmlspecialchars($success) ?>
+                </div>
+            <?php endif; ?>
+            <?php if ($error): ?>
+                <div class="alert-custom alert-error">
+                    <i class='bx bx-error-circle'></i> <?= htmlspecialchars($error) ?>
+                </div>
+            <?php endif; ?>
+
+            <div class="dashboard-grid">
+
+                <div class="card profile-card">
+                    <div class="card-title">
+                        <i class='bx bx-user-circle'></i>
+                        <span>Profilul meu</span>
+                    </div>
+                    <div class="profile-avatar">
+                        <div class="avatar-circle">
+                            <i class='bx bx-user'></i>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Nume</div>
+                        <div class="info-value"><?= htmlspecialchars($_SESSION['name'] ?? '') ?></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Email</div>
+                        <div class="info-value"><?= htmlspecialchars($_SESSION['email'] ?? '') ?></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Telefon</div>
+                        <div class="info-value"><?= htmlspecialchars($_SESSION['phone'] ?? 'Nesetat') ?></div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Adresă</div>
+                        <div class="info-value"><?= htmlspecialchars($_SESSION['address'] ?? 'Nesetată') ?></div>
                     </div>
                 </div>
-                <div class="info-row">
-                    <div class="info-label">Nume</div>
-                    <div class="info-value"><?= htmlspecialchars($_SESSION['name'] ?? '') ?></div>
+
+                <div class="card account-card">
+                    <div class="card-title">
+                        <i class='bx bx-edit-alt'></i>
+                        <span>Actualizează datele</span>
+                    </div>
+                    <form method="POST" class="card-form">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
+                        <input type="hidden" name="update_profile" value="1">
+                        <div class="input-box">
+                            <i class='bx bx-user'></i>
+                            <input type="text" name="name" placeholder="Nume complet"
+                                value="<?= htmlspecialchars($_SESSION['name'] ?? '') ?>" required>
+                        </div>
+                        <div class="input-box">
+                            <i class='bx bx-phone'></i>
+                            <input type="tel" name="phone" placeholder="Număr de telefon"
+                                value="<?= htmlspecialchars($_SESSION['phone'] ?? '') ?>">
+                        </div>
+                        <div class="input-box">
+                            <i class='bx bx-map'></i>
+                            <input type="text" name="address" placeholder="Adresă de livrare"
+                                value="<?= htmlspecialchars($_SESSION['address'] ?? '') ?>">
+                        </div>
+                        <button type="submit" class="btn-primary"><i class='bx bx-save'></i> Salvează modificările</button>
+                    </form>
                 </div>
-                <div class="info-row">
-                    <div class="info-label">Email</div>
-                    <div class="info-value"><?= htmlspecialchars($_SESSION['email'] ?? '') ?></div>
+
+                <div class="card cart-card" id="current-cart-card">
+                    <div class="cart-card-head">
+                        <div class="cart-title-group">
+                            <span class="cart-title-icon"><i class='bx bx-cart'></i></span>
+                            <div>
+                                <h2>Coșul meu curent</h2>
+                                <span>Rezumat comandă</span>
+                            </div>
+                        </div>
+                        <div class="cart-count-pill">
+                            <strong id="cart-total-qty">0</strong>
+                            <span id="cart-total-label">produse</span>
+                        </div>
+                    </div>
+                    <div id="cart-items-list" class="cart-items-list">
+                        <div class="cart-empty-placeholder">
+                            <i class='bx bx-cart-alt'></i>
+                            <h3>Coșul este gol</h3>
+                            <p>Nicio selecție momentan.</p>
+                            <a href="index.php" class="cart-shop-link">
+                                <i class='bx bx-shopping-bag'></i>
+                                <span>Magazin</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="cart-summary">
+                        <span>Total comandă</span>
+                        <strong><span id="cart-total-price">0</span> MDL</strong>
+                    </div>
+                    <div class="cart-actions">
+                        <button id="clear-cart-btn" class="cart-action cart-action-secondary" type="button">
+                            <i class='bx bx-trash'></i>
+                            <span>Golește coșul</span>
+                        </button>
+                        <button id="place-order-btn" class="cart-action cart-action-primary" type="button">
+                            <i class='bx bx-check-circle'></i>
+                            <span>Plasează comanda</span>
+                        </button>
+                    </div>
                 </div>
-                <div class="info-row">
-                    <div class="info-label">Telefon</div>
-                    <div class="info-value"><?= htmlspecialchars($_SESSION['phone'] ?? 'Nesetat') ?></div>
-                </div>
-                <div class="info-row">
-                    <div class="info-label">Adresă</div>
-                    <div class="info-value"><?= htmlspecialchars($_SESSION['address'] ?? 'Nesetată') ?></div>
+
+                <div class="card orders-card">
+                    <div class="card-title">
+                        <i class='bx bx-purchase-tag'></i>
+                        <span>Comenzile mele</span>
+                    </div>
+                    <div id="orders-list">
+                        <div class="orders-empty">
+                            <i class='bx bx-package'></i>
+                            <h3>Se încarcă...</h3>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="card">
+            <section class="card full-width security-card">
                 <div class="card-title">
-                    <i class='bx bx-edit-alt'></i>
-                    <span>Actualizează datele</span>
+                    <i class='bx bx-lock-alt'></i>
+                    <span>Schimbă parola</span>
                 </div>
-                <form method="POST" style="flex: 1; display: flex; flex-direction: column;">
+                <form method="POST">
                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
-                    <input type="hidden" name="update_profile" value="1">
+                    <input type="hidden" name="change_password" value="1">
                     <div class="input-box">
-                        <i class='bx bx-user'></i>
-                        <input type="text" name="name" placeholder="Nume complet"
-                            value="<?= htmlspecialchars($_SESSION['name'] ?? '') ?>" required>
+                        <i class='bx bx-key'></i>
+                        <input type="password" name="current_password" placeholder="Parola curentă" required>
                     </div>
                     <div class="input-box">
-                        <i class='bx bx-phone'></i>
-                        <input type="tel" name="phone" placeholder="Număr de telefon"
-                            value="<?= htmlspecialchars($_SESSION['phone'] ?? '') ?>">
+                        <i class='bx bx-lock'></i>
+                        <input type="password" name="new_password" placeholder="Parola nouă" required>
                     </div>
                     <div class="input-box">
-                        <i class='bx bx-map'></i>
-                        <input type="text" name="address" placeholder="Adresă de livrare"
-                            value="<?= htmlspecialchars($_SESSION['address'] ?? '') ?>">
+                        <i class='bx bx-check-shield'></i>
+                        <input type="password" name="confirm_password" placeholder="Confirmă parola nouă" required>
                     </div>
-                    <button type="submit" class="btn-primary"><i class='bx bx-save'></i> Salvează modificările</button>
+                    <button type="submit" class="btn-primary"><i class='bx bx-refresh'></i> Resetează parola</button>
                 </form>
-            </div>
+            </section>
+        </main>
 
-            <div class="card" id="current-cart-card">
-                <div class="card-title">
-                    <i class='bx bx-cart'></i>
-                    <span>Coșul meu curent</span>
-                </div>
-                <div id="cart-items-list" style="max-height: 300px; overflow-y: auto; margin-bottom: 1rem;">
-                    <div class="cart-empty-placeholder" style="text-align: center; padding: 1rem; color: #718096;">
-                        <i class='bx bx-cart-alt' style="font-size: 2rem;"></i>
-                        <p>Coșul este gol. Adaugă produse din magazin.</p>
-                    </div>
-                </div>
-                <div class="cart-summary"
-                    style="background: #f8f9fa; border-radius: 0.75rem; padding: 0.75rem; margin: 0.5rem 0;">
-                    <span>Total produse: <strong id="cart-total-qty">0</strong></span>
-                    <span>Total: <strong id="cart-total-price">0</strong> MDL</span>
-                </div>
-                <button id="clear-cart-btn" class="btn-primary" style="background: #030303; margin-top: 0.5rem;">
-                    <i class='bx bx-trash'></i> Golește coșul
-                </button>
-                <button id="place-order-btn" class="btn-primary" style="background: #764ba2; margin-top: 0.5rem;">
-                    <i class='bx bx-check-circle'></i> Plasează comanda
-                </button>
-            </div>
-
-            <div class="card">
-                <div class="card-title">
-                    <i class='bx bx-purchase-tag'></i>
-                    <span>Comenzile mele</span>
-                </div>
-                <div id="orders-list">
-                    <div class="orders-empty">
-                        <i class='bx bx-package'></i>
-                        <h3>Se încarcă...</h3>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card full-width">
-            <div class="card-title">
-                <i class='bx bx-lock-alt'></i>
-                <span>Schimbă parola</span>
-            </div>
-            <form method="POST">
-                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(csrfToken()) ?>">
-                <input type="hidden" name="change_password" value="1">
-                <div class="input-box">
-                    <i class='bx bx-key'></i>
-                    <input type="password" name="current_password" placeholder="Parola curentă" required>
-                </div>
-                <div class="input-box">
-                    <i class='bx bx-lock'></i>
-                    <input type="password" name="new_password" placeholder="Parola nouă" required>
-                </div>
-                <div class="input-box">
-                    <i class='bx bx-check-shield'></i>
-                    <input type="password" name="confirm_password" placeholder="Confirmă parola nouă" required>
-                </div>
-                <button type="submit" class="btn-primary"><i class='bx bx-refresh'></i> Resetează parola</button>
-            </form>
-        </div>
+        <footer class="dashboard-footer">
+            <span>Maison Lure</span>
+            <span>Cont client</span>
+        </footer>
     </div>
 
     <script>
@@ -350,25 +386,39 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
             }
 
             function displayCart() {
+                const cartCard = document.getElementById("current-cart-card");
                 const container = document.getElementById("cart-items-list");
                 const totalQtySpan = document.getElementById("cart-total-qty");
+                const totalLabelSpan = document.getElementById("cart-total-label");
                 const totalPriceSpan = document.getElementById("cart-total-price");
+                const clearCartButton = document.getElementById("clear-cart-btn");
 
                 if (!container) return;
 
                 if (cart.length === 0) {
-                    container.innerHTML = `<div class="cart-empty-placeholder" style="text-align: center; padding: 1rem; color: #718096;">
-                                        <i class='bx bx-cart-alt' style="font-size: 2rem;"></i>
-                                        <p>Coșul este gol. Adaugă produse din magazin.</p>
+                    container.innerHTML = `<div class="cart-empty-placeholder">
+                                        <i class='bx bx-cart-alt'></i>
+                                        <h3>Coșul este gol</h3>
+                                        <p>Nicio selecție momentan.</p>
+                                        <a href="index.php" class="cart-shop-link">
+                                            <i class='bx bx-shopping-bag'></i>
+                                            <span>Magazin</span>
+                                        </a>
                                     </div>`;
-                    totalQtySpan.textContent = "0";
-                    totalPriceSpan.textContent = "0";
+                    cartCard?.classList.add("is-empty");
+                    if (clearCartButton) clearCartButton.disabled = true;
+                    if (totalQtySpan) totalQtySpan.textContent = "0";
+                    if (totalLabelSpan) totalLabelSpan.textContent = "produse";
+                    if (totalPriceSpan) totalPriceSpan.textContent = "0";
                     return;
                 }
 
+                cartCard?.classList.remove("is-empty");
+                if (clearCartButton) clearCartButton.disabled = false;
+
                 let totalQty = 0;
                 let totalPrice = 0;
-                let html = '<ul style="list-style: none; padding: 0; margin: 0;">';
+                let html = '<ul class="cart-item-list">';
 
                 cart.forEach((item, index) => {
                     const parsedQty = Number(item.quantity);
@@ -380,21 +430,34 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                     totalPrice += itemTotal;
                     const productName = item.name || "Produs";
                     const safeProductName = escapeHtml(productName);
+                    const productImage = escapeHtml(item.image || "");
+                    const media = productImage
+                        ? `<img src="${productImage}" alt="${safeProductName}">`
+                        : `<i class='bx bx-package'></i>`;
 
                     html += `
-                <li style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e2e8f0; padding: 10px 0;">
-                    <div style="display: flex; align-items: center; gap: 12px; flex: 2;">
-                        <img src="${escapeHtml(item.image || '')}" alt="${safeProductName}" style="width: 50px; height: 50px; object-fit: contain; border-radius: 8px;">
-                        <div>
-                            <div style="font-weight: 600;">${safeProductName}</div>
-                            <div style="font-size: 0.8rem; color: #4a5568;">${price} MDL × ${qty}</div>
+                <li class="cart-item">
+                    <div class="cart-item-media">${media}</div>
+                    <div class="cart-item-body">
+                        <div class="cart-item-top">
+                            <strong class="cart-item-name">${safeProductName}</strong>
+                            <strong class="cart-item-total">${itemTotal.toFixed(0)} MDL</strong>
                         </div>
-                    </div>
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <button class="cart-decrease-qty" data-index="${index}" style="background: #e2e8f0; border: none; border-radius: 6px; width: 28px; height: 28px; cursor: pointer;">-</button>
-                        <span style="min-width: 20px; text-align: center;">${qty}</span>
-                        <button class="cart-increase-qty" data-index="${index}" style="background: #e2e8f0; border: none; border-radius: 6px; width: 28px; height: 28px; cursor: pointer;">+</button>
-                        <button class="cart-remove-item" data-index="${index}" style="background: #dc3545; color: white; border: none; border-radius: 6px; width: 28px; height: 28px; cursor: pointer;">×</button>
+                        <div class="cart-item-bottom">
+                            <span class="cart-item-meta">${price.toFixed(0)} MDL / buc.</span>
+                            <div class="cart-quantity-controls">
+                                <button class="cart-qty-btn cart-decrease-qty" data-index="${index}" type="button" aria-label="Scade cantitatea pentru ${safeProductName}">
+                                    <i class='bx bx-minus'></i>
+                                </button>
+                                <span class="cart-quantity-value">${qty}</span>
+                                <button class="cart-qty-btn cart-increase-qty" data-index="${index}" type="button" aria-label="Crește cantitatea pentru ${safeProductName}">
+                                    <i class='bx bx-plus'></i>
+                                </button>
+                                <button class="cart-remove-item" data-index="${index}" type="button" aria-label="Elimină ${safeProductName}">
+                                    <i class='bx bx-x'></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </li>
             `;
@@ -402,8 +465,9 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
 
                 html += '</ul>';
                 container.innerHTML = html;
-                totalQtySpan.textContent = totalQty;
-                totalPriceSpan.textContent = totalPrice.toFixed(0);
+                if (totalQtySpan) totalQtySpan.textContent = totalQty;
+                if (totalLabelSpan) totalLabelSpan.textContent = totalQty === 1 ? "produs" : "produse";
+                if (totalPriceSpan) totalPriceSpan.textContent = totalPrice.toFixed(0);
             }
 
             function saveAndRefresh() {
@@ -411,11 +475,70 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                 displayCart();
             }
 
-            document.getElementById("cart-items-list")?.addEventListener("click", function (e) {
-                const target = e.target;
-                const indexAttr = target.getAttribute("data-index");
-                if (indexAttr === null) return;
+            function showOrderNotification(message, type = "info") {
+                const notifications = document.getElementById("order-notifications");
+                if (!notifications) return;
 
+                const variants = {
+                    success: {
+                        icon: "bx-check-circle",
+                        title: "Comandă plasată"
+                    },
+                    error: {
+                        icon: "bx-error-circle",
+                        title: "A apărut o problemă"
+                    },
+                    warning: {
+                        icon: "bx-shopping-bag",
+                        title: "Coș gol"
+                    },
+                    info: {
+                        icon: "bx-info-circle",
+                        title: "Notificare"
+                    }
+                };
+                const variant = variants[type] || variants.info;
+                const notification = document.createElement("div");
+                notification.className = `order-notification order-notification-${type}`;
+                notification.setAttribute("role", type === "error" ? "alert" : "status");
+
+                const icon = document.createElement("i");
+                icon.className = `bx ${variant.icon}`;
+                icon.setAttribute("aria-hidden", "true");
+
+                const content = document.createElement("div");
+                content.className = "order-notification-content";
+
+                const title = document.createElement("strong");
+                title.textContent = variant.title;
+
+                const text = document.createElement("span");
+                text.textContent = message;
+
+                const closeButton = document.createElement("button");
+                closeButton.type = "button";
+                closeButton.className = "order-notification-close";
+                closeButton.setAttribute("aria-label", "Închide notificarea");
+                closeButton.innerHTML = "<i class='bx bx-x'></i>";
+
+                content.append(title, text);
+                notification.append(icon, content, closeButton);
+                notifications.appendChild(notification);
+
+                const closeNotification = () => {
+                    notification.classList.add("is-hiding");
+                    setTimeout(() => notification.remove(), 220);
+                };
+
+                closeButton.addEventListener("click", closeNotification);
+                setTimeout(closeNotification, 4200);
+            }
+
+            document.getElementById("cart-items-list")?.addEventListener("click", function (e) {
+                const target = e.target.closest?.("button[data-index]");
+                if (!target) return;
+
+                const indexAttr = target.getAttribute("data-index");
                 const idx = parseInt(indexAttr, 10);
                 if (isNaN(idx) || !cart[idx]) return;
 
@@ -443,7 +566,7 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
 
             document.getElementById("place-order-btn")?.addEventListener("click", function () {
                 if (cart.length === 0) {
-                    alert("Coșul este gol. Adaugă produse înainte de a plasa o comandă.");
+                    showOrderNotification("Adaugă produse înainte de a plasa o comandă.", "warning");
                     return;
                 }
 
@@ -458,18 +581,18 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            alert(data.message);
+                            showOrderNotification(data.message || "Comanda a fost trimisă cu succes.", "success");
                             cart = [];
                             localStorage.setItem("cart", JSON.stringify(cart));
                             displayCart();
                             loadOrders();
                         } else {
-                            alert("Eroare: " + data.message);
+                            showOrderNotification(data.message || "Comanda nu a putut fi plasată.", "error");
                         }
                     })
                     .catch(err => {
                         console.error(err);
-                        alert("A apărut o eroare la plasarea comenzii.");
+                        showOrderNotification("A apărut o eroare la plasarea comenzii.", "error");
                     });
             });
 
@@ -492,7 +615,7 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                         if (!ordersContainer) return;
 
                         if (data.orders && data.orders.length > 0) {
-                            let html = `<div style="display: flex; flex-direction: column; gap: 1.25rem;">`;
+                            let html = `<div class="order-list">`;
                             data.orders.forEach(order => {
 
                                 let statusClass = '';

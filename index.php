@@ -46,7 +46,8 @@ foreach ($products as $product) {
             </div>
 
             <?php if (isset($_SESSION['user_id'])): ?>
-                <a href="<?= ($_SESSION['role'] ?? 'user') === 'admin' ? 'admin_page.php' : 'user_page.php' ?>" class="icon-link">
+                <a href="<?= ($_SESSION['role'] ?? 'user') === 'admin' ? 'admin_page.php' : 'user_page.php' ?>"
+                    class="icon-link">
                     <i class="bx bx-user"></i><span><?= htmlspecialchars($_SESSION['name'] ?? '') ?></span>
                 </a>
             <?php else: ?>
@@ -83,6 +84,91 @@ foreach ($products as $product) {
             </div>
         </div>
     </header>
+
+    <nav class="category-bar" aria-label="Categorii principale">
+        <div class="category-bar-inner">
+            <a href="#">Nou în</a>
+            <a href="#">Îmbrăcăminte</a>
+            <a href="#">Pantofi</a>
+            <a href="#">Accessorii</a>
+            <a href="#">Mărci</a>
+            <a href="#">Îmbrăcăminte sport</a>
+            <a href="#">Îngrijire</a>
+            <a href="#">Topman</a>
+            <a href="#">Vânzare</a>
+        </div>
+        <div class="mega-menu" aria-label="New in">
+            <div class="mega-column mega-links">
+                <h2>PRODUSE NOI</h2>
+                <a href="#" class="strong-link">Vezi toate</a>
+                <a href="#" class="strong-link">Noutăți: Astăzi</a>
+                <a href="#" class="strong-link">Noua marcă: Desigual</a>
+                <a href="#">Îmbrăcăminte</a>
+                <a href="#">Pantofi</a>
+                <a href="#">Tricouri și veste</a>
+                <a href="#">Blugi</a>
+                <a href="#">Accessorii</a>
+                <a href="#">Pulovere și cardigane</a>
+            </div>
+
+            <div class="mega-column">
+                <h2>VARĂ</h2>
+                <a href="#" class="mega-media-link">
+                    <img src="assets/images/produse/Tricou Polo.avif" alt="" loading="lazy" decoding="async">
+                    <span>Esențiale de vară</span>
+                </a>
+                <a href="#" class="mega-media-link">
+                    <img src="assets/images/produse/Tricou Nike Premium.avif" alt="" loading="lazy" decoding="async">
+                    <span>Lenjerie</span>
+                </a>
+                <a href="#" class="mega-media-link">
+                    <img src="assets/images/produse/Tricou Negru.avif" alt="" loading="lazy" decoding="async">
+                    <span>Magazin de sărbători</span>
+                </a>
+                <a href="#" class="mega-media-link">
+                    <img src="assets/images/produse/Pantaloni Jack & Jones.avif" alt="" loading="lazy" decoding="async">
+                    <span>Costume de baie</span>
+                </a>
+                <a href="#" class="mega-media-link">
+                    <img src="assets/images/produse/Adidas Samba.avif" alt="" loading="lazy" decoding="async">
+                    <span>Sandale</span>
+                </a>
+                <a href="#" class="mega-media-link">
+                    <img src="assets/images/produse/Blugi Collusion.avif" alt="" loading="lazy" decoding="async">
+                    <span>Pantaloni scurți</span>
+                </a>
+            </div>
+
+            <div class="mega-column">
+                <h2>CELE MAI CĂUTATE FAVORITE</h2>
+                <a href="#" class="mega-media-link">
+                    <img src="assets/images/produse/Hanorac Dior.avif" alt="" loading="lazy" decoding="async">
+                    <span>Cel mai mediatizat al tău</span>
+                </a>
+                <a href="#" class="mega-media-link">
+                    <img src="assets/images/produse/Hanorac Weekday.avif" alt="" loading="lazy" decoding="async">
+                    <span>Costume de in</span>
+                </a>
+                <a href="#" class="mega-media-link">
+                    <img src="assets/images/produse/Hanorac Adidas.avif" alt="" loading="lazy" decoding="async">
+                    <span>Festival</span>
+                </a>
+                <a href="#" class="mega-media-link">
+                    <img src="assets/images/produse/NewBalance 9060.avif" alt="" loading="lazy" decoding="async">
+                    <span>Jorts</span>
+                </a>
+            </div>
+
+            <div class="mega-column mega-edit">
+                <h2>NOI EDITĂRI</h2>
+                <a href="#" class="mega-edit-card">
+                    <img src="assets/images/produse/Hanorac Diorr.png" alt="Match-day ready" loading="lazy"
+                        decoding="async">
+                    <strong>PREGĂTIT PENTRU ZIUA MECIULUI</strong>
+                </a>
+            </div>
+        </div>
+    </nav>
 
     <main>
         <section class="hero">

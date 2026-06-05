@@ -93,7 +93,7 @@ a {
 }
 
 body.header-hidden .site-header {
-    transform: translateY(calc(-1 * var(--header-height)));
+    transform: translateY(-100%);
 }
 
 body.header-hidden .category-bar {
@@ -1204,7 +1204,7 @@ body.header-hidden .category-bar {
 
 @media (max-width: 800px) {
     :root {
-        --header-height: 70px;
+        --header-height: 124px;
         --category-height: 54px;
         --mega-offset: 0px;
     }
@@ -1215,7 +1215,8 @@ body.header-hidden .category-bar {
     }
 
     .site-header {
-        min-height: 70px;
+        min-height: var(--header-height);
+        row-gap: 0.65rem;
         padding: 0.7rem 1rem;
     }
 

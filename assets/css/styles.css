@@ -10,8 +10,8 @@
     --accent-dark: #9d5135;
     --sage: #dbe3d5;
     --shadow: 0 24px 70px rgba(38, 35, 28, 0.1);
-    --header-height: 102px;
-    --category-height: 78px;
+    --header-height: 92px;
+    --category-height: 70px;
     --mega-offset: 7.2vw;
     --mega-width: 1280px;
     --mega-gap: 1.6rem;
@@ -367,7 +367,7 @@ body.header-hidden .category-bar {
 }
 
 .brand-name {
-    font-size: 1.45rem;
+    font-size: 1.35rem;
     font-weight: 700;
     line-height: 1.2;
 }
@@ -375,7 +375,7 @@ body.header-hidden .category-bar {
 .search-form {
     justify-self: center;
     width: 100%;
-    min-height: 60px;
+    min-height: 54px;
     display: flex;
     align-items: center;
     gap: 0.8rem;
@@ -392,12 +392,12 @@ body.header-hidden .category-bar {
 
 .search-form i {
     color: var(--muted);
-    font-size: 1.35rem;
+    font-size: 1.28rem;
 }
 
 .search-form input {
     width: 100%;
-    padding: 0.85rem 0;
+    padding: 0.72rem 0;
     background: transparent;
     border: 0;
     outline: 0;
@@ -458,7 +458,7 @@ body.header-hidden .category-bar {
 
 .icon-link i,
 .cart-button i {
-    font-size: 1.5rem;
+    font-size: 1.42rem;
 }
 
 .cart-container {
@@ -469,8 +469,8 @@ body.header-hidden .category-bar {
     position: relative;
     display: grid;
     place-items: center;
-    width: 52px;
-    height: 52px;
+    width: 48px;
+    height: 48px;
     background: var(--ink);
     color: #fff;
     border: 0;
@@ -1139,8 +1139,8 @@ body.header-hidden .category-bar {
 
 @media (max-width: 1100px) {
     :root {
-        --header-height: 132px;
-        --category-height: 66px;
+        --header-height: 124px;
+        --category-height: 62px;
         --mega-offset: 5vw;
         --mega-gap: 1.25rem;
     }
@@ -1155,7 +1155,7 @@ body.header-hidden .category-bar {
     }
 
     .search-form {
-        min-height: 52px;
+        min-height: 50px;
     }
 
     .mega-menu {

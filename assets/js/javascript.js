@@ -7,6 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const cartContent = document.querySelector(".cart-content");
     const currentLang = document.documentElement.lang || "ro";
     const MAX_CART_QUANTITY = 99;
+    const siteHeader = document.querySelector(".site-header");
+    const categoryBar = document.querySelector(".category-bar");
 
     const translations = {
         ro: { added: "Produsul a fost adaugat in cos.", cleared: "Cosul a fost golit.", quantity: "Cantitate" },
@@ -181,6 +183,42 @@ document.addEventListener("DOMContentLoaded", () => {
 
         noResults?.classList.toggle("active", resultCount === 0);
     });
+
+    if (siteHeader && categoryBar) {
+        let lastScrollY = window.scrollY;
+        let ticking = false;
+        const scrollDelta = 8;
+
+        function updateHeaderVisibility() {
+            const currentScrollY = Math.max(window.scrollY, 0);
+            const isScrollingDown = currentScrollY > lastScrollY + scrollDelta;
+            const isScrollingUp = currentScrollY < lastScrollY - scrollDelta;
+            const hasOpenOverlay = Boolean(
+                cartContent?.classList.contains("active") ||
+                categoryBar.matches(":hover") ||
+                categoryBar.matches(":focus-within")
+            );
+
+            if (currentScrollY <= 12 || hasOpenOverlay || isScrollingUp) {
+                document.body.classList.remove("header-hidden");
+            } else if (isScrollingDown && currentScrollY > siteHeader.offsetHeight) {
+                document.body.classList.add("header-hidden");
+            }
+
+            if (isScrollingDown || isScrollingUp) {
+                lastScrollY = currentScrollY;
+            }
+
+            ticking = false;
+        }
+
+        window.addEventListener("scroll", () => {
+            if (!ticking) {
+                window.requestAnimationFrame(updateHeaderVisibility);
+                ticking = true;
+            }
+        }, { passive: true });
+    }
 
     updateCart();
 });

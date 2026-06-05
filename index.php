@@ -87,7 +87,7 @@ foreach ($products as $product) {
 
     <nav class="category-bar" aria-label="Categorii principale">
         <div class="category-bar-inner">
-            <a href="#">Nou în</a>
+            <a href="#" class="category-link-new">Nou în</a>
             <a href="#">Îmbrăcăminte</a>
             <a href="#">Pantofi</a>
             <a href="#">Accessorii</a>

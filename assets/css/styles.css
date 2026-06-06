@@ -216,7 +216,8 @@ body.header-hidden .category-bar {
     border-left: 1px solid var(--mega-rule);
 }
 
-.mega-column:first-child {
+.mega-column:first-child,
+.mega-menu>.mega-links {
     padding-left: 0;
     border-left: 0;
 }
@@ -1430,9 +1431,11 @@ body.header-hidden .category-bar {
         border-left: 0;
     }
 
-    .mega-column:first-child {
+    .mega-column:first-child,
+    .mega-menu>.mega-links {
         padding-top: 0;
         border-top: 0;
+        border-left: 0;
     }
 
     .mega-column h2 {

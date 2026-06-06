@@ -108,7 +108,6 @@ foreach ($products as $product) {
         </div>
         <div class="mega-menu" id="new-in-menu" aria-label="New in">
             <div class="mega-menu-mobile-header">
-                <strong>NOU ÎN</strong>
                 <button class="mega-menu-close" type="button" aria-label="Închide meniul">
                     <i class="bx bx-x" aria-hidden="true"></i>
                 </button>

@@ -1396,16 +1396,9 @@ body.header-hidden .category-bar {
         z-index: 2;
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-end;
         min-height: 58px;
-        background: #f8f8f8;
-        border-bottom: 1px solid var(--mega-rule);
-    }
-
-    .mega-menu-mobile-header strong {
-        color: #111;
-        font-size: 0.88rem;
-        letter-spacing: 0.08em;
+        border-bottom: 0;
     }
 
     .mega-menu-close {

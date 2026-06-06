@@ -51,6 +51,10 @@ body:has(.mega-menu:focus-within)::after {
     pointer-events: none;
 }
 
+body.mega-menu-open {
+    overflow: hidden;
+}
+
 button,
 input {
     font: inherit;
@@ -135,16 +139,42 @@ body.header-hidden .category-bar {
     transition: color 0.2s ease;
 }
 
-.category-bar-inner>a {
+.category-bar-inner>a,
+.category-link-new {
     display: flex;
     align-items: center;
     align-self: stretch;
     padding: 0 0.55rem;
 }
 
-.category-link-new a:hover {
+.category-link-new {
+    flex: 0 0 auto;
+    gap: 0.15rem;
+    background: transparent;
+    border: 0;
+    color: #fff;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.category-link-new i {
+    font-size: 1.15rem;
+    transition: transform 0.2s ease;
+}
+
+.category-link-new[aria-expanded="true"] i {
+    transform: rotate(180deg);
+}
+
+.category-link-new:hover,
+.category-link-new:focus-visible {
     background: #EEEEEE;
     color: #2D2D2D;
+}
+
+.mega-menu-mobile-header {
+    display: none;
 }
 
 .mega-menu {
@@ -1313,6 +1343,22 @@ body.header-hidden .category-bar {
         padding: 0 1rem;
     }
 
+    body:has(.category-link-new:hover)::after,
+    body:has(.category-link-new:focus-visible)::after,
+    body:has(.mega-menu:hover)::after,
+    body:has(.mega-menu:focus-within)::after {
+        display: none;
+    }
+
+    body.mega-menu-open::after {
+        content: "";
+        position: fixed;
+        inset: calc(var(--header-height) + var(--category-height)) 0 0;
+        z-index: 85;
+        display: block;
+        background: rgba(23, 23, 20, 0.48);
+    }
+
     .mega-menu {
         grid-template-columns: 1fr;
         gap: 0;
@@ -1322,15 +1368,59 @@ body.header-hidden .category-bar {
         width: 100%;
         height: auto;
         max-height: calc(100vh - var(--header-height) - var(--category-height));
-        padding: 1.35rem 1rem 1.5rem;
-        transform: translateY(-8px);
+        padding: 0 1rem 1.5rem;
+        overscroll-behavior: contain;
+        transform: translateY(-10px);
+        border-radius: 0 0 18px 18px;
+        box-shadow: 0 24px 40px rgba(23, 23, 20, 0.2);
     }
 
-    .category-bar:has(.category-link-new:hover) .mega-menu,
-    .category-bar:has(.category-link-new:focus-visible) .mega-menu,
-    .category-bar:has(.mega-menu:hover) .mega-menu,
-    .category-bar:has(.mega-menu:focus-within) .mega-menu {
+    .category-bar:not(.is-open) .mega-menu {
+        visibility: hidden !important;
+        opacity: 0 !important;
+        transform: translateY(-10px) !important;
+        pointer-events: none !important;
+    }
+
+    .category-bar.is-open .mega-menu {
+        visibility: visible;
+        opacity: 1;
         transform: translateY(0);
+        pointer-events: auto;
+    }
+
+    .mega-menu-mobile-header {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-height: 58px;
+        background: #f8f8f8;
+        border-bottom: 1px solid var(--mega-rule);
+    }
+
+    .mega-menu-mobile-header strong {
+        color: #111;
+        font-size: 0.88rem;
+        letter-spacing: 0.08em;
+    }
+
+    .mega-menu-close {
+        display: grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        background: #e9e7e3;
+        border: 0;
+        border-radius: 50%;
+        color: #171714;
+        cursor: pointer;
+    }
+
+    .mega-menu-close i {
+        font-size: 1.55rem;
     }
 
     .mega-column,
@@ -1350,21 +1440,26 @@ body.header-hidden .category-bar {
     }
 
     .mega-links {
-        gap: 0.25rem;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.35rem 0.75rem;
     }
 
     .mega-menu .mega-links a {
-        min-height: 2rem;
+        min-height: 2.25rem;
+        padding: 0.3rem 0;
+        font-size: 0.84rem;
     }
 
     .mega-media-link {
-        grid-template-columns: 52px minmax(0, 1fr);
-        min-height: 64px;
+        grid-template-columns: 46px minmax(0, 1fr);
+        min-height: 56px;
+        gap: 0.75rem;
     }
 
     .mega-media-link img {
-        width: 52px;
-        height: 52px;
+        width: 46px;
+        height: 46px;
     }
 
     .mega-edit {
@@ -1446,6 +1541,24 @@ body.header-hidden .category-bar {
 }
 
 @media (max-width: 520px) {
+    .mega-menu {
+        padding-inline: 0.85rem;
+    }
+
+    .mega-links {
+        grid-template-columns: 1fr;
+        gap: 0.15rem;
+    }
+
+    .mega-menu .mega-links a {
+        min-height: 2rem;
+    }
+
+    .mega-column h2 {
+        font-size: 0.82rem;
+        letter-spacing: 0.04em;
+    }
+
     .brand-name {
         font-size: 1rem;
     }

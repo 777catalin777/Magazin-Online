@@ -9,6 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const MAX_CART_QUANTITY = 99;
     const siteHeader = document.querySelector(".site-header");
     const categoryBar = document.querySelector(".category-bar");
+    const megaMenuTrigger = document.querySelector(".category-link-new");
+    const megaMenu = document.querySelector(".mega-menu");
+    const megaMenuClose = document.querySelector(".mega-menu-close");
 
     const translations = {
         ro: { added: "Produsul a fost adaugat in cos.", cleared: "Cosul a fost golit.", quantity: "Cantitate" },
@@ -146,6 +149,55 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     cartContent?.addEventListener("click", event => event.stopPropagation());
     document.addEventListener("click", () => cartContent?.classList.remove("active"));
+
+    function setMegaMenuOpen(isOpen, restoreFocus = false) {
+        if (!categoryBar || !megaMenuTrigger) return;
+
+        categoryBar.classList.toggle("is-open", isOpen);
+        document.body.classList.toggle("mega-menu-open", isOpen);
+        megaMenuTrigger.setAttribute("aria-expanded", String(isOpen));
+
+        if (restoreFocus) {
+            megaMenuTrigger.focus();
+        }
+    }
+
+    megaMenuTrigger?.addEventListener("click", event => {
+        if (!window.matchMedia("(max-width: 800px)").matches) return;
+        event.stopPropagation();
+        setMegaMenuOpen(!categoryBar?.classList.contains("is-open"));
+    });
+
+    megaMenuClose?.addEventListener("click", event => {
+        event.preventDefault();
+        event.stopPropagation();
+        megaMenuClose.blur();
+        setMegaMenuOpen(false);
+        megaMenuTrigger?.focus({ preventScroll: true });
+    });
+    megaMenu?.addEventListener("click", event => event.stopPropagation());
+
+    document.addEventListener("click", event => {
+        if (
+            window.matchMedia("(max-width: 800px)").matches &&
+            categoryBar?.classList.contains("is-open") &&
+            !categoryBar.contains(event.target)
+        ) {
+            setMegaMenuOpen(false);
+        }
+    });
+
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && categoryBar?.classList.contains("is-open")) {
+            setMegaMenuOpen(false, true);
+        }
+    });
+
+    window.addEventListener("resize", () => {
+        if (!window.matchMedia("(max-width: 800px)").matches) {
+            setMegaMenuOpen(false);
+        }
+    });
 
     document.querySelector(".clear-cart")?.addEventListener("click", () => {
         cart = [];

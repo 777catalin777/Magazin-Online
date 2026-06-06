@@ -19,7 +19,7 @@ foreach ($products as $product) {
     <title><?= htmlspecialchars(lang('site_title')) ?></title>
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
     <link rel="stylesheet" href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css">
-    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/styles.css?v=<?= filemtime(__DIR__ . '/assets/css/styles.css') ?>">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/images/favicon/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon/favicon-16x16.png">
@@ -93,7 +93,10 @@ foreach ($products as $product) {
 
     <nav class="category-bar" aria-label="Categorii principale">
         <div class="category-bar-inner">
-            <a href="#" class="category-link-new">Nou în</a>
+            <button class="category-link-new" type="button" aria-expanded="false" aria-controls="new-in-menu">
+                <span>Nou în</span>
+                <i class="bx bx-chevron-down" aria-hidden="true"></i>
+            </button>
             <a href="#">Îmbrăcăminte</a>
             <a href="#">Pantofi</a>
             <a href="#">Accessorii</a>
@@ -103,7 +106,13 @@ foreach ($products as $product) {
             <a href="#">Topman</a>
             <a href="#">Vânzare</a>
         </div>
-        <div class="mega-menu" aria-label="New in">
+        <div class="mega-menu" id="new-in-menu" aria-label="New in">
+            <div class="mega-menu-mobile-header">
+                <strong>NOU ÎN</strong>
+                <button class="mega-menu-close" type="button" aria-label="Închide meniul">
+                    <i class="bx bx-x" aria-hidden="true"></i>
+                </button>
+            </div>
             <div class="mega-column mega-links">
                 <h2>PRODUSE NOI</h2>
                 <a href="#" class="strong-link">Vezi toate</a>
@@ -273,7 +282,7 @@ foreach ($products as $product) {
     <script>
         window.productNames = <?= json_encode($productNames, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
     </script>
-    <script src="assets/js/javascript.js" defer></script>
+    <script src="assets/js/javascript.js?v=<?= filemtime(__DIR__ . '/assets/js/javascript.js') ?>" defer></script>
 </body>
 
 </html>

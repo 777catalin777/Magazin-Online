@@ -43,6 +43,12 @@ foreach ($products as $product) {
                 <a href="?lang=ro" class="<?= $lang === 'ro' ? 'active' : '' ?>">RO</a>
                 <a href="?lang=en" class="<?= $lang === 'en' ? 'active' : '' ?>">EN</a>
                 <a href="?lang=ru" class="<?= $lang === 'ru' ? 'active' : '' ?>">RU</a>
+                <select class="mobile-language-select" aria-label="<?= htmlspecialchars(lang('language')) ?>"
+                    onchange="window.location.href='?lang=' + this.value">
+                    <option value="ro" <?= $lang === 'ro' ? 'selected' : '' ?>>RO</option>
+                    <option value="en" <?= $lang === 'en' ? 'selected' : '' ?>>EN</option>
+                    <option value="ru" <?= $lang === 'ru' ? 'selected' : '' ?>>RU</option>
+                </select>
             </div>
 
             <?php if (isset($_SESSION['user_id'])): ?>

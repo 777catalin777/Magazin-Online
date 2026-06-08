@@ -212,17 +212,6 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                 <span class="page-status-pill"><i class='bx bx-check-shield'></i> Activ</span>
             </section>
 
-            <?php if ($success): ?>
-                <div class="alert-custom alert-success">
-                    <i class='bx bx-check-circle'></i> <?= htmlspecialchars($success) ?>
-                </div>
-            <?php endif; ?>
-            <?php if ($error): ?>
-                <div class="alert-custom alert-error">
-                    <i class='bx bx-error-circle'></i> <?= htmlspecialchars($error) ?>
-                </div>
-            <?php endif; ?>
-
             <div class="dashboard-grid">
 
                 <div class="card profile-card">
@@ -370,6 +359,8 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
         document.addEventListener("DOMContentLoaded", function () {
             let cart = [];
             const MAX_CART_QUANTITY = 99;
+            const profileSuccessMessage = <?= json_encode($success, JSON_UNESCAPED_UNICODE) ?>;
+            const profileErrorMessage = <?= json_encode($error, JSON_UNESCAPED_UNICODE) ?>;
 
             function normalizeQuantity(value) {
                 const quantity = Number(value);
@@ -488,6 +479,14 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                         icon: "bx-check-circle",
                         title: "Comandă plasată"
                     },
+                    profileSuccess: {
+                        icon: "bx-check-circle",
+                        title: "Profil actualizat"
+                    },
+                    passwordSuccess: {
+                        icon: "bx-lock-alt",
+                        title: "Parolă schimbată"
+                    },
                     error: {
                         icon: "bx-error-circle",
                         title: "A apărut o problemă"
@@ -536,6 +535,17 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
 
                 closeButton.addEventListener("click", closeNotification);
                 setTimeout(closeNotification, 4200);
+            }
+
+            if (profileSuccessMessage) {
+                const notificationType = profileSuccessMessage.toLowerCase().includes("parola")
+                    ? "passwordSuccess"
+                    : "profileSuccess";
+                showOrderNotification(profileSuccessMessage, notificationType);
+            }
+
+            if (profileErrorMessage) {
+                showOrderNotification(profileErrorMessage, "error");
             }
 
             document.getElementById("cart-items-list")?.addEventListener("click", function (e) {

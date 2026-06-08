@@ -419,7 +419,7 @@ try {
             <aside class="card">
                 <div class="card-title">
                     <i class='bx bx-group'></i>
-                    <span>Clienți recenți</span>
+                    <span>Clienți</span>
                 </div>
 
                 <?php if (empty($users)): ?>

@@ -565,12 +565,16 @@ select {
     color: var(--ink);
 }
 
-.order-notification-success {
+.order-notification-success,
+.order-notification-profileSuccess,
+.order-notification-passwordSuccess {
     border-left-color: var(--accent);
     color: var(--accent);
 }
 
-.order-notification-success > i {
+.order-notification-success > i,
+.order-notification-profileSuccess > i,
+.order-notification-passwordSuccess > i {
     background: var(--accent-soft);
     color: var(--accent);
 }

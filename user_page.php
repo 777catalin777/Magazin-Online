@@ -306,7 +306,7 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                         </div>
                     </div>
                     <div class="cart-summary">
-                        <span>Total comandă</span>
+                        <span>Total</span>
                         <strong><span id="cart-total-price">0</span> MDL</strong>
                     </div>
                     <div class="cart-actions">

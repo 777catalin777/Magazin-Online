@@ -13,8 +13,6 @@ foreach ($products as $product) {
 
 <head>
     <meta charset="UTF-8">
-    <meta name="author" content="Tintiuc Cătălin">
-    <meta name="description" content="Maison Lure - moda atent selectata pentru fiecare zi">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= htmlspecialchars(lang('site_title')) ?></title>
     <link rel="preconnect" href="https://unpkg.com" crossorigin>

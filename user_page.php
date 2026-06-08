@@ -228,7 +228,7 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                 <div class="card profile-card">
                     <div class="card-title">
                         <i class='bx bx-user-circle'></i>
-                        <span>Profilul meu</span>
+                        <span>Profil</span>
                     </div>
                     <div class="profile-avatar">
                         <div class="avatar-circle">
@@ -285,7 +285,7 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                         <div class="cart-title-group">
                             <span class="cart-title-icon"><i class='bx bx-cart'></i></span>
                             <div>
-                                <h2>Coșul meu curent</h2>
+                                <h2>Coș</h2>
                                 <span>Rezumat comandă</span>
                             </div>
                         </div>
@@ -324,7 +324,7 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                 <div class="card orders-card">
                     <div class="card-title">
                         <i class='bx bx-purchase-tag'></i>
-                        <span>Comenzile mele</span>
+                        <span>Comenzi</span>
                     </div>
                     <div id="orders-list">
                         <div class="orders-empty">

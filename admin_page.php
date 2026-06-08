@@ -287,27 +287,46 @@ try {
 </head>
 
 <body>
+    <div id="admin-notifications" class="notification-stack" aria-live="polite" aria-atomic="true">
+        <?php if ($message): ?>
+            <div class="order-notification order-notification-success" role="status">
+                <i class='bx bx-check-circle'></i>
+                <div class="order-notification-content">
+                    <strong>Succes</strong>
+                    <span><?= e($message) ?></span>
+                </div>
+                <button class="order-notification-close" type="button" aria-label="Închide notificarea">
+                    <i class='bx bx-x'></i>
+                </button>
+            </div>
+        <?php endif; ?>
+        <?php if ($error): ?>
+            <div class="order-notification order-notification-error" role="alert">
+                <i class='bx bx-error-circle'></i>
+                <div class="order-notification-content">
+                    <strong>Eroare</strong>
+                    <span><?= e($error) ?></span>
+                </div>
+                <button class="order-notification-close" type="button" aria-label="Închide notificarea">
+                    <i class='bx bx-x'></i>
+                </button>
+            </div>
+        <?php endif; ?>
+    </div>
+
     <div class="dashboard-container admin-dashboard">
         <div class="dashboard-header">
-            <div class="logo">
-                <span>Admin Maison Lure</span>
-            </div>
+            <a href="admin_page.php" class="header-brand admin-header-brand" aria-label="Admin Maison Lure">
+                <span class="brand-copy">
+                    <strong>Admin Maison Lure</strong>
+                </span>
+            </a>
             <div class="header-actions">
                 <a href="index.php" class="btn-outline-light"><i class='bx bx-store'></i> Magazin</a>
                 <a href="logout.php" class="btn-outline-light"><i class='bx bx-log-out'></i> <?= e(lang('logout')) ?></a>
             </div>
         </div>
 
-        <?php if ($message): ?>
-            <div class="alert-custom alert-success">
-                <i class='bx bx-check-circle'></i> <?= e($message) ?>
-            </div>
-        <?php endif; ?>
-        <?php if ($error): ?>
-            <div class="alert-custom alert-error">
-                <i class='bx bx-error-circle'></i> <?= e($error) ?>
-            </div>
-        <?php endif; ?>
 
         <section class="admin-grid">
             <div class="metric-card">
@@ -439,6 +458,23 @@ try {
             </aside>
         </main>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const hideNotification = (notification) => {
+                if (!notification || notification.classList.contains('is-hiding')) return;
+                notification.classList.add('is-hiding');
+                setTimeout(() => notification.remove(), 240);
+            };
+
+            document.querySelectorAll('.order-notification').forEach((notification) => {
+                notification.querySelector('.order-notification-close')?.addEventListener('click', () => {
+                    hideNotification(notification);
+                });
+                setTimeout(() => hideNotification(notification), 4200);
+            });
+        });
+    </script>
+
 </body>
 
 </html>

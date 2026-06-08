@@ -80,3 +80,24 @@
     background: var(--ink) !important;
     border-radius: 50% !important;
 }
+
+.admin-header-brand {
+    flex: 1;
+    color: var(--ink);
+    text-decoration: none;
+}
+
+.admin-header-brand .brand-copy strong {
+    font-size: 1rem;
+    font-weight: 800;
+}
+
+.admin-dashboard .dashboard-header {
+    padding: var(--space-md) !important;
+}
+
+@media (max-width: 640px) {
+    .admin-header-brand .brand-copy strong {
+        font-size: 0.92rem;
+    }
+}

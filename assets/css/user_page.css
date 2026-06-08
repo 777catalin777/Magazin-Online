@@ -566,13 +566,13 @@ select {
 }
 
 .order-notification-success {
-    border-left-color: var(--success);
-    color: var(--success);
+    border-left-color: var(--accent);
+    color: var(--accent);
 }
 
 .order-notification-success > i {
-    background: #e3f0e9;
-    color: var(--success);
+    background: var(--accent-soft);
+    color: var(--accent);
 }
 
 .order-notification-error {

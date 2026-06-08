@@ -145,10 +145,6 @@ try {
             justify-content: flex-start;
         }
 
-        .admin-dashboard {
-            max-width: 1500px;
-        }
-
         .admin-grid {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));

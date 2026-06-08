@@ -259,6 +259,7 @@ try {
 
         @media (max-width: 1100px) {
             .admin-grid {
+                padding-top: 20px;
                 grid-template-columns: repeat(2, minmax(0, 1fr));
             }
 
@@ -269,6 +270,7 @@ try {
 
         @media (max-width: 640px) {
             .admin-grid {
+                padding-top: 20px;
                 grid-template-columns: 1fr;
             }
 

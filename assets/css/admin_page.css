@@ -5,6 +5,7 @@
 .admin-grid {
     gap: 1.25rem;
     margin-bottom: 1.25rem;
+    padding-top: 20px;
 }
 
 .metric-card {

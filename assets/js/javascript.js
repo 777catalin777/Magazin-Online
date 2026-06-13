@@ -9,9 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const currentLang = document.documentElement.lang || "ro";
     const siteHeader = document.querySelector(".site-header");
     const categoryBar = document.querySelector(".category-bar");
-    const megaMenuTrigger = document.querySelector(".category-link-new");
-    const megaMenu = document.querySelector(".mega-menu");
-    const megaMenuClose = document.querySelector(".mega-menu-close");
+    const megaMenuTriggers = [...document.querySelectorAll(".category-menu-trigger")];
+    const megaMenus = [...document.querySelectorAll(".mega-menu")];
+    const megaMenuCloseButtons = [...document.querySelectorAll("[data-close-menu]")];
+    let activeMenuTrigger = null;
 
     const translations = {
         ro: { added: "Produsul a fost adaugat in cos.", cleared: "Cosul a fost golit.", quantity: "Cantitate" },
@@ -168,32 +169,50 @@ document.addEventListener("DOMContentLoaded", () => {
     cartContent?.addEventListener("click", event => event.stopPropagation());
     document.addEventListener("click", () => cartContent?.classList.remove("active"));
 
-    function setMegaMenuOpen(isOpen, restoreFocus = false) {
-        if (!categoryBar || !megaMenuTrigger) return;
+    function setMegaMenuOpen(trigger = null, restoreFocus = false) {
+        if (!categoryBar) return;
 
+        const isOpen = Boolean(trigger);
+        activeMenuTrigger = trigger;
         categoryBar.classList.toggle("is-open", isOpen);
         document.body.classList.toggle("mega-menu-open", isOpen);
-        megaMenuTrigger.setAttribute("aria-expanded", String(isOpen));
+        megaMenuTriggers.forEach(item => {
+            const controlsMenu = item.dataset.menu === trigger?.dataset.menu;
+            item.setAttribute("aria-expanded", String(isOpen && controlsMenu));
+        });
+        megaMenus.forEach(menu => {
+            menu.classList.toggle("is-active", isOpen && menu.id === trigger?.dataset.menu);
+        });
 
-        if (restoreFocus) {
-            megaMenuTrigger.focus();
+        if (restoreFocus && trigger) {
+            trigger.focus();
         }
     }
 
-    megaMenuTrigger?.addEventListener("click", event => {
-        if (!window.matchMedia("(max-width: 800px)").matches) return;
-        event.stopPropagation();
-        setMegaMenuOpen(!categoryBar?.classList.contains("is-open"));
+    megaMenuTriggers.forEach(trigger => {
+        trigger.addEventListener("click", event => {
+            if (!window.matchMedia("(max-width: 800px)").matches) return;
+            event.stopPropagation();
+            const isSameOpenMenu = categoryBar?.classList.contains("is-open") && activeMenuTrigger === trigger;
+            setMegaMenuOpen(isSameOpenMenu ? null : trigger);
+        });
     });
 
-    megaMenuClose?.addEventListener("click", event => {
+    megaMenuCloseButtons.forEach(button => button.addEventListener("click", event => {
         event.preventDefault();
         event.stopPropagation();
-        megaMenuClose.blur();
-        setMegaMenuOpen(false);
-        megaMenuTrigger?.focus({ preventScroll: true });
+        const trigger = activeMenuTrigger;
+        setMegaMenuOpen(null);
+        trigger?.focus({ preventScroll: true });
+    }));
+
+    megaMenus.forEach(menu => {
+        menu.addEventListener("click", event => {
+            if (!event.target.closest("a")) {
+                event.stopPropagation();
+            }
+        });
     });
-    megaMenu?.addEventListener("click", event => event.stopPropagation());
 
     document.addEventListener("click", event => {
         if (
@@ -201,19 +220,21 @@ document.addEventListener("DOMContentLoaded", () => {
             categoryBar?.classList.contains("is-open") &&
             !categoryBar.contains(event.target)
         ) {
-            setMegaMenuOpen(false);
+            setMegaMenuOpen(null);
         }
     });
 
     document.addEventListener("keydown", event => {
         if (event.key === "Escape" && categoryBar?.classList.contains("is-open")) {
-            setMegaMenuOpen(false, true);
+            const trigger = activeMenuTrigger;
+            setMegaMenuOpen(null);
+            trigger?.focus();
         }
     });
 
     window.addEventListener("resize", () => {
         if (!window.matchMedia("(max-width: 800px)").matches) {
-            setMegaMenuOpen(false);
+            setMegaMenuOpen(null);
         }
     });
 

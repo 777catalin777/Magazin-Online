@@ -91,11 +91,16 @@ foreach ($products as $product) {
 
     <nav class="category-bar" aria-label="Categorii principale">
         <div class="category-bar-inner">
-            <button class="category-link-new" type="button" aria-expanded="false" aria-controls="new-in-menu">
+            <button class="category-menu-trigger category-link-new" type="button" aria-expanded="false"
+                aria-controls="new-in-menu" data-menu="new-in-menu">
                 <span>Nou în</span>
                 <i class="bx bx-chevron-down" aria-hidden="true"></i>
             </button>
-            <a href="#">Îmbrăcăminte</a>
+            <button class="category-menu-trigger category-link-clothing" type="button" aria-expanded="false"
+                aria-controls="clothing-menu" data-menu="clothing-menu">
+                <span>Îmbrăcăminte</span>
+                <i class="bx bx-chevron-down" aria-hidden="true"></i>
+            </button>
             <a href="#">Pantofi</a>
             <a href="#">Accessorii</a>
             <a href="#">Mărci</a>
@@ -104,9 +109,9 @@ foreach ($products as $product) {
             <a href="#">Topman</a>
             <a href="#">Vânzare</a>
         </div>
-        <div class="mega-menu" id="new-in-menu" aria-label="New in">
+        <div class="mega-menu" id="new-in-menu" aria-label="Nou în">
             <div class="mega-menu-mobile-header">
-                <button class="mega-menu-close" type="button" aria-label="Închide meniul">
+                <button class="mega-menu-close" type="button" aria-label="Închide meniul" data-close-menu>
                     <i class="bx bx-x" aria-hidden="true"></i>
                 </button>
             </div>
@@ -174,11 +179,90 @@ foreach ($products as $product) {
             <div class="mega-column mega-edit">
                 <h2>NOI EDITĂRI</h2>
                 <a href="#" class="mega-edit-card">
-                    <img src="assets/images/produse/ws-image-menu.avif" alt="Match-day ready" loading="lazy"
+                    <img src="assets/images/category/Nou în/ws-image-menu.avif" alt="Match-day ready" loading="lazy"
                         decoding="async">
                     <strong>PREGĂTIT PENTRU ZIUA MECIULUI</strong>
                 </a>
             </div>
+        </div>
+
+        <div class="mega-menu clothing-menu" id="clothing-menu" aria-label="Îmbrăcăminte">
+            <div class="mega-menu-mobile-header">
+                <button class="mega-menu-close" type="button" aria-label="Închide meniul" data-close-menu>
+                    <i class="bx bx-x" aria-hidden="true"></i>
+                </button>
+            </div>
+
+            <section class="clothing-shop" aria-labelledby="clothing-shop-title">
+                <h2 id="clothing-shop-title">CUMPĂRĂ DUPĂ PRODUS</h2>
+                <div class="clothing-link-columns">
+                    <div class="clothing-link-list">
+                        <a href="#collection" class="strong-link">Cele mai bine vândute</a>
+                        <a href="#collection">Nou în</a>
+                        <a href="#collection">Tricouri și veste</a>
+                        <a href="#collection">Pantaloni scurți</a>
+                        <a href="#collection">Hanorace și bluze</a>
+                        <a href="#collection">Pulovere și cardigane</a>
+                        <a href="#collection">Jachete și paltoane</a>
+                        <a href="#collection">Pantaloni și chinos</a>
+                        <a href="#collection">Blugi</a>
+                        <a href="#collection">Tricouri polo</a>
+                        <a href="#collection">Îmbrăcăminte de casă</a>
+                    </div>
+                    <div class="clothing-link-list">
+                        <a href="#collection">Costume de baie</a>
+                        <a href="#collection">Coordonate</a>
+                        <a href="#collection">Joggeri</a>
+                        <a href="#collection">Ultima șansă de a cumpăra</a>
+                        <a href="#collection">Premium</a>
+                        <a href="#collection">Cămăși</a>
+                        <a href="#collection">Șosete</a>
+                        <a href="#collection">Costume și croitorie</a>
+                        <a href="#collection" class="strong-link">Îmbrăcăminte de top</a>
+                        <a href="#collection">Treninguri</a>
+                        <a href="#collection">Lenjerie de corp</a>
+                    </div>
+                </div>
+            </section>
+
+            <section class="clothing-tailoring" aria-labelledby="clothing-tailoring-title">
+                <h2 id="clothing-tailoring-title">CROITORIE</h2>
+                <a href="#collection" class="clothing-tailoring-link">
+                    <img src="assets/images/category/Îmbrăcăminte/mw_eu_tailoring_jackets.avif" alt="" loading="lazy"
+                        decoding="async">
+                    <span>Jachete de costum</span>
+                </a>
+                <a href="#collection" class="clothing-tailoring-link">
+                    <img src="assets/images/category/Îmbrăcăminte/mw_eu_tailoring_trousers.avif" alt="" loading="lazy"
+                        decoding="async">
+                    <span>Pantaloni de costum</span>
+                </a>
+                <a href="#collection" class="clothing-tailoring-link">
+                    <img src="assets/images/category/Îmbrăcăminte/mw_eu_tailoring_shirts.avif" alt="" loading="lazy"
+                        decoding="async">
+                    <span>Cămăși</span>
+                </a>
+                <a href="#collection" class="clothing-tailoring-link">
+                    <img src="assets/images/category/Îmbrăcăminte/mw_eu_linensuitsfull.avif" alt="" loading="lazy"
+                        decoding="async">
+                    <span>Costume de in</span>
+                </a>
+                <a href="#collection" class="clothing-tailoring-link">
+                    <img src="assets/images/category/Îmbrăcăminte/mw_eu_tailoring_shoes.avif" alt="" loading="lazy"
+                        decoding="async">
+                    <span>Pantofi</span>
+                </a>
+                <a href="#collection" class="clothing-tailoring-link">
+                    <img src="assets/images/category/Îmbrăcăminte/mw_eu_tailoring_accessories.avif" alt=""
+                        loading="lazy" decoding="async">
+                    <span>Accesorii</span>
+                </a>
+            </section>
+
+            <a href="#collection" class="clothing-promo">
+                <img src="assets/images/category/Îmbrăcăminte/mw_eu_wedding.avif" alt="Nuntă" decoding="async">
+                <strong>NUNTĂ</strong>
+            </a>
         </div>
     </nav>
 

@@ -64,21 +64,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['register_error'] = "Parolele nu se potrivesc!";
         } else {
             try {
-                $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
-                $stmt->execute([$email]);
-
-                if ($stmt->fetch()) {
+                $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+                $stmt = $pdo->prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, 'user')");
+                $stmt->execute([$name, $email, $hashed_password]);
+                $_SESSION['register_success'] = "Cont creat cu succes! Te poți autentifica.";
+            } catch (PDOException $e) {
+                if (in_array((string)$e->getCode(), ['23000', '23505'], true)) {
                     $_SESSION['register_error'] = "Există deja un cont cu acest email!";
                 } else {
-                    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-                    $stmt = $pdo->prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, 'user')");
-                    $stmt->execute([$name, $email, $hashed_password]);
-
-                    $_SESSION['register_success'] = "Cont creat cu succes! Te poți autentifica.";
+                    $_SESSION['register_error'] = "Eroare la înregistrare.";
+                    error_log("Register error: " . $e->getMessage());
                 }
-            } catch (PDOException $e) {
-                $_SESSION['register_error'] = "Eroare la înregistrare.";
-                error_log("Register error: " . $e->getMessage());
             }
         }
         $_SESSION['active_form'] = isset($_SESSION['register_success']) ? 'login' : 'register';
@@ -371,11 +367,23 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
 
             try {
                 const storedCart = JSON.parse(localStorage.getItem("cart"));
-                cart = Array.isArray(storedCart)
-                    ? storedCart
-                        .filter(item => item && typeof item === "object" && !Array.isArray(item) && typeof item.key === "string" && item.key !== "")
-                        .map(item => ({ ...item, quantity: normalizeQuantity(item.quantity) }))
-                    : [];
+                if (Array.isArray(storedCart)) {
+                    const itemsByKey = new Map();
+                    storedCart.forEach(item => {
+                        if (!item || typeof item !== "object" || Array.isArray(item) || typeof item.key !== "string" || item.key === "") {
+                            return;
+                        }
+
+                        const quantity = normalizeQuantity(item.quantity);
+                        const existing = itemsByKey.get(item.key);
+                        if (existing) {
+                            existing.quantity = Math.min(existing.quantity + quantity, MAX_CART_QUANTITY);
+                        } else {
+                            itemsByKey.set(item.key, { ...item, quantity });
+                        }
+                    });
+                    cart = [...itemsByKey.values()];
+                }
             } catch {
                 localStorage.removeItem("cart");
             }
@@ -578,36 +586,42 @@ unset($_SESSION['profile_success'], $_SESSION['profile_error']);
                 saveAndRefresh();
             });
 
-            document.getElementById("place-order-btn")?.addEventListener("click", function () {
+            document.getElementById("place-order-btn")?.addEventListener("click", async function () {
                 if (cart.length === 0) {
                     showOrderNotification("Adaugă produse înainte de a plasa o comandă.", "warning");
                     return;
                 }
 
-                fetch("api/place_order.php", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "X-CSRF-Token": <?= json_encode(csrfToken()) ?>
-                    },
-                    body: JSON.stringify({ cart: cart })
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            showOrderNotification(data.message || "Comanda a fost trimisă cu succes.", "success");
-                            cart = [];
-                            localStorage.setItem("cart", JSON.stringify(cart));
-                            displayCart();
-                            loadOrders();
-                        } else {
-                            showOrderNotification(data.message || "Comanda nu a putut fi plasată.", "error");
-                        }
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        showOrderNotification("A apărut o eroare la plasarea comenzii.", "error");
+                const button = this;
+                if (button.disabled) return;
+                button.disabled = true;
+
+                try {
+                    const response = await fetch("api/place_order.php", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-Token": <?= json_encode(csrfToken()) ?>
+                        },
+                        body: JSON.stringify({ cart })
                     });
+                    const data = await response.json();
+
+                    if (!response.ok || !data.success) {
+                        throw new Error(data.message || "Comanda nu a putut fi plasată.");
+                    }
+
+                    showOrderNotification(data.message || "Comanda a fost trimisă cu succes.", "success");
+                    cart = [];
+                    localStorage.setItem("cart", JSON.stringify(cart));
+                    displayCart();
+                    loadOrders();
+                } catch (error) {
+                    console.error(error);
+                    showOrderNotification(error.message || "A apărut o eroare la plasarea comenzii.", "error");
+                } finally {
+                    button.disabled = false;
+                }
             });
 
             function escapeHtml(str) {

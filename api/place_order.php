@@ -26,6 +26,9 @@ if (!isValidCsrfToken($_SERVER['HTTP_X_CSRF_TOKEN'] ?? '')) {
     respond(['success' => false, 'message' => 'Cerere invalida.'], 403);
 }
 
+$userId = (int)$_SESSION['user_id'];
+session_write_close();
+
 $input = json_decode(file_get_contents('php://input'), true);
 if (!isset($input['cart']) || !is_array($input['cart']) || empty($input['cart'])) {
     respond(['success' => false, 'message' => 'Cosul este gol.'], 422);
@@ -78,7 +81,7 @@ foreach ($input['cart'] as $item) {
 
 try {
     $addressStmt = $pdo->prepare("SELECT address FROM users WHERE id = ?");
-    $addressStmt->execute([$_SESSION['user_id']]);
+    $addressStmt->execute([$userId]);
     $shippingAddress = $addressStmt->fetchColumn();
     if ($shippingAddress === false) {
         respond(['success' => false, 'message' => 'Trebuie sa fii autentificat.'], 401);
@@ -96,7 +99,7 @@ try {
             INSERT INTO orders (user_id, total, status, shipping_address, created_at)
             VALUES (?, ?, 'pending', ?, CURRENT_TIMESTAMP)
         ");
-        $stmt->execute([$_SESSION['user_id'], $total, $shippingAddress]);
+        $stmt->execute([$userId, $total, $shippingAddress]);
         $orderId = $pdo->lastInsertId();
     } else {
         $stmt = $pdo->prepare("
@@ -104,7 +107,7 @@ try {
             VALUES (?, ?, 'pending', ?, CURRENT_TIMESTAMP AT TIME ZONE 'UTC')
             RETURNING id
         ");
-        $stmt->execute([$_SESSION['user_id'], $total, $shippingAddress]);
+        $stmt->execute([$userId, $total, $shippingAddress]);
         $orderId = $stmt->fetchColumn();
     }
 

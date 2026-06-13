@@ -36,7 +36,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_order_status']
             $stmt = $pdo->prepare("UPDATE orders SET status = ? WHERE id = ?");
             $stmt->execute([$status, $orderId]);
             if ($stmt->rowCount() === 0) {
-                $error = 'Comanda nu a fost găsită.';
+                $existsStmt = $pdo->prepare("SELECT 1 FROM orders WHERE id = ?");
+                $existsStmt->execute([$orderId]);
+                if ($existsStmt->fetchColumn()) {
+                    $message = 'Comanda ' . $orderId . ' are deja statusul selectat.';
+                } else {
+                    $error = 'Comanda nu a fost găsită.';
+                }
             } else {
                 $message = 'Statusul comenzii ' . $orderId . ' a fost actualizată.';
             }
@@ -61,12 +67,13 @@ try {
     $orderStats = $pdo->query("
         SELECT COUNT(*) AS orders,
                COALESCE(SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END), 0) AS pending,
-               COALESCE(SUM(total), 0) AS revenue
+               COALESCE(SUM(total), 0) AS revenue,
+               (SELECT COUNT(*) FROM users) AS users
         FROM orders
     ")->fetch();
 
     $stats = [
-        'users' => (int)$pdo->query("SELECT COUNT(*) FROM users")->fetchColumn(),
+        'users' => (int)$orderStats['users'],
         'orders' => (int)$orderStats['orders'],
         'pending' => (int)$orderStats['pending'],
         'revenue' => (float)$orderStats['revenue'],
@@ -76,7 +83,7 @@ try {
         SELECT orders.id,
                orders.total,
                orders.status,
-               COALESCE(NULLIF(users.address, ''), orders.shipping_address) AS shipping_address,
+               COALESCE(NULLIF(orders.shipping_address, ''), users.address) AS shipping_address,
                orders.created_at,
                users.name AS customer_name,
                users.email AS customer_email,

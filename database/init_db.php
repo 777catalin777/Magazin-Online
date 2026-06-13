@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS order_items (
 );
 
 CREATE INDEX IF NOT EXISTS idx_orders_user_created ON orders(user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_orders_created ON orders(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);
 " : "
 CREATE TABLE IF NOT EXISTS users (
@@ -69,6 +70,7 @@ CREATE TABLE IF NOT EXISTS order_items (
 );
 
 CREATE INDEX IF NOT EXISTS idx_orders_user_created ON orders(user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_orders_created ON orders(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id);
 ";
 
@@ -80,14 +82,14 @@ try {
                 'role' => "ALTER TABLE users ADD COLUMN role TEXT DEFAULT 'user'",
                 'phone' => "ALTER TABLE users ADD COLUMN phone TEXT",
                 'address' => "ALTER TABLE users ADD COLUMN address TEXT",
-                'created_at' => "ALTER TABLE users ADD COLUMN created_at TEXT DEFAULT CURRENT_TIMESTAMP",
+                'created_at' => "ALTER TABLE users ADD COLUMN created_at TEXT",
             ],
             'orders' => [
                 'user_id' => "ALTER TABLE orders ADD COLUMN user_id INTEGER",
                 'total' => "ALTER TABLE orders ADD COLUMN total REAL NOT NULL DEFAULT 0",
                 'status' => "ALTER TABLE orders ADD COLUMN status TEXT NOT NULL DEFAULT 'pending'",
                 'shipping_address' => "ALTER TABLE orders ADD COLUMN shipping_address TEXT",
-                'created_at' => "ALTER TABLE orders ADD COLUMN created_at TEXT DEFAULT CURRENT_TIMESTAMP",
+                'created_at' => "ALTER TABLE orders ADD COLUMN created_at TEXT",
             ],
             'order_items' => [
                 'order_id' => "ALTER TABLE order_items ADD COLUMN order_id INTEGER",
@@ -107,6 +109,9 @@ try {
                 }
             }
         }
+
+        $pdo->exec("UPDATE users SET created_at = CURRENT_TIMESTAMP WHERE created_at IS NULL");
+        $pdo->exec("UPDATE orders SET created_at = CURRENT_TIMESTAMP WHERE created_at IS NULL");
     } else {
         $pdo->exec("
             ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(20) DEFAULT 'user';

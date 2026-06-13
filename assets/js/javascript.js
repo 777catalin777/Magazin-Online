@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const MAX_CART_QUANTITY = 99;
     let cart = readCart();
     const cartDisplay = document.getElementById("cart-count");
     const cartItems = document.getElementById("cart-items");
@@ -6,7 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const itemCount = document.getElementById("item-count");
     const cartContent = document.querySelector(".cart-content");
     const currentLang = document.documentElement.lang || "ro";
-    const MAX_CART_QUANTITY = 99;
     const siteHeader = document.querySelector(".site-header");
     const categoryBar = document.querySelector(".category-bar");
     const megaMenuTrigger = document.querySelector(".category-link-new");
@@ -22,15 +22,28 @@ document.addEventListener("DOMContentLoaded", () => {
     function readCart() {
         try {
             const value = JSON.parse(localStorage.getItem("cart"));
-            return Array.isArray(value)
-                ? value
-                    .filter(item => item && typeof item === "object" && !Array.isArray(item) && typeof item.key === "string" && item.key !== "")
-                    .map(item => ({
+            if (!Array.isArray(value)) return [];
+
+            const itemsByKey = new Map();
+            value.forEach(item => {
+                if (!item || typeof item !== "object" || Array.isArray(item) || typeof item.key !== "string" || item.key === "") {
+                    return;
+                }
+
+                const quantity = normalizeQuantity(item.quantity);
+                const existing = itemsByKey.get(item.key);
+                if (existing) {
+                    existing.quantity = Math.min(existing.quantity + quantity, MAX_CART_QUANTITY);
+                } else {
+                    itemsByKey.set(item.key, {
                         ...item,
-                        quantity: normalizeQuantity(item.quantity),
+                        quantity,
                         price: normalizePrice(item.price)
-                    }))
-                : [];
+                    });
+                }
+            });
+
+            return [...itemsByKey.values()];
         } catch {
             return [];
         }
@@ -68,8 +81,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function updateCart() {
-        const totalQuantity = cart.reduce((sum, item) => sum + normalizeQuantity(item.quantity), 0);
-        const total = cart.reduce((sum, item) => sum + normalizePrice(item.price) * normalizeQuantity(item.quantity), 0);
+        let totalQuantity = 0;
+        let total = 0;
+        cart.forEach(item => {
+            const quantity = normalizeQuantity(item.quantity);
+            totalQuantity += quantity;
+            total += normalizePrice(item.price) * quantity;
+        });
 
         if (cartDisplay) {
             cartDisplay.textContent = totalQuantity;
@@ -208,6 +226,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchInput = document.querySelector('input[name="search"]');
     const productGrid = document.querySelector(".collection .container");
     const noResults = document.querySelector(".no-results");
+    const searchableProducts = productGrid
+        ? [...productGrid.querySelectorAll(".product")].map(product => ({
+            element: product,
+            text: normalizeSearchText([
+                product.querySelector("h3")?.textContent,
+                product.querySelector(".product-category")?.textContent,
+                product.querySelector(".product-tag")?.textContent
+            ].join(" "))
+        }))
+        : [];
 
     function normalizeSearchText(value) {
         return String(value)
@@ -217,23 +245,22 @@ document.addEventListener("DOMContentLoaded", () => {
             .trim();
     }
 
+    let searchFrame = 0;
     searchInput?.addEventListener("input", event => {
-        const term = normalizeSearchText(event.target.value);
-        let resultCount = 0;
+        const value = event.target.value;
+        cancelAnimationFrame(searchFrame);
+        searchFrame = requestAnimationFrame(() => {
+            const term = normalizeSearchText(value);
+            let resultCount = 0;
 
-        productGrid?.querySelectorAll(".product").forEach(product => {
-            const searchableText = normalizeSearchText([
-                product.querySelector("h3")?.textContent,
-                product.querySelector(".product-category")?.textContent,
-                product.querySelector(".product-tag")?.textContent
-            ].join(" "));
-            const visible = searchableText.includes(term);
+            searchableProducts.forEach(({ element, text }) => {
+                const visible = text.includes(term);
+                element.hidden = !visible;
+                if (visible) resultCount++;
+            });
 
-            product.hidden = !visible;
-            if (visible) resultCount++;
+            noResults?.classList.toggle("active", resultCount === 0);
         });
-
-        noResults?.classList.toggle("active", resultCount === 0);
     });
 
     if (siteHeader && categoryBar) {

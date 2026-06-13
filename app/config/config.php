@@ -54,7 +54,13 @@ function isValidCsrfToken($token)
 
 if (isset($_GET['lang']) && in_array($_GET['lang'], $availableLanguages, true)) {
     $_SESSION['lang'] = $_GET['lang'];
-    setcookie('lang', $_SESSION['lang'], time() + (86400 * 30), "/", "", false, true);
+    setcookie('lang', $_SESSION['lang'], [
+        'expires' => time() + (86400 * 30),
+        'path' => '/',
+        'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
 }
 
 if (!isset($_SESSION['lang'])) {
@@ -96,6 +102,9 @@ try {
 
     if ($dbDriver === 'sqlite') {
         $pdo->exec('PRAGMA foreign_keys = ON');
+        $pdo->exec('PRAGMA busy_timeout = 5000');
+        $pdo->exec('PRAGMA journal_mode = WAL');
+        $pdo->exec('PRAGMA synchronous = NORMAL');
     }
 } catch (PDOException $e) {
     error_log("Connection failed: " . $e->getMessage());

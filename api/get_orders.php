@@ -9,6 +9,9 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
+$userId = (int)$_SESSION['user_id'];
+session_write_close();
+
 try {
     $ordersStmt = $pdo->prepare("
         SELECT id, created_at, total AS total_amount, status
@@ -17,7 +20,7 @@ try {
         ORDER BY created_at DESC
         LIMIT 50
     ");
-    $ordersStmt->execute([$_SESSION['user_id']]);
+    $ordersStmt->execute([$userId]);
     $orders = $ordersStmt->fetchAll();
 
     $itemsByOrder = [];
